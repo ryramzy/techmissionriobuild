@@ -23,25 +23,61 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-black p-4 text-white">
-      <div className="container mx-auto max-w-4xl text-center">
-        <h1 className="mb-6 animate-fade-in text-4xl font-bold md:text-6xl">
-          Transforming Lives Through Technology
-        </h1>
-        <p className="mb-8 animate-fade-in text-lg text-gray-300 md:text-xl">
-          Join us in our mission to empower communities through technology education and faith-based initiatives.
-        </p>
-        <div className="flex animate-fade-in-up flex-col gap-4 sm:flex-row sm:justify-center">
-          <Link href="/get-involved" className="transition-transform hover:scale-105">
-            <Button variant="primary" size="lg">
-              Get Involved
-            </Button>
-          </Link>
-          <Link href="/about" className="transition-transform hover:scale-105">
-            <Button variant="secondary" size="lg">
-              Learn More
-            </Button>
-          </Link>
+    <main className="flex min-h-screen flex-col items-center justify-center">
+      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+        <div className="flex max-w-4xl flex-col items-center gap-4">
+          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+            TechMission Rio
+          </h1>
+          <p className="text-center text-xl text-white">
+            Transforming lives through technology, education, and faith.
+          </p>
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link href="/get-involved">
+              <Button variant="primary" size="lg">
+                Get Involved
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button variant="secondary" size="lg">
+                Learn More
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+            <h3 className="text-2xl font-bold">Technology Access</h3>
+            <div className="text-lg">
+              Providing computers, internet, and technological resources to youth in underserved communities.
+            </div>
+          </div>
+          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+            <h3 className="text-2xl font-bold">Academic Preparation</h3>
+            <div className="text-lg">
+              Programming, robotics, and software development courses for talented youth.
+            </div>
+          </div>
+          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+            <h3 className="text-2xl font-bold">Spiritual Growth</h3>
+            <div className="text-lg">
+              Integrating Christian values and character development into all our programs.
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-center text-2xl text-white">
+            How can you help?
+          </p>
+          <div className="text-center">
+            <Link href="/get-involved">
+              <Button size="lg">
+                Get Involved
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </main>
