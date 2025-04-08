@@ -53,6 +53,9 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      textColor: {
+        DEFAULT: "hsl(var(--foreground))",
+      },
       backgroundColor: {
         DEFAULT: "hsl(var(--background))",
       },
