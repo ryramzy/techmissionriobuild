@@ -1,16 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  output: 'standalone',
   images: {
-    domains: ['techmissionrio.org'],
+    domains: ['images.unsplash.com'],
     formats: ['image/avif', 'image/webp'],
+  },
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['@radix-ui/react-icons'],
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   swcMinify: true,
   poweredByHeader: false,
-  compress: true,
+  reactStrictMode: true,
 }
 
 module.exports = nextConfig 
