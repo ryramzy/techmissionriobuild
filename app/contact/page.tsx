@@ -2,24 +2,24 @@ import { Metadata } from "next"
 import { Button } from "components/Button/Button"
 
 export const metadata: Metadata = {
-  title: "Contato | TechMission Rio",
-  description: "Entre em contato conosco para mais informações sobre nossos programas e como se envolver",
+  title: "Contact | TechMission Rio",
+  description: "Get in touch with us for more information about our programs and how to get involved",
 }
 
 export default function ContactPage() {
   return (
     <main className="container mx-auto px-4 py-16">
       <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-4xl font-bold">Contato</h1>
+        <h1 className="mb-8 text-4xl font-bold">Contact</h1>
 
         <div className="grid gap-8 md:grid-cols-2">
           <div className="space-y-8">
             <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-              <h2 className="mb-4 text-2xl font-semibold">Entre em Contato</h2>
+              <h2 className="mb-4 text-2xl font-semibold">Get in Touch</h2>
               <form className="space-y-6">
                 <div>
                   <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    Nome
+                    Name
                   </label>
                   <input
                     type="text"
@@ -45,7 +45,7 @@ export default function ContactPage() {
 
                 <div>
                   <label htmlFor="subject" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    Assunto
+                    Subject
                   </label>
                   <select
                     id="subject"
@@ -53,18 +53,18 @@ export default function ContactPage() {
                     className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500"
                     required
                   >
-                    <option value="">Selecione um assunto</option>
-                    <option value="volunteer">Voluntariado</option>
-                    <option value="partnership">Parceria</option>
-                    <option value="donation">Doação</option>
-                    <option value="programs">Programas</option>
-                    <option value="other">Outro</option>
+                    <option value="">Select a subject</option>
+                    <option value="volunteer">Volunteering</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="donation">Donation</option>
+                    <option value="programs">Programs</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
 
                 <div>
                   <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    Mensagem
+                    Message
                   </label>
                   <textarea
                     id="message"
@@ -76,7 +76,7 @@ export default function ContactPage() {
                 </div>
 
                 <Button type="submit" className="w-full">
-                  Enviar Mensagem
+                  Send Message
                 </Button>
               </form>
             </div>
@@ -84,7 +84,7 @@ export default function ContactPage() {
 
           <div className="space-y-8">
             <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-              <h2 className="mb-4 text-2xl font-semibold">Informações de Contato</h2>
+              <h2 className="mb-4 text-2xl font-semibold">Contact Information</h2>
               <div className="space-y-4">
                 <div>
                   <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Email</h3>
@@ -96,11 +96,11 @@ export default function ContactPage() {
                   </a>
                 </div>
                 <div>
-                  <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Localização</h3>
-                  <p className="text-gray-600 dark:text-gray-300">Rio de Janeiro, Brasil</p>
+                  <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Location</h3>
+                  <p className="text-gray-600 dark:text-gray-300">Rio de Janeiro, Brazil</p>
                 </div>
                 <div>
-                  <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Redes Sociais</h3>
+                  <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Social Media</h3>
                   <div className="flex space-x-4">
                     <a
                       href="https://www.instagram.com/techmissionrio/"
@@ -119,11 +119,11 @@ export default function ContactPage() {
             </div>
 
             <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-              <h2 className="mb-4 text-2xl font-semibold">Horário de Funcionamento</h2>
+              <h2 className="mb-4 text-2xl font-semibold">Business Hours</h2>
               <div className="space-y-2 text-gray-600 dark:text-gray-300">
-                <p>Segunda a Sexta: 9h às 18h</p>
-                <p>Sábado: 9h às 13h</p>
-                <p>Domingo: Fechado</p>
+                <p>Monday to Friday: 9am to 6pm</p>
+                <p>Saturday: 9am to 1pm</p>
+                <p>Sunday: Closed</p>
               </div>
             </div>
           </div>

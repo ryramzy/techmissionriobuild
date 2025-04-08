@@ -2,21 +2,21 @@ import { Metadata } from "next"
 import { Button } from "components/Button/Button"
 
 export const metadata: Metadata = {
-  title: "Junte-se a Nós | TechMission Rio",
-  description: "Faça parte da comunidade tech do Rio de Janeiro",
+  title: "Join Us | TechMission Rio",
+  description: "Become part of the tech community in Rio de Janeiro",
 }
 
 export default function JoinPage() {
   return (
     <main className="container mx-auto px-4 py-16">
       <div className="mx-auto max-w-2xl">
-        <h1 className="mb-8 text-4xl font-bold">Junte-se a Nós</h1>
+        <h1 className="mb-8 text-4xl font-bold">Join Us</h1>
         
         <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
           <form className="space-y-6">
             <div>
               <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Nome completo
+                Full name
               </label>
               <input
                 type="text"
@@ -42,7 +42,7 @@ export default function JoinPage() {
 
             <div>
               <label htmlFor="interest" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Área de interesse
+                Area of interest
               </label>
               <select
                 id="interest"
@@ -50,17 +50,17 @@ export default function JoinPage() {
                 className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500"
                 required
               >
-                <option value="">Selecione uma opção</option>
-                <option value="bootcamp">Bootcamp Full-Stack</option>
-                <option value="mentorship">Programa de Mentoria</option>
-                <option value="volunteer">Voluntariado</option>
-                <option value="partnership">Parceria Empresarial</option>
+                <option value="">Select an option</option>
+                <option value="bootcamp">Full-Stack Bootcamp</option>
+                <option value="mentorship">Mentorship Program</option>
+                <option value="volunteer">Volunteering</option>
+                <option value="partnership">Business Partnership</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-                Mensagem
+                Message
               </label>
               <textarea
                 id="message"
@@ -71,7 +71,7 @@ export default function JoinPage() {
             </div>
 
             <Button type="submit" size="lg" className="w-full">
-              Enviar
+              Submit
             </Button>
           </form>
         </div>
