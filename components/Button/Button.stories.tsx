@@ -2,30 +2,68 @@ import type { Meta, StoryObj } from "@storybook/react"
 import { Button } from "./Button"
 
 const meta: Meta<typeof Button> = {
-  title: "Button",
+  title: "UI/Button",
   component: Button,
   args: {
-    intent: "primary",
-    underline: false,
+    variant: "primary",
     children: "Button",
     size: "lg",
   },
   argTypes: {
-    intent: {
-      options: ["primary", "secondary"],
-      control: { type: "select" },
+    variant: {
+      control: "select",
+      options: ["primary", "secondary", "outline"],
     },
     size: {
-      options: ["sm", "lg"],
-      control: { type: "select" },
+      control: "select",
+      options: ["sm", "md", "lg"],
+    },
+    disabled: {
+      control: "boolean",
+    },
+    isLoading: {
+      control: "boolean",
     },
   },
 }
 
+export default meta
 type Story = StoryObj<typeof Button>
 
-export const Default: Story = {
-  render: (args) => <Button {...args} />,
+export const Default: Story = {}
+
+export const Secondary: Story = {
+  args: {
+    variant: "secondary",
+  },
 }
 
-export default meta
+export const Outline: Story = {
+  args: {
+    variant: "outline",
+  },
+}
+
+export const Small: Story = {
+  args: {
+    size: "sm",
+  },
+}
+
+export const Medium: Story = {
+  args: {
+    size: "md",
+  },
+}
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+}
