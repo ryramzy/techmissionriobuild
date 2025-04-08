@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import Link from "next/link"
 import { Button } from "components/Button/Button"
 
 export const metadata: Metadata = {
@@ -18,9 +19,11 @@ export default function GetInvolvedPage() {
             <p className="mb-6 text-gray-600 dark:text-gray-300">
               Seja um mentor, tutor ou instrutor. Compartilhe seu conhecimento e faça a diferença na vida de jovens.
             </p>
-            <Button href="/contact" intent="secondary">
-              Quero Ser Voluntário
-            </Button>
+            <Link href="/contact">
+              <Button variant="secondary">
+                Quero Ser Voluntário
+              </Button>
+            </Link>
           </div>
 
           <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
@@ -34,9 +37,11 @@ export default function GetInvolvedPage() {
               <li>Oportunidades de estágio</li>
               <li>Workshops e palestras</li>
             </ul>
-            <Button href="/contact" intent="secondary">
-              Quero Ser Parceiro
-            </Button>
+            <Link href="/contact">
+              <Button variant="secondary">
+                Seja um Parceiro
+              </Button>
+            </Link>
           </div>
 
           <div className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
@@ -58,9 +63,11 @@ export default function GetInvolvedPage() {
                 </p>
               </div>
             </div>
-            <Button href="/donate" className="w-full">
-              Fazer Doação
-            </Button>
+            <Link href="/donate">
+              <Button variant="primary" className="w-full">
+                Faça uma Doação
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

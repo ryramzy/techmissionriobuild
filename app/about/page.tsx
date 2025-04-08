@@ -1,6 +1,6 @@
 import { Metadata } from "next"
-import { Button } from "components/Button/Button"
 import Link from "next/link"
+import { Button } from "components/Button/Button"
 
 export const metadata: Metadata = {
   title: "Sobre Nós | TechMission Rio",
