@@ -1,6 +1,6 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { Button } from "components/Button/Button"
+import { Button } from "../components/Button/Button"
 
 export const metadata: Metadata = {
   title: "TechMission Rio - Empowering Youth Through Technology",
@@ -21,63 +21,27 @@ export const metadata: Metadata = {
   },
 }
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-        <div className="flex max-w-4xl flex-col items-center gap-4">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-            Transformando Vidas Através da Tecnologia
-          </h1>
-          <p className="text-center text-xl text-white">
-            Uma iniciativa cristã dedicada a capacitar jovens brasileiros através da tecnologia e educação.
-          </p>
-          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/get-involved">
-              <Button className="w-full sm:w-auto">
-                Envolva-se
-              </Button>
-            </Link>
-            <Link href="/donate">
-              <Button variant="secondary" className="w-full sm:w-auto">
-                Faça uma Doação
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-black/50 p-4 text-white hover:bg-black/70">
-            <h3 className="text-2xl font-bold">Acesso à Tecnologia</h3>
-            <div className="text-lg">
-              Fornecendo computadores, internet e recursos tecnológicos para jovens em comunidades carentes.
-            </div>
-          </div>
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-black/50 p-4 text-white hover:bg-black/70">
-            <h3 className="text-2xl font-bold">Preparação Acadêmica</h3>
-            <div className="text-lg">
-              Cursos de programação, robótica e desenvolvimento de software para jovens talentosos.
-            </div>
-          </div>
-          <div className="flex max-w-xs flex-col gap-4 rounded-xl bg-black/50 p-4 text-white hover:bg-black/70">
-            <h3 className="text-2xl font-bold">Crescimento Espiritual</h3>
-            <div className="text-lg">
-              Integrando valores cristãos e desenvolvimento de caráter em todos os nossos programas.
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-center text-2xl text-white">
-            Como você pode ajudar?
-          </p>
-          <div className="text-center">
-            <Link href="/get-involved">
-              <Button size="lg">
-                Envolva-se
-              </Button>
-            </Link>
-          </div>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-black p-4 text-white">
+      <div className="container mx-auto max-w-4xl text-center">
+        <h1 className="mb-6 animate-fade-in text-4xl font-bold md:text-6xl">
+          Transforming Lives Through Technology
+        </h1>
+        <p className="mb-8 animate-fade-in text-lg text-gray-300 md:text-xl">
+          Join us in our mission to empower communities through technology education and faith-based initiatives.
+        </p>
+        <div className="flex animate-fade-in-up flex-col gap-4 sm:flex-row sm:justify-center">
+          <Link href="/get-involved" className="transition-transform hover:scale-105">
+            <Button variant="primary" size="lg">
+              Get Involved
+            </Button>
+          </Link>
+          <Link href="/about" className="transition-transform hover:scale-105">
+            <Button variant="secondary" size="lg">
+              Learn More
+            </Button>
+          </Link>
         </div>
       </div>
     </main>
