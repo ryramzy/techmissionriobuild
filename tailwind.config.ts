@@ -59,6 +59,9 @@ const config = {
       backgroundColor: {
         DEFAULT: "hsl(var(--background))",
       },
+      ringOffsetColor: {
+        DEFAULT: "hsl(var(--background))",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

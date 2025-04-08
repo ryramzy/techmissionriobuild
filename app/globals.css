@@ -65,7 +65,7 @@ html {
 
 /* Better focus styles */
 *:focus-visible {
-  @apply outline-none ring-2 ring-offset-2 ring-offset-background ring-ring;
+  @apply outline-none ring-2 ring-offset-2 ring-offset-[hsl(var(--background))] ring-[hsl(var(--ring))];
 }
 
 @keyframes fadeIn {
