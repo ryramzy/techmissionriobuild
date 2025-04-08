@@ -1,47 +1,50 @@
 import { cva, type VariantProps } from "class-variance-authority"
-
+import { type ButtonHTMLAttributes, forwardRef } from "react"
 import { twMerge } from "tailwind-merge"
 
-const button = cva(
-  [
-    "justify-center",
-    "inline-flex",
-    "items-center",
-    "rounded-xl",
-    "text-center",
-    "border",
-    "border-blue-400",
-    "transition-colors",
-    "delay-50",
-  ],
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       intent: {
-        primary: ["bg-blue-400", "text-white", "hover:enabled:bg-blue-700"],
-        secondary: ["bg-transparent", "text-blue-400", "hover:enabled:bg-blue-400", "hover:enabled:text-white"],
+        primary:
+          "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600",
+        secondary:
+          "bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700",
+        outline:
+          "border-2 border-gray-200 bg-transparent text-gray-900 hover:bg-gray-100 focus-visible:ring-gray-500 dark:border-gray-700 dark:text-gray-100 dark:hover:bg-gray-800",
       },
       size: {
-        sm: ["min-w-20", "h-full", "min-h-10", "text-sm", "py-1.5", "px-4"],
-        lg: ["min-w-32", "h-full", "min-h-12", "text-lg", "py-2.5", "px-6"],
+        sm: "h-9 px-3 text-sm",
+        md: "h-11 px-6 text-base",
+        lg: "h-14 px-8 text-lg",
       },
-      underline: { true: ["underline"], false: [] },
     },
     defaultVariants: {
       intent: "primary",
-      size: "lg",
+      size: "md",
     },
-  }
+  },
 )
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLAnchorElement>, VariantProps<typeof button> {
-  underline?: boolean
-  href: string
+export interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement>,
+    VariantProps<typeof buttonVariants> {
+  href?: string
 }
 
-export function Button({ className, intent, size, underline, ...props }: ButtonProps) {
-  return (
-    <a className={twMerge(button({ intent, size, className, underline }))} {...props}>
-      {props.children}
-    </a>
-  )
-}
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, intent, size, href, ...props }, ref) => {
+    const Comp = href ? "a" : "button"
+    return (
+      <Comp
+        className={twMerge(buttonVariants({ intent, size, className }))}
+        ref={ref as any}
+        href={href}
+        {...props}
+      />
+    )
+  },
+)
+
+Button.displayName = "Button"
