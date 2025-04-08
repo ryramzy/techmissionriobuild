@@ -2,8 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "../components/Button/Button"
 import Image from "next/image"
-import { motion } from "framer-motion"
-import { useState } from "react"
+import { Navigation } from "./components/Navigation"
 
 export const metadata: Metadata = {
   title: "TechMission Rio - Empowering Youth Through Technology",
@@ -25,103 +24,9 @@ export const metadata: Metadata = {
 }
 
 export default function Home() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-gradient-to-r from-primary via-primary to-accent text-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="relative w-10 h-10">
-              <Image
-                src="/images/logo.png"
-                alt="TechMission Rio Logo"
-                fill
-                className="object-contain group-hover:scale-105 transition"
-              />
-            </div>
-            <span className="text-lg font-bold tracking-wide group-hover:text-highlight transition">TechMission Rio</span>
-          </Link>
-          
-          {/* Desktop Navigation */}
-          <div className="space-x-6 hidden md:flex">
-            <Link href="/about" className="hover:text-highlight transition">About</Link>
-            <Link href="/programs" className="hover:text-highlight transition">Programs</Link>
-            <Link href="/get-involved" className="hover:text-highlight transition">Get Involved</Link>
-            <Link href="/contact" className="hover:text-highlight transition">Contact</Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 hover:bg-white/10 rounded-lg transition"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle mobile menu"
-          >
-            <svg 
-              className="w-6 h-6" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              {isMobileMenuOpen ? (
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        <motion.div 
-          className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="px-4 pt-2 pb-3 space-y-1 bg-primary/95 backdrop-blur-sm">
-            <Link 
-              href="/about" 
-              className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              About
-            </Link>
-            <Link 
-              href="/programs" 
-              className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Programs
-            </Link>
-            <Link 
-              href="/get-involved" 
-              className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Get Involved
-            </Link>
-            <Link 
-              href="/contact" 
-              className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Contact
-            </Link>
-          </div>
-        </motion.div>
-      </nav>
+      <Navigation />
 
       <main className="flex flex-col">
         <div className="relative h-screen">
@@ -135,11 +40,8 @@ export default function Home() {
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60 flex items-center justify-center">
-            <motion.div 
-              className="text-center text-white px-4 max-w-4xl mx-auto"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+            <div 
+              className="text-center text-white px-4 max-w-4xl mx-auto animate-fade-in"
             >
               <h1 className="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">
                 Empowering Communities Through Tech
@@ -159,7 +61,7 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -172,60 +74,47 @@ export default function Home() {
               className="object-cover opacity-20"
             />
           </div>
-          <motion.div 
+          <div 
             className="container mx-auto px-4 relative z-10"
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              <motion.div 
-                className="flex flex-col gap-4 rounded-xl bg-white/10 p-6 backdrop-blur-sm hover:bg-white/20 transition"
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
+              <div 
+                className="flex flex-col gap-4 rounded-xl bg-white/10 p-6 backdrop-blur-sm hover:bg-white/20 transition hover:scale-105"
               >
                 <h3 className="text-2xl font-bold text-white">Technology Access</h3>
                 <div className="text-lg text-white/90">
                   Providing computers, internet, and technological resources to youth in underserved communities.
                 </div>
-              </motion.div>
-              <motion.div 
-                className="flex flex-col gap-4 rounded-xl bg-white/10 p-6 backdrop-blur-sm hover:bg-white/20 transition"
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
+              </div>
+              <div 
+                className="flex flex-col gap-4 rounded-xl bg-white/10 p-6 backdrop-blur-sm hover:bg-white/20 transition hover:scale-105"
               >
                 <h3 className="text-2xl font-bold text-white">Academic Preparation</h3>
                 <div className="text-lg text-white/90">
                   Programming, robotics, and software development courses for talented youth.
                 </div>
-              </motion.div>
-              <motion.div 
-                className="flex flex-col gap-4 rounded-xl bg-white/10 p-6 backdrop-blur-sm hover:bg-white/20 transition"
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
+              </div>
+              <div 
+                className="flex flex-col gap-4 rounded-xl bg-white/10 p-6 backdrop-blur-sm hover:bg-white/20 transition hover:scale-105"
               >
                 <h3 className="text-2xl font-bold text-white">Spiritual Growth</h3>
                 <div className="text-lg text-white/90">
                   Integrating Christian values and character development into all our programs.
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
-        <motion.div 
-          className="fixed bottom-4 right-4 md:hidden"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 1 }}
+        <div 
+          className="fixed bottom-4 right-4 md:hidden animate-fade-in"
         >
           <Link href="/join">
             <Button variant="vibrant" size="lg" className="rounded-full shadow-lg hover:scale-105 transition">
               Join the Mission
             </Button>
           </Link>
-        </motion.div>
+        </div>
       </main>
 
       <footer className="bg-primary text-white py-12">
