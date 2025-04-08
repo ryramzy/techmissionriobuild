@@ -1,7 +1,7 @@
 import "styles/tailwind.css"
 import { Metadata } from "next"
-import { Navigation } from "components/Navigation/Navigation"
 import { Footer } from "components/Footer/Footer"
+import { Navigation } from "components/Navigation/Navigation"
 import "./globals.css"
 
 export const metadata: Metadata = {
