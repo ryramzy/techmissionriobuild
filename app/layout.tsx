@@ -1,24 +1,21 @@
-import "styles/tailwind.css"
+import "./globals.css"
 import { Metadata } from "next"
 import { Footer } from "components/Footer/Footer"
 import { Navigation } from "components/Navigation/Navigation"
-import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "TechMission Rio - Empowering Youth Through Technology",
+  title: "TechMission Rio",
   description: "Transformando vidas através da tecnologia, educação e fé",
-  keywords: ["TechMission Rio", "educação", "tecnologia", "jovens", "Rio de Janeiro"],
-  authors: [{ name: "TechMission Rio" }],
   viewport: "width=device-width, initial-scale=1",
-  robots: "index, follow",
+  robots: "index, follow"
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className="scroll-smooth">
-      <body className="min-h-screen bg-white font-sans antialiased dark:bg-gray-900">
+    <html lang="pt-BR">
+      <body className="min-h-screen bg-black font-sans antialiased">
         <Navigation />
-        {children}
+        <main>{children}</main>
         <Footer />
       </body>
     </html>
