@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import { Button } from "components/Button/Button"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Sobre Nós | TechMission Rio",
@@ -68,9 +69,11 @@ export default function AboutPage() {
           </section>
 
           <div className="text-center">
-            <Button href="/get-involved" size="lg">
-              Envolva-se
-            </Button>
+            <Link href="/get-involved">
+              <Button size="lg">
+                Envolva-se
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
