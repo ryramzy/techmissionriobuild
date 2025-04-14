@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import { Button } from "/components/Button/Button";
+import Link from "next/link";
 export default function Home() {
   return (
     <>
@@ -18,9 +19,11 @@ export default function Home() {
               Providing Brazilian youth with access to technology, education, and career training.
             </p>
             <div className="mt-6">
-              <Button className="text-white bg-yellow-500 hover:bg-yellow-600 text-lg px-6 py-3 rounded-full">
-                Donate Now
-              </Button>
+              <Link href="/donate">
+                <Button className="text-white bg-yellow-500 hover:bg-yellow-600 text-lg px-6 py-3 rounded-full">
+                  Donate Now
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
