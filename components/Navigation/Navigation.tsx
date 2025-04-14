@@ -13,6 +13,9 @@ export function Navigation() {
           <Link href="/about" className="text-gray-300 hover:text-white" aria-label="About us">
             About
           </Link>
+          <Link href="/mission" className="text-gray-300 hover:text-white" aria-label="Mission">
+            Mission
+          </Link>
           <Link href="/programs" className="text-gray-300 hover:text-white" aria-label="Our programs">
             Programs
           </Link>
