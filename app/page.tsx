@@ -14,7 +14,7 @@ export default function Home() {
       <section className="relative h-screen flex items-center justify-center text-white">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/rio-hero.jpg"
+            src="/hero landing.jpg"
             alt="Rio de Janeiro landscape"
             fill
             className="object-cover brightness-50"
