@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/Button/Button'
-import Navigation from './components/Navigation'
+import { Navigation } from './components/Navigation'
 
 export const metadata = {
   title: 'TechMission Rio - Empowering Youth Through Technology',
