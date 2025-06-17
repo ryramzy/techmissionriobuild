@@ -38,11 +38,6 @@ export default function Home() {
                 Get Involved
               </Button>
             </Link>
-            <Link href="/donate">
-              <Button variant="vibrant" size="lg">
-                Donate Now
-              </Button>
-            </Link>
           </div>
         </div>
       </section>

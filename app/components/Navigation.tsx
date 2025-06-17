@@ -3,7 +3,8 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/Button/Button"
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -24,11 +25,18 @@ export function Navigation() {
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="space-x-6 hidden md:flex">
-          <Link href="/about" className="hover:text-highlight transition">About</Link>
-          <Link href="/programs" className="hover:text-highlight transition">Programs</Link>
-          <Link href="/get-involved" className="hover:text-highlight transition">Get Involved</Link>
-          <Link href="/contact" className="hover:text-highlight transition">Contact</Link>
+        <div className="hidden md:flex items-center space-x-8">
+          <div className="flex space-x-6">
+            <Link href="/about" className="hover:text-highlight transition">About</Link>
+            <Link href="/programs" className="hover:text-highlight transition">Programs</Link>
+            <Link href="/get-involved" className="hover:text-highlight transition">Get Involved</Link>
+            <Link href="/contact" className="hover:text-highlight transition">Contact</Link>
+          </div>
+          <Link href="/donate">
+            <Button variant="vibrant" size="sm">
+              Donate Now
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -63,44 +71,58 @@ export function Navigation() {
       </div>
 
       {/* Mobile Navigation */}
-      <motion.div 
-        className={`md:hidden ${isMobileMenuOpen ? 'block' : 'hidden'}`}
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.2 }}
-      >
-        <div className="px-4 pt-2 pb-3 space-y-1 bg-primary/95 backdrop-blur-sm">
-          <Link 
-            href="/about" 
-            className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-            onClick={() => setIsMobileMenuOpen(false)}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden overflow-hidden"
           >
-            About
-          </Link>
-          <Link 
-            href="/programs" 
-            className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Programs
-          </Link>
-          <Link 
-            href="/get-involved" 
-            className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Get Involved
-          </Link>
-          <Link 
-            href="/contact" 
-            className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Contact
-          </Link>
-        </div>
-      </motion.div>
+            <div className="px-4 pt-2 pb-3 space-y-1 bg-primary/95 backdrop-blur-sm">
+              <Link 
+                href="/about" 
+                className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              <Link 
+                href="/programs" 
+                className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Programs
+              </Link>
+              <Link 
+                href="/get-involved" 
+                className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Get Involved
+              </Link>
+              <Link 
+                href="/contact" 
+                className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <div className="pt-2">
+                <Link 
+                  href="/donate"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Button variant="vibrant" className="w-full">
+                    Donate Now
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   )
 } 
