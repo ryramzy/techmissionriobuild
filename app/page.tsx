@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/Button/Button'
-import { Navigation } from './components/Navigation'
 
 export const metadata = {
   title: 'TechMission Rio - Empowering Youth Through Technology',
@@ -11,9 +10,6 @@ export const metadata = {
 export default function Home() {
   return (
     <main className="min-h-screen">
-      {/* Navigation */}
-      <Navigation />
-
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center text-white">
         <div className="absolute inset-0 z-0">
