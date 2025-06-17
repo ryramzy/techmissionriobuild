@@ -132,7 +132,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <Image
-                src="/logo.png"
+                src="/logo.jpg"
                 alt="TechMission Rio Logo"
                 width={150}
                 height={50}

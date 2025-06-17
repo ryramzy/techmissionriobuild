@@ -14,7 +14,7 @@ export function Navigation() {
         <Link href="/" className="flex items-center space-x-2 group">
           <div className="relative w-10 h-10">
             <Image
-              src="/images/logo.png"
+              src="/logo.jpg"
               alt="TechMission Rio Logo"
               fill
               className="object-contain group-hover:scale-105 transition"
