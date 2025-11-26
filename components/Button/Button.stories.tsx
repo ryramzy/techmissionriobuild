@@ -16,12 +16,9 @@ const meta: Meta<typeof Button> = {
     },
     size: {
       control: "select",
-      options: ["sm", "md", "lg"],
+      options: ["sm", "default", "lg", "icon"],
     },
     disabled: {
-      control: "boolean",
-    },
-    isLoading: {
       control: "boolean",
     },
   },
@@ -50,20 +47,14 @@ export const Small: Story = {
   },
 }
 
-export const Medium: Story = {
+export const DefaultSize: Story = {
   args: {
-    size: "md",
+    size: "default",
   },
 }
 
 export const Disabled: Story = {
   args: {
     disabled: true,
-  },
-}
-
-export const Loading: Story = {
-  args: {
-    isLoading: true,
   },
 }

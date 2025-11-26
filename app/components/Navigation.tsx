@@ -1,9 +1,9 @@
 'use client'
 
-import Link from "next/link"
+import { AnimatePresence, motion } from "framer-motion"
 import Image from "next/image"
+import Link from "next/link"
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/Button/Button"
 
 export function Navigation() {

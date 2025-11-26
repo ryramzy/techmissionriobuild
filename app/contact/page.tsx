@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import ContactForm from "./ContactForm";
 import Link from "next/link";
+import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact | TechMission Rio",

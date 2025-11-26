@@ -34,3 +34,6 @@ storybook-static/
 /playwright/.cache/
 
 /.npm-only-allow
+
+# typescript
+*.tsbuildinfo
