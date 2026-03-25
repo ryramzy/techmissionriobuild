@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import * as Dialog from "@radix-ui/react-dialog"
+import { Calendar, Grid, Heart, Home, Target, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import * as Dialog from "@radix-ui/react-dialog"
-import { Home, Target, Calendar, Heart, Grid, X } from "lucide-react"
+import { useState } from "react"
 
 export function BottomNav() {
   const pathname = usePathname()

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
-import { contactFormSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { type ContactFormData, contactFormSchema } from "@/lib/schemas/contact";
 
 const INITIAL_FORM_DATA: ContactFormData = {
   name: "",
