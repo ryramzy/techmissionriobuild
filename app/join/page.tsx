@@ -1,5 +1,8 @@
 import { Metadata } from "next"
-import { Button } from "components/Button/Button"
+import { Button } from "@/components/Button/Button"
+
+/** Force static; form has no server submit yet */
+export const dynamic = "force-static"
 
 export const metadata: Metadata = {
   title: "Join Us | TechMission Rio",

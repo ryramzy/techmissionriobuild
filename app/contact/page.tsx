@@ -1,6 +1,9 @@
-import { Metadata } from "next";
-import Link from "next/link";
-import ContactForm from "./ContactForm";
+import { Metadata } from "next"
+import Link from "next/link"
+import ContactForm from "./ContactForm"
+
+/** Force static; form is client component */
+export const dynamic = "force-static"
 
 export const metadata: Metadata = {
   title: "Contact | TechMission Rio",

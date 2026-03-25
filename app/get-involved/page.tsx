@@ -1,6 +1,9 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { Button } from "components/Button/Button"
+import { Button } from "@/components/Button/Button"
+
+/** Force static */
+export const dynamic = "force-static"
 
 export const metadata: Metadata = {
   title: "Get Involved | TechMission Rio",

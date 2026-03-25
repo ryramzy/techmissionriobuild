@@ -1,22 +1,28 @@
-import React from "react";
+import React from "react"
+import { env } from "@/env.mjs"
+
+/** Force static; PayPal form posts externally */
+export const dynamic = "force-static"
 
 export default function DonatePage() {
+  const paypalButtonId = env.PAYPAL_BUTTON_ID;
+
   return (
     <div className="min-h-screen bg-white py-12 px-6 sm:px-12 lg:px-24 text-center">
       <h1 className="text-4xl font-bold text-blue-800 mb-4">Support TechMissionRio</h1>
       <p className="text-lg text-gray-700 max-w-2xl mx-auto mb-8">
         Your support helps us equip Brazilian youth with the tools, training, and guidance
-to thrive in the digital world. Every contribution fuels access to education, job readiness, and hope.
+        to thrive in the digital world. Every contribution fuels access to education, job readiness, and hope.
       </p>
 
-      {/* PayPal Donate Button */}
+      {/* PayPal Donate Button - hosted_button_id from env, not hardcoded */}
       <div className="flex justify-center mb-8">
         <form
           action="https://www.paypal.com/donate"
           method="post"
           target="_blank"
         >
-          <input type="hidden" name="hosted_button_id" value="YOUR_PAYPAL_BUTTON_ID" />
+          <input type="hidden" name="hosted_button_id" value={paypalButtonId} />
           <button
             type="submit"
             className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-6 rounded-xl shadow-md transition"

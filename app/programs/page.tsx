@@ -1,5 +1,8 @@
 import { Metadata } from "next"
 
+/** Force static */
+export const dynamic = "force-static"
+
 export const metadata: Metadata = {
   title: "Our Programs | TechMission Rio",
   description: "Learn about our technology education and development programs",

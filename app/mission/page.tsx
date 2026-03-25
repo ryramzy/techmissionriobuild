@@ -1,13 +1,17 @@
-import Head from 'next/head';
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Our Mission & Vision | TechMission Rio",
+  description:
+    "Learn about TechMission Rio's mission and vision for empowering Brazilian youth.",
+}
+
+/** Force static */
+export const dynamic = "force-static"
 
 export default function MissionPage() {
   return (
-    <>
-      <Head>
-        <title>Our Mission & Vision - TechMissionRio</title>
-        <meta name="description" content="Learn about TechMissionRio's mission and vision for empowering Brazilian youth." />
-      </Head>
-      <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white">
       {/* Mission Section */}
       <div className="relative py-20 bg-white overflow-hidden">
         {/* Decorative Background Circle */}
@@ -33,7 +37,6 @@ export default function MissionPage() {
           </p>
         </div>
       </div>
-      </main>
-    </>
-  );
+    </main>
+  )
 }

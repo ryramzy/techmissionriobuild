@@ -3,7 +3,7 @@ import { Button } from "components/Button/Button"
 
 export function Navigation() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-sm">
+    <header className="hidden md:block sticky top-0 z-50 w-full border-b border-white/10 bg-black/50 backdrop-blur-sm">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4" aria-label="Main navigation">
         <Link href="/" className="text-xl font-bold text-white">
           TechMission Rio

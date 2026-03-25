@@ -1,6 +1,9 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { Button } from '@/components/Button/Button'
+import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/Button/Button"
+
+/** Force static to reduce DoS impact from repeated page loads */
+export const dynamic = "force-static"
 
 export const metadata = {
   title: 'TechMission Rio - Empowering Youth Through Technology',
