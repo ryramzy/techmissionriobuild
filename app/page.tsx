@@ -123,7 +123,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             <div>
               <Image
                 src="/logo.jpg"
@@ -135,15 +135,6 @@ export default function Home() {
               <p className="text-gray-400">
                 Transforming lives through technology education and mentorship.
               </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li><Link href="/about" className="text-gray-400 hover:text-white">About Us</Link></li>
-                <li><Link href="/programs" className="text-gray-400 hover:text-white">Programs</Link></li>
-                <li><Link href="/get-involved" className="text-gray-400 hover:text-white">Get Involved</Link></li>
-                <li><Link href="/contact" className="text-gray-400 hover:text-white">Contact</Link></li>
-              </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact</h3>
