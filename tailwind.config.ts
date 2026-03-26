@@ -20,6 +20,9 @@ const config = {
     },
     extend: {
       colors: {
+        'forest-green': '#0d1f14',
+        'vibrant-mint': '#5ae0a0',
+        'off-white': '#f5f2ed',
         primary: '#0f172a', // dark slate for base
         accent: '#38bdf8',  // sky blue for tech
         highlight: '#facc15', // yellow for Rio energy
@@ -54,6 +57,10 @@ const config = {
       },
       ringOffsetColor: {
         DEFAULT: "hsl(var(--background))",
+      },
+      fontFamily: {
+        syne: ['var(--font-syne)', 'sans-serif'],
+        inter: ['var(--font-inter)', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",

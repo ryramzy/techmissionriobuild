@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Syne } from "next/font/google"
 import "./globals.css"
 import { BottomNav } from "@/components/BottomNav"
 import { Navigation } from "@/components/Navigation/Navigation"
 import { SplashScreen } from "@/components/SplashScreen"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const syne = Syne({ subsets: ["latin"], variable: "--font-syne" })
 
 export const metadata: Metadata = {
   title: "TechMission Rio - Empowering Youth Through Technology",
@@ -47,8 +48,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="h-full">
-      <body className={`${inter.className} flex min-h-full flex-col relative`}>
+    <html lang="pt-BR" className={`h-full ${inter.variable} ${syne.variable}`}>
+      <body className="font-inter flex min-h-full flex-col relative bg-off-white text-forest-green">
         <SplashScreen />
         <Navigation />
         <BottomNav />
