@@ -101,4 +101,48 @@ html {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
-} 
+}
+
+/* TMR Design System Utilities */
+@layer utilities {
+  .tmr-gradient-text {
+    @apply bg-tmr-gradient bg-clip-text text-transparent;
+  }
+  
+  .tmr-glow {
+    @apply shadow-lg shadow-tmr-green/25;
+  }
+  
+  .tmr-card {
+    @apply bg-tmr-blue/10 border border-tmr-green/20 rounded-2xl backdrop-blur-tmr;
+  }
+  
+  .tmr-section-bg {
+    @apply bg-gradient-to-br from-tmr-blue/50 via-tmr-blue/30 to-tmr-green/20;
+  }
+  
+  .tmr-watermark {
+    @apply opacity-5 animate-tmr-float;
+  }
+  
+  .tmr-circuit-bg {
+    @apply bg-tmr-circuit opacity-20;
+  }
+  
+  .tmr-nav-link {
+    @apply text-gray-300 hover:text-tmr-green transition-colors relative group;
+  }
+  
+  .tmr-nav-link::after {
+    @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300;
+    content: '';
+  }
+  
+  .tmr-button-primary {
+    @apply bg-tmr-gradient hover:shadow-lg hover:shadow-tmr-green/25 transition-all duration-300;
+  }
+  
+  .tmr-badge {
+    @apply inline-flex items-center gap-2 bg-tmr-green/15 border border-tmr-green/30 rounded-full py-1.5 px-3.5;
+  }
+}

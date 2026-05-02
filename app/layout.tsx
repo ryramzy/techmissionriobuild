@@ -12,6 +12,16 @@ export const metadata: Metadata = {
   title: "TechMission Rio - Empowering Youth Through Technology",
   description: "Empowering Brazilian youth through technology, education, and faith",
   metadataBase: new URL("https://techmissionrio.org"),
+  manifest: "/manifest.json",
+  themeColor: "#0B1F3A",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "TechMission Rio",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: "TechMission Rio - Empowering Youth Through Technology",
     description: "Empowering Brazilian youth through technology, education, and faith",
@@ -19,12 +29,32 @@ export const metadata: Metadata = {
     siteName: "TechMission Rio",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/hero landing.jpg",
+        width: 1200,
+        height: 630,
+        alt: "TechMission Rio - Empowering Youth Through Technology",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "TechMission Rio - Empowering Youth Through Technology",
     description: "Empowering Brazilian youth through technology, education, and faith",
     creator: "@techmissionrio",
+    images: ["/hero landing.jpg"],
+  },
+  icons: {
+    icon: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-256.png", sizes: "256x256", type: "image/png" },
+      { url: "/icons/icon-384.png", sizes: "384x384", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
   },
   robots: {
     index: true,

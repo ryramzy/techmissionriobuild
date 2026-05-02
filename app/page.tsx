@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className="bg-forest-green flex flex-col min-h-[100dvh]">
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] bg-[#0e5c38] overflow-hidden flex flex-col items-center justify-center pt-24 pb-16">
+      <section className="relative min-h-[85vh] bg-tmr-blue overflow-hidden flex flex-col items-center justify-center pt-24 pb-16">
         <div className="absolute inset-0 z-0">
           <Image
             src="/hero landing.jpg"
@@ -22,29 +22,40 @@ export default function Home() {
             className="object-cover brightness-50"
             priority
           />
-          {/* Subtle green overlay to maintain the 'Carioca Coastal Club' aesthetic */}
-          <div className="absolute inset-0 bg-[#0e5c38]/40 mix-blend-multiply"></div>
+          {/* TMR gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-tmr-blue/80 via-tmr-blue/60 to-tmr-green/40 mix-blend-multiply"></div>
         </div>
 
-        <div className="absolute -top-[60px] -right-[60px] w-[220px] h-[220px] rounded-full border-[40px] border-vibrant-mint/20 z-0"></div>
-        <div className="absolute -bottom-[80px] -left-[40px] w-[180px] h-[180px] rounded-full border-[30px] border-white/10 z-0"></div>
+        {/* TMR Logo Watermark */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 opacity-5 animate-tmr-float z-0">
+          <div className="w-full h-full bg-tmr-gradient rounded-2xl flex items-center justify-center">
+            <span className="text-white font-syne text-8xl font-bold">TMR</span>
+          </div>
+        </div>
+
+        {/* Gradient arc motif from logo */}
+        <div className="absolute top-20 right-10 w-64 h-32 bg-tmr-gradient opacity-10 rounded-full blur-2xl animate-tmr-gradient-shift z-0"></div>
+        <div className="absolute bottom-20 left-10 w-48 h-24 bg-tmr-gradient opacity-10 rounded-full blur-2xl animate-tmr-gradient-shift z-0" style={{animationDelay: '2s'}}></div>
+
+        {/* Circuit pattern background */}
+        <div className="absolute inset-0 bg-tmr-circuit opacity-30 z-0"></div>
         
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 bg-vibrant-mint/15 border border-vibrant-mint/30 rounded-full py-1.5 px-3.5 mb-6">
-            <div className="w-2 h-2 rounded-full bg-vibrant-mint animate-pulse"></div>
-            <span className="text-[11px] font-semibold text-vibrant-mint tracking-widest uppercase">Now in Rio</span>
+          <div className="inline-flex items-center gap-2 bg-tmr-green/15 border border-tmr-green/30 rounded-full py-1.5 px-3.5 mb-6 animate-tmr-pulse-glow">
+            <div className="w-2 h-2 rounded-full bg-tmr-green animate-pulse"></div>
+            <span className="text-[11px] font-semibold text-tmr-green tracking-widest uppercase">Now in Rio</span>
           </div>
           <h1 className="font-syne text-4xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[1.08] mb-6">
-            Tech with a <br className="hidden md:block" /><em className="text-vibrant-mint not-italic">mission.</em><br className="hidden md:block" />Right here.
+            Tech with a <br className="hidden md:block" /><em className="text-tmr-green not-italic">mission.</em><br className="hidden md:block" />Right here.
           </h1>
           <p className="text-[14px] md:text-base text-white/60 leading-relaxed max-w-[480px] mx-auto mb-8">
             TechMission Rio is building a community where technology meets purpose — connecting coders, creatives, and faith-driven humans across the Cidade Maravilhosa.
           </p>
           <div className="flex flex-wrap justify-center gap-2 relative">
-            <span className="text-[11px] font-bold py-1.5 px-3 rounded-full bg-vibrant-mint text-forest-green">Gratuito / Free</span>
-            <span className="text-[11px] font-medium py-1.5 px-3 rounded-full border border-white/20 text-white/65">Rio de Janeiro</span>
-            <span className="text-[11px] font-medium py-1.5 px-3 rounded-full border border-white/20 text-white/65">Comunidade</span>
-            <span className="text-[11px] font-medium py-1.5 px-3 rounded-full border border-white/20 text-white/65">Tech + Fé</span>
+            <span className="text-[11px] font-bold py-1.5 px-3 rounded-full bg-tmr-gradient text-tmr-blue">Gratuito / Free</span>
+            <span className="text-[11px] font-medium py-1.5 px-3 rounded-full border border-tmr-green/30 text-tmr-green">Rio de Janeiro</span>
+            <span className="text-[11px] font-medium py-1.5 px-3 rounded-full border border-tmr-green/30 text-tmr-green">Comunidade</span>
+            <span className="text-[11px] font-medium py-1.5 px-3 rounded-full border border-tmr-green/30 text-tmr-green">Tech + Fé</span>
           </div>
         </div>
       </section>
