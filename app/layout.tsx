@@ -5,6 +5,10 @@ import { BottomNav } from "@/components/BottomNav"
 import { Navigation } from "@/components/Navigation/Navigation"
 import { SplashScreen } from "@/components/SplashScreen"
 
+export const viewport = {
+  themeColor: '#0B1F3A',
+}
+
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 const syne = Syne({ subsets: ["latin"], variable: "--font-syne" })
 
@@ -13,7 +17,6 @@ export const metadata: Metadata = {
   description: "Empowering Brazilian youth through technology, education, and faith",
   metadataBase: new URL("https://techmissionrio.org"),
   manifest: "/manifest.json",
-  themeColor: "#0B1F3A",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -47,6 +50,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/favicon.svg", sizes: "any", type: "image/svg+xml" },
       { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icons/icon-256.png", sizes: "256x256", type: "image/png" },
       { url: "/icons/icon-384.png", sizes: "384x384", type: "image/png" },
@@ -79,7 +83,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={`h-full ${inter.variable} ${syne.variable}`}>
-      <body className="font-inter flex min-h-full flex-col relative bg-off-white text-forest-green">
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="alternate icon" href="/favicon.png" type="image/png" />
+      </head>
+      <body className="font-inter flex min-h-full flex-col relative bg-black text-white">
         <SplashScreen />
         <Navigation />
         <BottomNav />
