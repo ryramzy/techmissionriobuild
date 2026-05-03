@@ -52,7 +52,10 @@ export default function DonatePage() {
               </button>
             </div>
             
-            <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center">
+            <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center relative">
+              <div className="absolute -top-3 -right-3 bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
+                MOST POPULAR
+              </div>
               <div className="text-4xl font-bold text-green-400 mb-2">$100</div>
               <div className="text-white font-semibold mb-2">Tech Champion</div>
               <p className="text-gray-400 text-sm mb-4">Sponsors one month of mentorship for a fellow</p>
@@ -61,7 +64,10 @@ export default function DonatePage() {
               </button>
             </div>
             
-            <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center">
+            <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center relative">
+              <div className="absolute -top-3 -right-3 bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                HIGH IMPACT
+              </div>
               <div className="text-4xl font-bold text-green-400 mb-2">$500</div>
               <div className="text-white font-semibold mb-2">Tech Visionary</div>
               <p className="text-gray-400 text-sm mb-4">Funds a laptop and full program for one student</p>
@@ -69,6 +75,19 @@ export default function DonatePage() {
                 Donate $500
               </button>
             </div>
+          </div>
+
+          {/* Monthly Toggle */}
+          <div className="bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-2xl p-8 text-center mb-12">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className="text-white font-semibold">One-time</span>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+              </label>
+              <span className="text-green-400 font-semibold">Monthly</span>
+            </div>
+            <p className="text-gray-400 text-sm">Monthly donations provide sustainable support for our programs</p>
           </div>
 
           {/* Custom Amount */}
