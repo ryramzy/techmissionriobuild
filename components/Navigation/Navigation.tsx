@@ -32,10 +32,6 @@ export function Navigation() {
             Programs
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
           </Link>
-          <Link href="/get-involved" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Get involved">
-            Get Involved
-            <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
-          </Link>
           <Link href="/contact" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Contact">
             Contact
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
