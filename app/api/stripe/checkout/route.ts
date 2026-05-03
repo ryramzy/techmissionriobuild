@@ -1,15 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-})
+const getStripe = () => {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('Stripe secret key not configured')
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2024-06-20' as any,
+  })
+}
 
 export async function POST(request: NextRequest) {
   try {
     const { amount, isMonthly } = await request.json()
 
     // Create Stripe Checkout Session
+    const stripe = getStripe()
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: isMonthly ? 'subscription' : 'payment',
