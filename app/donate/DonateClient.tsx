@@ -1,28 +1,16 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { DollarSign, Heart, Target, Brain, Sparkles } from "lucide-react"
+import { DollarSign, Heart, Target } from "lucide-react"
 import { useAnalytics } from "@/hooks/useAnalytics"
 import { useABTesting } from "@/hooks/useABTesting"
-import { useAIRecommendation } from "@/hooks/useAIRecommendation"
 
 export default function DonateClient() {
   const [selectedAmount, setSelectedAmount] = useState(25)
   const [isMonthly, setIsMonthly] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [showAIRecommendation, setShowAIRecommendation] = useState(false)
   const analytics = useAnalytics()
   const abTesting = useABTesting()
-  
-  // AI Recommendation Hook
-  const { recommendation, loading: aiLoading, error: aiError } = useAIRecommendation(
-    selectedAmount,
-    isMonthly,
-    {
-      visitCount: 1, // This would come from analytics
-      source: 'direct' // This would come from URL params
-    }
-  )
 
   useEffect(() => {
     analytics.trackPageView('donate')
@@ -195,47 +183,7 @@ export default function DonateClient() {
             <p className="text-gray-400 text-sm">Monthly donations provide sustainable support for our programs</p>
           </div>
 
-          {/* AI Recommendation */}
-          {recommendation && (
-            <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border border-purple-500/20 rounded-2xl p-8 mb-12">
-              <div className="flex items-center gap-2 mb-4">
-                <Brain className="w-5 h-5 text-purple-400" />
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                <h3 className="text-xl font-bold text-white">AI Recommendation</h3>
-              </div>
-              <div className="text-center mb-6">
-                <div className="text-3xl font-bold text-purple-400 mb-2">
-                  ${recommendation.recommendedAmount}
-                </div>
-                <p className="text-gray-300 italic mb-4">"{recommendation.reasoning}"</p>
-                <p className="text-green-400 text-sm mb-4">{recommendation.impact}</p>
-                {recommendation.upsellMessage && (
-                  <p className="text-gray-400 text-xs">{recommendation.upsellMessage}</p>
-                )}
-              </div>
-              <div className="flex justify-center gap-2 mb-4">
-                <span className="bg-purple-500/20 text-purple-400 text-xs px-2 py-1 rounded">
-                  {Math.round(recommendation.confidence * 100)}% confidence
-                </span>
-                <span className="bg-blue-500/20 text-blue-400 text-xs px-2 py-1 rounded">
-                  AI-powered
-                </span>
-              </div>
-              <button 
-                onClick={() => {
-                  setSelectedAmount(recommendation.recommendedAmount)
-                  analytics.track('ai_recommendation_accepted', {
-                    recommendedAmount: recommendation.recommendedAmount,
-                    originalAmount: selectedAmount
-                  })
-                }}
-                className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-lg transition-all"
-              >
-                Use AI Recommendation
-              </button>
-            </div>
-          )}
-
+          
           {/* Custom Amount */}
           <div className="bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-2xl p-8 text-center mb-12">
             <h3 className="text-2xl font-bold text-white mb-4">Custom Amount</h3>
