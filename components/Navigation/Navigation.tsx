@@ -1,6 +1,5 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "components/Button/Button"
 
 export function Navigation() {
   return (
@@ -39,9 +38,11 @@ export function Navigation() {
         </div>
 
         <Link href="/donate">
-          <Button variant="primary" size="sm" className="bg-tmr-gradient hover:shadow-lg hover:shadow-tmr-green/25 transition-all duration-300">
+          <button 
+            className="bg-tmr-gradient hover:shadow-lg hover:shadow-tmr-green/25 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300"
+          >
             Donate
-          </Button>
+          </button>
         </Link>
       </nav>
     </header>

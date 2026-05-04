@@ -3,6 +3,17 @@
 import { usePostHog } from 'posthog-js/react'
 import { useEffect, useState } from 'react'
 
+export function useABTesting() {
+  const posthog = usePostHog()
+  const [activeVariants, setActiveVariants] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    // Only run A/B tests if PostHog is available
+    if (!posthog) {
+      console.warn('PostHog not available, A/B testing disabled')
+      return
+    }
+
 export interface TestVariant {
   name: string
   weight: number
@@ -156,10 +167,13 @@ export function useABTesting() {
 
   const getVariant = (testName: string): TestVariant | null => {
     const test = AB_TESTS.find(t => t.name === testName)
-    if (!test || !test.enabled) return null
-    
-    const variantName = activeVariants[testName]
-    return test.variants.find(v => v.name === variantName) || test.variants[0]
+    const variant = test?.variants?.find(v => v.name === activeVariants[testName]) || test.variants[0]
+    return variant || null
+  }
+
+  const getVariantConfig = (testName: string): Record<string, any> => {
+    const variant = getVariant(testName)
+    return variant?.config || {}
   }
 
   const getVariantConfig = (testName: string): Record<string, any> => {
@@ -168,25 +182,28 @@ export function useABTesting() {
   }
 
   const trackConversion = (testName: string, conversionType: string, value?: number) => {
-    const variant = getVariant(testName)
-    if (!variant) return
-
-    posthog.track('ab_test_conversion', {
-      test_name: testName,
-      variant: variant.name,
-      conversion_type: conversionType,
-      value,
-      timestamp: new Date().toISOString()
-    })
+    if (posthog) {
+      const variant = getVariant(testName)
+      if (!variant) return
+      posthog.track('ab_test_conversion', {
+        test_name: testName,
+        variant: variant.name,
+        conversion_type: conversionType,
+        value,
+        timestamp: new Date().toISOString(),
+      })
+    }
   }
 
   const trackFunnelStep = (step: string, properties?: Record<string, any>) => {
-    posthog.track('funnel_step', {
-      step,
-      variants: activeVariants,
-      timestamp: new Date().toISOString(),
-      ...properties
-    })
+    if (posthog) {
+      posthog.track('funnel_step', {
+        step,
+        variants: activeVariants,
+        timestamp: new Date().toISOString(),
+        ...properties,
+      })
+    }
   }
 
   return {
@@ -199,6 +216,6 @@ export function useABTesting() {
     isTestEnabled: (testName: string) => {
       const test = AB_TESTS.find(t => t.name === testName)
       return test?.enabled || false
-    }
+    },
   }
 }

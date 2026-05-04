@@ -8,47 +8,67 @@ export function useAnalytics() {
   return {
     // Page view tracking
     trackPageView: (page: string, properties?: Record<string, any>) => {
-      posthog.capture('page_view', {
-        page,
-        ...properties,
-      })
+      try {
+        posthog.capture('page_view', {
+          page,
+          ...properties,
+        })
+      } catch (error) {
+        console.warn('Analytics tracking failed:', error)
+      }
     },
 
     // Donation funnel tracking
     trackDonateClick: (source: string, properties?: Record<string, any>) => {
-      posthog.capture('donate_click', {
-        source,
-        timestamp: new Date().toISOString(),
-        ...properties,
-      })
+      try {
+        posthog.capture('donate_click', {
+          source,
+          timestamp: new Date().toISOString(),
+          ...properties,
+        })
+      } catch (error) {
+        console.warn('Analytics tracking failed:', error)
+      }
     },
 
     trackDonationStart: (amount: number, isMonthly: boolean, properties?: Record<string, any>) => {
-      posthog.capture('donation_start', {
-        amount,
-        isMonthly,
-        timestamp: new Date().toISOString(),
-        ...properties,
-      })
+      try {
+        posthog.capture('donation_start', {
+          amount,
+          isMonthly,
+          timestamp: new Date().toISOString(),
+          ...properties,
+        })
+      } catch (error) {
+        console.warn('Analytics tracking failed:', error)
+      }
     },
 
     trackDonationComplete: (amount: number, isMonthly: boolean, sessionId: string, properties?: Record<string, any>) => {
-      posthog.capture('donation_complete', {
-        amount,
-        isMonthly,
-        sessionId,
-        timestamp: new Date().toISOString(),
-        ...properties,
-      })
+      try {
+        posthog.capture('donation_complete', {
+          amount,
+          isMonthly,
+          sessionId,
+          timestamp: new Date().toISOString(),
+          ...properties,
+        })
+      } catch (error) {
+        console.warn('Analytics tracking failed:', error)
+      }
     },
 
-    trackDonationCancel: (amount: number, step: string, properties?: Record<string, any>) => {
-      posthog.capture('donation_cancel', {
-        amount,
-        step,
-        timestamp: new Date().toISOString(),
-        ...properties,
-      })
+    trackDonationCancel: (amount: number, reason: string, properties?: Record<string, any>) => {
+      try {
+        posthog.capture('donation_cancel', {
+          amount,
+          reason,
+          timestamp: new Date().toISOString(),
+          ...properties,
+        })
+      } catch (error) {
+        console.warn('Analytics tracking failed:', error)
+      }
     },
 
     // Social sharing tracking
