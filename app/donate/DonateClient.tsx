@@ -42,7 +42,20 @@ export default function DonateClient() {
     analytics.trackDonationStart(amount, isMonthly)
     analytics.trackFunnelStep('donation', 2)
     
+    // Track A/B test conversions
+    if (abTesting.isTestEnabled('donation_default_amount')) {
+      abTesting.trackConversion('donation_default_amount', 'donation_started', amount)
+    }
+    if (abTesting.isTestEnabled('monthly_toggle_default')) {
+      abTesting.trackConversion('monthly_toggle_default', 'donation_started', amount)
+    }
+    
     try {
+      // Check if Stripe keys are available
+      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+        throw new Error('Stripe publishable key not configured')
+      }
+
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: {
@@ -54,6 +67,11 @@ export default function DonateClient() {
         }),
       })
 
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`HTTP ${response.status}: ${errorText}`)
+      }
+
       const { sessionId } = await response.json()
       
       // Track Stripe session creation
@@ -63,7 +81,6 @@ export default function DonateClient() {
         isMonthly,
       })
       
-      // Redirect to Stripe Checkout
       const { loadStripe } = await import('@stripe/stripe-js')
       const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
       
@@ -77,20 +94,45 @@ export default function DonateClient() {
       if (error) {
         analytics.trackDonationCancel(amount, 'stripe_redirect_failed', { error: error.message })
         console.error('Stripe checkout error:', error)
-        setIsLoading(false)
+        throw new Error(`Stripe checkout failed: ${error.message}`)
       } else {
         analytics.trackFunnelStep('donation', 3)
-        setIsLoading(false)
+        // Success - Stripe will handle redirect
       }
     } catch (error) {
       analytics.track('donation_error', { error: error instanceof Error ? error.message : 'Unknown error' })
       console.error('Donation error:', error)
+      
+      // Show error boundary
+      const errorElement = document.getElementById('donation-error-boundary')
+      if (errorElement) {
+        errorElement.classList.remove('hidden')
+      }
+      
+      setIsLoading(false)
+    } finally {
       setIsLoading(false)
     }
   }
 
   return (
     <div className="bg-black text-white min-h-screen">
+      {/* Error Boundary */}
+      <div id="donation-error-boundary" className="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+        <div className="bg-red-900 border border-red-500 rounded-lg p-6 max-w-md mx-auto">
+          <h3 className="text-white font-bold mb-2">Donation Error</h3>
+          <p className="text-red-200 mb-4">There was an error processing your donation. Please try again.</p>
+          <button 
+            onClick={() => {
+              document.getElementById('donation-error-boundary')?.classList.add('hidden')
+              setIsLoading(false)
+            }}
+            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center justify-center bg-gradient-to-br from-blue-900 via-black to-green-900">
         <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
