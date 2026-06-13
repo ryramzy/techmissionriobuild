@@ -8,10 +8,15 @@ interface AnalyticsProviderProps {
 }
 
 export function AnalyticsProvider({ children }: AnalyticsProviderProps) {
-  // PostHog will be initialized lazily when needed
+  const apiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY
+
+  if (!apiKey) {
+    return <>{children}</>
+  }
+
   return (
     <PostHogProvider 
-      apiKey={process.env.NEXT_PUBLIC_POSTHOG_KEY!}
+      apiKey={apiKey}
       options={{
         api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://app.posthog.com',
         capture_pageview: true,

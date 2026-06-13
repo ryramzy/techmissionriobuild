@@ -1,10 +1,10 @@
 # Tech Mission Rio - Empowering Rio's Next Generation of Tech Leaders
 
-A modern, responsive web application built with Next.js 16 to support tech education and career development for young people in Rio de Janeiro's underserved communities.
+Established over three years ago, Tech Mission Rio is a lightweight, responsive web application built with Next.js 16 (App Router) to connect underserved Brazilian youth with tech training, mentorship, and angel opportunities in the United States.
 
 ## 🚀 Mission
 
-Tech Mission Rio provides laptops, coding training, and mentorship to create pathways to tech careers for youth in Rio's underserved communities. Your donations directly fund:
+For more than three years, Tech Mission Rio has provided laptops, coding training, and mentorship to create pathways to tech careers for youth in Rio's underserved communities. Your donations directly fund:
 
 - **Laptops & Equipment** - Essential tools for learning to code
 - **Coding Workshops** - Hands-on technical training  
@@ -15,9 +15,9 @@ Tech Mission Rio provides laptops, coding training, and mentorship to create pat
 
 - **🎨 Modern UI/UX** - Beautiful, responsive design with Tailwind CSS
 - **💳 Secure Donations** - Stripe integration for safe payment processing
-- **📱 Mobile Optimized** - Works seamlessly on all devices
-- **⚡ Lightning Fast** - Built with Next.js 16 and optimized for performance
-- **🔒 Enterprise Security** - Secure by default with best practices
+- **📱 PWA Enabled** - High-resolution icons and splash screens optimized for Chrome, Safari, and mobile app-like installations
+- **⚡ Lightning Fast** - Built with Next.js 16 and optimized for production performance
+- **🔒 Enterprise Security & Analytics** - Clean build pipelines with secure, lazy PostHog event tracking and centralized error boundaries
 
 ## 🛠️ Tech Stack
 
@@ -27,6 +27,8 @@ Tech Mission Rio provides laptops, coding training, and mentorship to create pat
 - **Deployment**: Vercel
 - **Type Safety**: TypeScript
 - **Icons**: Lucide React
+- **Analytics**: PostHog (Session tracking and custom event capture)
+- **Asset Processing**: Sharp (SVG to PWA icon compilation)
 
 ## 🎯 How It Works
 
@@ -99,11 +101,12 @@ Coming soon! Track your donation's impact and see real results from our programs
 ## 🔧 Development Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
-npm run test     # Run tests
+npm run dev             # Start development server
+npm run build           # Build for production
+npm run start           # Start production server
+npm run lint            # Run ESLint
+npm run test            # Run tests
+npm run generate-icons  # Compile SVG to PWA and Favicon assets
 ```
 
 ## 📄 License

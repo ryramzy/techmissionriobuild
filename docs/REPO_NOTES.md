@@ -3,7 +3,7 @@
 ## 📋 Repository Overview
 
 ### Project Status: ✅ PRODUCTION READY
-**Primary Mission**: Lightweight donation platform connecting Brazilian youth tech talent with US stakeholders and angel investors.
+**Primary Mission**: Established over three years ago, a lightweight donation platform connecting Brazilian youth tech talent with US stakeholders and angel investors.
 
 ### 🏗️ Architecture
 - **Framework**: Next.js 16.2.4 with App Router
@@ -14,9 +14,10 @@
 - **Target**: US donors + Brazilian youth + Tech stakeholders
 
 ### 📦 Dependencies Status
-**Simplified & Secure**: 32 packages (down from 69)
+**Simplified & Secure**: 34 packages (down from 69)
 - ✅ Removed: Storybook, Framer Motion, complex Radix components
 - ✅ Kept: Essential UI, icons, build tools
+- ✅ Added: `posthog-js` (analytics), `sharp` (PWA asset generation)
 - ✅ Security: Regular audits, up-to-date packages
 - ✅ Performance: Optimized bundle size
 
@@ -43,6 +44,15 @@
    - Clean, secure login interface
    - Donation tracking ready
    - Profile management foundation
+
+5. **PWA Integration & Favicon Compilation**
+   - High-resolution multi-size PNG icons (192px, 256px, 384px, 512px) compiled from SVG source
+   - Local automated script `npm run generate-icons` using `sharp` for asset compilation
+   - Fallback `favicon.ico` configuration for legacy user agent requests
+
+6. **Event Tracking & Site Analytics**
+   - Lazily initialized PostHog provider to ensure build-time warning-free page pre-rendering
+   - Safe global custom hook (`useAnalytics`) bypassing tracking calls cleanly when keys are absent
 
 ### 🔧 Technical Implementation
 
@@ -170,6 +180,6 @@ git push origin main  # Triggers Vercel deploy
 ---
 
 **Repository Status**: ✅ PRODUCTION READY  
-**Last Updated**: 2024-12-02  
+**Last Updated**: 2026-06-13  
 **Maintainer**: Tech Lead  
 **Deployment**: Vercel CI/CD Active

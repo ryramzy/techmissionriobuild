@@ -5,6 +5,27 @@ import { usePostHog } from 'posthog-js/react'
 export function useAnalytics() {
   const posthog = usePostHog()
 
+  // Return no-op functions if PostHog is not initialized (e.g., during builds or dev without keys)
+  if (!posthog) {
+    const noop = () => {}
+    return {
+      trackPageView: noop,
+      trackDonateClick: noop,
+      trackDonationStart: noop,
+      trackDonationComplete: noop,
+      trackDonationCancel: noop,
+      trackShareClick: noop,
+      trackShareComplete: noop,
+      trackEmailSignup: noop,
+      trackEngagement: noop,
+      track: noop,
+      identify: noop,
+      trackRevenue: noop,
+      trackFunnelStep: noop,
+      trackExperiment: noop,
+    }
+  }
+
   return {
     // Page view tracking
     trackPageView: (page: string, properties?: Record<string, any>) => {
