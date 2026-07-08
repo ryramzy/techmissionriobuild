@@ -7,9 +7,12 @@ export default function DonateClient() {
   const [selectedAmount, setSelectedAmount] = useState(25)
   const [isMonthly, setIsMonthly] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const handleDonate = async (amount: number) => {
+    setSelectedAmount(amount)
     setIsLoading(true)
+    setErrorMessage(null)
     
     try {
       const response = await fetch('/api/stripe/checkout', {
@@ -24,18 +27,29 @@ export default function DonateClient() {
       })
 
       if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`HTTP ${response.status}: ${errorText}`)
+        let errorMsg = 'Failed to create checkout session'
+        try {
+          const errJson = await response.json()
+          if (errJson.error) errorMsg = errJson.error
+        } catch (_) {
+          const errorText = await response.text()
+          if (errorText) errorMsg = errorText
+        }
+        throw new Error(errorMsg)
       }
 
       const { sessionId } = await response.json()
       
       // Redirect to Stripe Checkout
       const { loadStripe } = await import('@stripe/stripe-js')
-      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+      const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      if (!stripeKey) {
+        throw new Error('Stripe Publishable Key is not configured on the client side.')
+      }
+      const stripe = await loadStripe(stripeKey)
       
       if (!stripe) {
-        throw new Error('Failed to load Stripe')
+        throw new Error('Failed to load Stripe SDK')
       }
       
       const { error } = await (stripe as any).redirectToCheckout({ sessionId })
@@ -43,12 +57,10 @@ export default function DonateClient() {
       if (error) {
         console.error('Stripe checkout error:', error)
         throw new Error(`Stripe checkout failed: ${error.message}`)
-      } else {
-        // Success - Stripe will handle redirect
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Donation error:', error)
-      throw error
+      setErrorMessage(error.message || 'An error occurred during checkout setup.')
     } finally {
       setIsLoading(false)
     }
@@ -78,6 +90,31 @@ export default function DonateClient() {
       {/* Donation Options */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
+          {errorMessage && (
+            <div className="bg-red-950/40 border border-red-500/30 rounded-2xl p-6 text-center max-w-2xl mx-auto mb-12 animate-pulse">
+              <div className="text-red-400 font-semibold mb-2">⚠️ Donation Service Notice</div>
+              <p className="text-gray-300 text-sm mb-4">
+                The live Stripe checkout integration is currently unavailable in this environment (publishable/secret keys are missing or invalid).
+              </p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => {
+                    window.location.href = `/success?session_id=demo_session_${Date.now()}&amount=${selectedAmount}&monthly=${isMonthly}`
+                  }}
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-lg transition-all"
+                >
+                  Simulate Donation of ${selectedAmount} {isMonthly ? 'Monthly' : 'One-time'}
+                </button>
+                <button
+                  onClick={() => setErrorMessage(null)}
+                  className="border border-gray-600 hover:bg-white/10 text-white py-2 px-5 rounded-lg transition-all"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Choose Your Impact</h2>
             <p className="text-gray-400 text-lg">Every dollar makes a difference in a young person's life</p>

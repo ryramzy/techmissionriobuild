@@ -41,7 +41,7 @@
       "name": "Join Community",
       "short_name": "Join",
       "description": "Get involved with TechMission Rio",
-      "url": "/get-involved",
+      "url": "/join",
       "icons": [
         {
           "src": "/icons/icon-192.png",

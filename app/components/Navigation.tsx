@@ -29,7 +29,7 @@ export function Navigation() {
           <div className="flex space-x-6">
             <Link href="/about" className="hover:text-highlight transition">About</Link>
             <Link href="/programs" className="hover:text-highlight transition">Programs</Link>
-            <Link href="/get-involved" className="hover:text-highlight transition">Get Involved</Link>
+            <Link href="/join" className="hover:text-highlight transition">Get Involved</Link>
             <Link href="/contact" className="hover:text-highlight transition">Contact</Link>
           </div>
           <Link href="/donate">
@@ -96,7 +96,7 @@ export function Navigation() {
                 Programs
               </Link>
               <Link 
-                href="/get-involved" 
+                href="/join" 
                 className="block px-3 py-2 rounded-md hover:bg-white/10 transition"
                 onClick={() => setIsMobileMenuOpen(false)}
               >

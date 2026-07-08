@@ -12,9 +12,9 @@ export default function SuccessClient() {
   const sessionId = searchParams.get('session_id')
   const analytics = useAnalytics()
 
-  // Mock donation data - in real app, fetch from Stripe using sessionId
-  const donationAmount = 100 // This would come from Stripe API
-  const isMonthly = false // This would come from Stripe metadata
+  // Donation data - fallback to search params or default $100
+  const donationAmount = Number(searchParams.get('amount') || 100)
+  const isMonthly = searchParams.get('monthly') === 'true'
 
   useEffect(() => {
     // Track successful donation completion

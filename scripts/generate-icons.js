@@ -2,7 +2,7 @@ const sharp = require('sharp')
 const path = require('path')
 const fs = require('fs')
 
-const svgPath = path.join(__dirname, '../public/favicon.svg')
+const sourcePath = path.join(__dirname, '../public/logo.jpg')
 const publicDir = path.join(__dirname, '../public')
 const iconsDir = path.join(__dirname, '../public/icons')
 
@@ -20,10 +20,10 @@ const targets = [
 ]
 
 async function generate() {
-  console.log('Generating PWA icons from favicon.svg...')
+  console.log('Generating PWA icons from logo.jpg...')
   for (const target of targets) {
     try {
-      await sharp(svgPath)
+      await sharp(sourcePath)
         .resize(target.size, target.size)
         .png()
         .toFile(target.file)

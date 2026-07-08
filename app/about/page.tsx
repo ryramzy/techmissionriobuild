@@ -71,7 +71,7 @@ export default function AboutPage() {
           </section>
 
           <div className="text-center">
-            <Link href="/get-involved">
+            <Link href="/join">
               <Button size="lg">
                 Get Involved
               </Button>
