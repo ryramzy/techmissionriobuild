@@ -45,30 +45,33 @@ Our marketing strategy targets two primary stakeholders: **US Christian Churches
 
 Our Next.js 16 (App Router) product roadmap builds out the features needed to execute the marketing plan.
 
-### 🚀 Month 1: Payments & Portal Activation
+### 🚀 Month 1: Payments & Portal Activation (Current Sprint)
 * **Stripe Live Rollout**: Transition Stripe credentials from simulation mode to live processing.
-* **PIX Integration**: Integrate PIX (Brazil's instant payment system) to enable local Brazilians and partners to donate easily.
+* **PIX Integration**: Integrate PIX (Brazil's instant payment system) to enable local Brazilians and partners to donate easily. Note: Use a dedicated Brazilian gateway (e.g. Mercado Pago or Pagar.me API) since PayPal does not support PIX natively and Stripe has strict cross-border restrictions.
+* **FCM (Firebase Cloud Messaging) Setup**: Configure FCM SDK credentials now while setting up the authentication services to prevent cold setup blocks in Month 5.
 
 ### 🚀 Month 2: Public Student Impact Dashboard (`/dashboard`)
-* Build a public-facing dashboard displaying real-time metrics:
+* Build a public-facing dashboard displaying real-time metrics loaded from a central Firestore collection (`dashboard_stats`):
   * Total Laptops Distributed.
   * Cumulative Hours of Mentorship.
   * Live interactive map pinning partnering FAETEC/IFRJ schools in Rio.
   * Budget transparency graph showing exactly how donation funds are allocated.
+* **Admin Write Interface**: Build a lightweight, secure admin controls page to update these figures dynamically in Firestore without requiring new code deployments.
 
 ### 🚀 Month 3: Student Video Profiles on `/fellows`
 * Enable short 60-second video introductions for fellows.
 * Support video uploads via the student dashboard so fellows can record progress updates.
 * Embed clickable GitHub, LinkedIn, and personal portfolio links on fellow detail cards.
 
-### 🚀 Month 4: School Partner Portal (`/partner`)
+### 🚀 Month 4: School Partner & B2B Portal (`/partner`)
 * Implement a secure page for FAETEC/IFRJ educators.
 * Features:
   * Student nomination form (grades, tech interests, financial justification).
   * Hardware request logs for classroom updates.
+* **B2B Checkout Integration**: Build a dedicated checkout page and flow specifically for the $12,000 "Adopt-a-Classroom" sponsorship package, separate from the general public donation form.
 
 ### 🚀 Month 5: PWA Push Notifications & Engagement
-* Implement service-worker push notifications.
+* Implement service-worker push notifications (utilizing the FCM config established in Month 1).
 * Notify US sponsors when:
   * A sponsored student completes a major learning milestone (e.g. "Lucas just learned React!").
   * A new prayer request is posted on the church board.

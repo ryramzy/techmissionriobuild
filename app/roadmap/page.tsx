@@ -47,8 +47,8 @@ export default function RoadmapPage() {
       icon: <Sparkles className="w-5 h-5 text-white" />,
       items: [
         "Transition Stripe configurations from checkout simulation to live processing.",
-        "Integrate PIX payments to support local donations from within Brazil.",
-        "Deploy the initial Firebase repeated user profile systems."
+        "Integrate PIX payments via local Brazilian gateway (Mercado Pago / Pagar.me).",
+        "Setup FCM (Firebase Cloud Messaging) config during the Firebase Auth sprint."
       ]
     },
     {
@@ -76,9 +76,10 @@ export default function RoadmapPage() {
       color: "from-blue-400 to-green-400",
       icon: <Play className="w-5 h-5 text-white" />,
       items: [
-        "Launch public Student Impact Dashboard (/dashboard) with interactive mapping.",
+        "Launch Firestore-connected Student Impact Dashboard (/dashboard) with interactive mapping.",
+        "Build secure Admin portal to update statistics dynamically without code deploys.",
         "Integrate 60-second video elevator pitches for fellows on /fellows.",
-        "Build secure /partner portals for FAETEC/IFRJ educators to manage submissions."
+        "Create dedicated B2B Adopt-a-Classroom checkout flow in /partner portal."
       ]
     },
     {
