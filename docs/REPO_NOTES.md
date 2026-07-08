@@ -25,8 +25,8 @@
 1. **Donation Platform** (`/donate`)
    - Multiple giving tiers ($25, $100, $500)
    - Custom amount options
-   - PayPal + Credit Card integration ready
-   - Impact tracking display
+   - Interactive Donation Simulation Fallback mode for environments without live Stripe credentials
+   - Dynamic Checkout success redirection linking selections directly to `/success`
 
 2. **Youth Profiles** (`/fellows`)
    - 6 featured fellows with detailed profiles
@@ -40,15 +40,16 @@
    - Job listings and competitions
    - Mentorship programs
 
-4. **User Authentication** (`/login`)
-   - Clean, secure login interface
-   - Donation tracking ready
-   - Profile management foundation
+4. **User Authentication & Repeat Donor Portal** (`/login`)
+   - Interactive Client Portal supporting Individuals & B2B Organizations (Churches/NGOs)
+   - Profile management with dynamic impact summaries and donation tracking stored locally
+   - B2B Church Hub: prayer boards, live exchanges scheduler, mission trip registration, and cohort reports
+   - Robust form validation and client-side error handling
 
 5. **PWA Integration & Favicon Compilation**
-   - High-resolution multi-size PNG icons (192px, 256px, 384px, 512px) compiled from SVG source
-   - Local automated script `npm run generate-icons` using `sharp` for asset compilation
-   - Fallback `favicon.ico` configuration for legacy user agent requests
+   - High-resolution PWA assets compiled directly from the header logo (`logo.jpg`)
+   - Resized icons (192px, 256px, 384px, 512px) generated via `npm run generate-icons` using `sharp`
+   - Unified homescreen and Chrome installer visuals with navigation header styling
 
 6. **Event Tracking & Site Analytics**
    - Lazily initialized PostHog provider to ensure build-time warning-free page pre-rendering
