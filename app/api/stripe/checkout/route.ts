@@ -12,7 +12,7 @@ const getStripe = () => {
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, isMonthly } = await request.json()
+    const { amount, isMonthly, userId } = await request.json()
 
     // Create Stripe Checkout Session
     const stripe = getStripe()
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
       metadata: {
         donation_type: isMonthly ? 'monthly' : 'one-time',
         amount: amount.toString(),
+        userId: userId || '',
       },
 
       customer_email: undefined, // Let Stripe collect email

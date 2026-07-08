@@ -8,26 +8,36 @@ import {
   User, 
   Building2, 
   Calendar, 
-  FileText, 
-  PlusCircle, 
   CheckCircle2, 
-  ChevronRight, 
   Video, 
   Users, 
   BookOpen, 
   LogOut, 
-  ArrowRight, 
   ShieldAlert,
   Download,
   Flame,
   Globe
 } from "lucide-react"
 import Link from "next/link"
+import { 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut 
+} from "firebase/auth"
+import { 
+  doc, 
+  setDoc, 
+  collection, 
+  getDocs 
+} from "firebase/firestore"
+import { auth, db } from "@/lib/firebase"
+import { useAuth } from "@/app/components/AuthContext"
 
 export default function LoginPage() {
+  const { user, profile, orgProfile, loading: authLoading } = useAuth()
+  
   const [isLogin, setIsLogin] = useState(true)
   const [profileType, setProfileType] = useState<"individual" | "organization">("individual")
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   
   // Form State
   const [email, setEmail] = useState("")
@@ -38,41 +48,56 @@ export default function LoginPage() {
   
   // UI & Error State
   const [formError, setFormError] = useState<string | null>(null)
-  const [formSuccess, setFormSuccess] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   
-  // Dashboard mock state
-  const [userProfile, setUserProfile] = useState<any>(null)
-  const [donationHistory, setDonationHistory] = useState<any[]>([])
+  // Donation history from Firestore
+  const [donations, setDonations] = useState<any[]>([])
+  const [loadingDonations, setLoadingDonations] = useState(false)
 
-  // Load session from localStorage if exists
+  // Fetch real donations from Firestore when user changes
   useEffect(() => {
-    const savedSession = localStorage.getItem("tmr_user_session")
-    if (savedSession) {
-      try {
-        const parsed = JSON.parse(savedSession)
-        setUserProfile(parsed)
-        setIsLoggedIn(true)
-        loadMockDonations(parsed.profileType)
-      } catch (_) {
-        localStorage.removeItem("tmr_user_session")
+    if (user) {
+      const fetchDonations = async () => {
+        setLoadingDonations(true)
+        try {
+          const colRef = collection(db, "users", user.uid, "donations")
+          const qSnap = await getDocs(colRef)
+          const list = qSnap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }))
+          // Sort by date descending
+          list.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          setDonations(list)
+        } catch (error) {
+          console.error("Error loading donations:", error)
+        } finally {
+          setLoadingDonations(false)
+        }
       }
-    }
-  }, [])
-
-  const loadMockDonations = (type: string) => {
-    if (type === "organization") {
-      setDonationHistory([
-        { id: "tx_101", date: "2026-06-15", amount: 1000, type: "Monthly Cohort Sponsor", status: "Processed" },
-        { id: "tx_102", date: "2026-05-15", amount: 1000, type: "Monthly Cohort Sponsor", status: "Processed" },
-        { id: "tx_103", date: "2026-04-10", amount: 2500, type: "Equipment Drive (10 Laptops)", status: "Processed" },
-      ])
+      fetchDonations()
     } else {
-      setDonationHistory([
-        { id: "tx_201", date: "2026-06-20", amount: 100, type: "Monthly Support", status: "Processed" },
-        { id: "tx_202", date: "2026-05-20", amount: 100, type: "Monthly Support", status: "Processed" },
-        { id: "tx_203", date: "2026-04-12", amount: 50, type: "One-Time Donation", status: "Processed" },
-      ])
+      setDonations([])
+    }
+  }, [user])
+
+  // Get a readable list of donations (with fallback if empty)
+  const getDonationsList = () => {
+    if (donations.length > 0) return donations
+    
+    // Fallback display if no real donations exist yet
+    if (profile?.profileType === "organization") {
+      return [
+        { id: "tx_mock_1", date: "2026-06-15", amount: 1000, type: "Monthly Cohort Sponsor (Demo)", status: "Processed" },
+        { id: "tx_mock_2", date: "2026-05-15", amount: 1000, type: "Monthly Cohort Sponsor (Demo)", status: "Processed" },
+        { id: "tx_mock_3", date: "2026-04-10", amount: 2500, type: "Equipment Drive (10 Laptops - Demo)", status: "Processed" },
+      ]
+    } else {
+      return [
+        { id: "tx_mock_1", date: "2026-06-20", amount: 100, type: "Monthly Support (Demo)", status: "Processed" },
+        { id: "tx_mock_2", date: "2026-05-20", amount: 100, type: "Monthly Support (Demo)", status: "Processed" },
+        { id: "tx_mock_3", date: "2026-04-12", amount: 50, type: "One-Time Donation (Demo)", status: "Processed" },
+      ]
     }
   }
 
@@ -80,68 +105,119 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)
-    setFormSuccess(null)
     setIsLoading(true)
 
-    // Simulating call verification
-    setTimeout(() => {
-      // Basic Validation
-      if (!email.includes("@")) {
-        setFormError("Please enter a valid email address.")
-        setIsLoading(false)
-        return
-      }
-
-      if (password.length < 6) {
-        setFormError("Password must be at least 6 characters long.")
-        setIsLoading(false)
-        return
-      }
-
-      if (!isLogin && profileType === "individual" && !name) {
-        setFormError("Please enter your name.")
-        setIsLoading(false)
-        return
-      }
-
-      if (!isLogin && profileType === "organization" && !orgName) {
-        setFormError("Please enter your Organization/Church name.")
-        setIsLoading(false)
-        return
-      }
-
-      // Successful simulated auth
-      const profile = {
-        name: isLogin ? (email.split("@")[0].toUpperCase()) : (profileType === "organization" ? orgName : name),
-        email,
-        profileType: isLogin ? (email.includes("church") || email.includes("org") ? "organization" : "individual") : profileType,
-        orgName: profileType === "organization" ? orgName : "",
-        churchDenomination: profileType === "organization" ? churchDenomination : ""
-      }
-
-      localStorage.setItem("tmr_user_session", JSON.stringify(profile))
-      setUserProfile(profile)
-      setIsLoggedIn(true)
-      loadMockDonations(profile.profileType)
+    // Basic Input Validations
+    if (!email.includes("@")) {
+      setFormError("Please enter a valid email address.")
       setIsLoading(false)
-    }, 800)
+      return
+    }
+
+    if (password.length < 6) {
+      setFormError("Password must be at least 6 characters long.")
+      setIsLoading(false)
+      return
+    }
+
+    if (!isLogin && profileType === "individual" && !name) {
+      setFormError("Please enter your name.")
+      setIsLoading(false)
+      return
+    }
+
+    if (!isLogin && profileType === "organization" && !orgName) {
+      setFormError("Please enter your Organization/Church name.")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      if (isLogin) {
+        // Live Firebase Sign-In
+        await signInWithEmailAndPassword(auth, email, password)
+      } else {
+        // Live Firebase Sign-Up
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+        const uid = userCredential.user.uid
+
+        if (profileType === "organization") {
+          // Create separate normalized Organization document
+          const orgColRef = collection(db, "organizations")
+          const orgDocRef = doc(orgColRef)
+          
+          await setDoc(orgDocRef, {
+            orgId: orgDocRef.id,
+            name: orgName,
+            denomination: churchDenomination || "Nondenominational",
+            cohortsSponsored: ["cohort_rio_alpha"], // Pre-link to standard student cohort
+            createdAt: new Date().toISOString()
+          })
+
+          // Create User document referencing the organization
+          await setDoc(doc(db, "users", uid), {
+            uid,
+            name: orgName,
+            email,
+            profileType: "organization",
+            orgId: orgDocRef.id,
+            createdAt: new Date().toISOString()
+          })
+        } else {
+          // Create Individual User document
+          await setDoc(doc(db, "users", uid), {
+            uid,
+            name,
+            email,
+            profileType: "individual",
+            orgId: null,
+            createdAt: new Date().toISOString()
+          })
+        }
+      }
+    } catch (error: any) {
+      console.error("Auth error:", error)
+      let readableError = "Authentication failed. Please verify your credentials."
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+        readableError = "Invalid email or password. Please try again."
+      } else if (error.code === "auth/email-already-in-use") {
+        readableError = "This email is already in use by another account."
+      } else if (error.code === "auth/weak-password") {
+        readableError = "The password is too weak. Please use at least 6 characters."
+      }
+      setFormError(readableError)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem("tmr_user_session")
-    setIsLoggedIn(false)
-    setUserProfile(null)
+  const handleLogout = async () => {
     setFormError(null)
-    setFormSuccess(null)
+    try {
+      await signOut(auth)
+    } catch (error) {
+      console.error("Sign-out error:", error)
+    }
+  }
+
+  if (authLoading) {
+    return (
+      <div className="bg-black text-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-10 h-10 text-green-400 animate-pulse mx-auto mb-4" />
+          <p className="text-gray-400">Loading your profile...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="bg-black text-white min-h-screen">
-      {/* Dynamic Background elements */}
+      {/* Background gradients */}
       <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
       <main className="max-w-7xl mx-auto px-4 py-12 relative z-10">
-        {isLoggedIn ? (
+        {user ? (
           /* ========================================================================= */
           /*                       MEMBER PORTAL DASHBOARD SCREEN                      */
           /* ========================================================================= */
@@ -152,14 +228,14 @@ export default function LoginPage() {
                 <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full py-1.5 px-3.5 mb-3">
                   <CheckCircle2 className="w-4 h-4 text-green-400" />
                   <span className="text-xs font-semibold text-green-400 tracking-wider uppercase">
-                    {userProfile?.profileType === "organization" ? "US Organization Partner" : "Individual Fellow Partner"}
+                    {profile?.profileType === "organization" ? "US Organization Partner" : "Individual Fellow Partner"}
                   </span>
                 </div>
                 <h1 className="text-3xl md:text-4xl font-extrabold text-white">
-                  Welcome, {userProfile?.name}!
+                  Welcome, {profile?.name || user.email?.split("@")[0].toUpperCase()}!
                 </h1>
                 <p className="text-gray-400 mt-1">
-                  Managing support from {userProfile?.email}
+                  Managing support from {user.email}
                 </p>
               </div>
               <button 
@@ -177,7 +253,7 @@ export default function LoginPage() {
                 <Heart className="w-8 h-8 text-green-400 mx-auto mb-2" />
                 <h3 className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Total Contribution</h3>
                 <div className="text-3xl font-black text-white mt-1">
-                  ${donationHistory.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
+                  ${getDonationsList().reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
                 </div>
                 <p className="text-xs text-green-400 mt-1">Tax-deductible (501c3 status)</p>
               </div>
@@ -186,7 +262,7 @@ export default function LoginPage() {
                 <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
                 <h3 className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Sponsored Fellows</h3>
                 <div className="text-3xl font-black text-white mt-1">
-                  {userProfile?.profileType === "organization" ? "12 Students (Cohort)" : "2 Fellows"}
+                  {profile?.profileType === "organization" ? "12 Trainees (Cohort)" : "2 Fellows"}
                 </div>
                 <p className="text-xs text-blue-400 mt-1">Directly learning development</p>
               </div>
@@ -195,14 +271,14 @@ export default function LoginPage() {
                 <Calendar className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
                 <h3 className="text-gray-400 text-sm font-semibold uppercase tracking-wider">Active Sponsorships</h3>
                 <div className="text-3xl font-black text-white mt-1">
-                  {userProfile?.profileType === "organization" ? "Active (Monthly)" : "Active"}
+                  Active
                 </div>
-                <p className="text-xs text-yellow-400 mt-1">Next renewal: August 1, 2026</p>
+                <p className="text-xs text-yellow-400 mt-1">Direct community integration</p>
               </div>
             </div>
 
             {/* B2B / US Christian Church Features (Conditional) */}
-            {userProfile?.profileType === "organization" && (
+            {profile?.profileType === "organization" && (
               <div className="bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-3xl p-8 space-y-6">
                 <div className="flex items-center gap-3">
                   <Flame className="w-7 h-7 text-green-400" />
@@ -210,7 +286,7 @@ export default function LoginPage() {
                 </div>
                 
                 <p className="text-gray-300">
-                  Welcome to your church portal! Since TechMission Rio connects US faith-based and corporate groups directly to Rio's youth technical training, you have access to exclusive integration options:
+                  Welcome {orgProfile?.name ? `${orgProfile.name} (${orgProfile.denomination})` : "Partner Church"}! As an international organizational sponsor, you have access to exclusive collaboration systems:
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -306,51 +382,55 @@ export default function LoginPage() {
                   <p className="text-gray-400 text-sm mt-1">Download official receipts for B2B financial accounting and 501(c)(3) deductions.</p>
                 </div>
                 <Link href="/donate">
-                  <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 transition text-sm">
+                  <span className="bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-5 rounded-xl flex items-center gap-2 transition text-sm cursor-pointer">
                     <PlusCircle className="w-4 h-4" />
                     New Contribution
-                  </button>
+                  </span>
                 </Link>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="border-b border-gray-800 text-gray-400 text-sm font-semibold">
-                      <th className="py-4 px-3">Transaction ID</th>
-                      <th className="py-4 px-3">Date</th>
-                      <th className="py-4 px-3">Type</th>
-                      <th className="py-4 px-3">Amount</th>
-                      <th className="py-4 px-3">Status</th>
-                      <th className="py-4 px-3 text-center">Receipt</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {donationHistory.map((item) => (
-                      <tr key={item.id} className="border-b border-gray-900 hover:bg-white/5 transition text-sm">
-                        <td className="py-4 px-3 text-gray-500">{item.id}</td>
-                        <td className="py-4 px-3">{item.date}</td>
-                        <td className="py-4 px-3">{item.type}</td>
-                        <td className="py-4 px-3 font-semibold text-green-400">${item.amount.toLocaleString()}</td>
-                        <td className="py-4 px-3">
-                          <span className="bg-green-500/20 border border-green-500/30 text-green-400 text-xs py-1 px-2.5 rounded-full font-bold">
-                            {item.status}
-                          </span>
-                        </td>
-                        <td className="py-4 px-3 text-center">
-                          <button 
-                            onClick={() => alert(`Downloading PDF tax statement for transaction ${item.id}...`)}
-                            className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 transition"
-                          >
-                            <Download className="w-4 h-4" />
-                            PDF
-                          </button>
-                        </td>
+              {loadingDonations ? (
+                <div className="py-6 text-center text-gray-500">Loading donation list...</div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-gray-800 text-gray-400 text-sm font-semibold">
+                        <th className="py-4 px-3">Transaction ID</th>
+                        <th className="py-4 px-3">Date</th>
+                        <th className="py-4 px-3">Type</th>
+                        <th className="py-4 px-3">Amount</th>
+                        <th className="py-4 px-3">Status</th>
+                        <th className="py-4 px-3 text-center">Receipt</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {getDonationsList().map((item) => (
+                        <tr key={item.id} className="border-b border-gray-900 hover:bg-white/5 transition text-sm">
+                          <td className="py-4 px-3 text-gray-500">{item.id}</td>
+                          <td className="py-4 px-3">{item.date}</td>
+                          <td className="py-4 px-3">{item.type}</td>
+                          <td className="py-4 px-3 font-semibold text-green-400">${item.amount.toLocaleString()}</td>
+                          <td className="py-4 px-3">
+                            <span className="bg-green-500/20 border border-green-500/30 text-green-400 text-xs py-1 px-2.5 rounded-full font-bold">
+                              {item.status}
+                            </span>
+                          </td>
+                          <td className="py-4 px-3 text-center">
+                            <button 
+                              onClick={() => alert(`Downloading PDF tax statement for transaction ${item.id}...`)}
+                              className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 transition"
+                            >
+                              <Download className="w-4 h-4" />
+                              PDF
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         ) : (
@@ -410,17 +490,6 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* Success Alert Display */}
-              {formSuccess && (
-                <div className="bg-green-950/40 border border-green-500/30 rounded-xl p-4 mb-6 flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="text-green-400 text-sm font-bold">Profile Confirmed</div>
-                    <p className="text-gray-300 text-xs mt-1">{formSuccess}</p>
-                  </div>
-                </div>
-              )}
-
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Form Type Selection: Org vs Individual (For Registration only) */}
                 {!isLogin && (
@@ -461,7 +530,7 @@ export default function LoginPage() {
                 {!isLogin && (
                   <>
                     {profileType === "individual" ? (
-                      <div className="space-y-2 animate-fade-in">
+                      <div className="space-y-2">
                         <label htmlFor="fullName" className="block text-sm font-medium text-gray-300">
                           Full Name
                         </label>
@@ -479,7 +548,7 @@ export default function LoginPage() {
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-4 animate-fade-in">
+                      <div className="space-y-4">
                         <div className="space-y-2">
                           <label htmlFor="orgName" className="block text-sm font-medium text-gray-300">
                             US Church or Organization Name
@@ -533,11 +602,6 @@ export default function LoginPage() {
                       placeholder="pastor@church.org or donor@domain.com"
                     />
                   </div>
-                  {isLogin && (
-                    <p className="text-[10px] text-gray-500">
-                      💡 Tip: Type an email containing **"church"** or **"org"** to log directly into a mock Church Partnership portal.
-                    </p>
-                  )}
                 </div>
 
                 {/* Password */}
@@ -586,7 +650,7 @@ export default function LoginPage() {
                   className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {isLoading ? (
-                    "Loading Details..."
+                    "Loading..."
                   ) : (
                     <>
                       <Heart className="w-5 h-5" />

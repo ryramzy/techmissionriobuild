@@ -2,8 +2,10 @@
 
 import React, { useState } from "react"
 import { Heart } from "lucide-react"
+import { useAuth } from "@/app/components/AuthContext"
 
 export default function DonateClient() {
+  const { user } = useAuth()
   const [selectedAmount, setSelectedAmount] = useState(25)
   const [isMonthly, setIsMonthly] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -23,6 +25,7 @@ export default function DonateClient() {
         body: JSON.stringify({
           amount,
           isMonthly,
+          userId: user ? user.uid : null,
         }),
       })
 

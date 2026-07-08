@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
 
     // Handle different event types
     switch (event.type) {
-      case 'checkout.session.completed':
+      case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
         console.log('Payment completed:', {
           sessionId: session.id,
@@ -50,8 +50,39 @@ export async function POST(request: NextRequest) {
           metadata: session.metadata,
         })
         
-        // TODO: Save to database, send confirmation email, etc.
+        const userId = session.metadata?.userId
+        if (userId) {
+          const amountTotal = session.amount_total ? session.amount_total / 100 : 0
+          const donationType = session.metadata?.donation_type || 'one-time'
+          
+          const donationData = {
+            donationId: session.id,
+            amount: amountTotal,
+            currency: session.currency || 'usd',
+            date: new Date().toISOString().split('T')[0],
+            type: donationType === 'monthly' ? 'Monthly Support' : 'One-Time Donation',
+            status: 'Processed'
+          }
+
+          try {
+            const { adminDb } = await import('@/lib/firebase-admin')
+            if (adminDb) {
+              await adminDb
+                .collection('users')
+                .doc(userId)
+                .collection('donations')
+                .doc(session.id)
+                .set(donationData)
+              console.log(`Successfully saved donation ${session.id} to user ${userId} in Firestore`)
+            } else {
+              console.warn(`Firestore save skipped for user ${userId}: adminDb is not initialized`)
+            }
+          } catch (dbErr) {
+            console.error(`Failed to save donation ${session.id} to Firestore:`, dbErr)
+          }
+        }
         break
+      }
 
       case 'invoice.payment_succeeded':
         const invoice = event.data.object as Stripe.Invoice

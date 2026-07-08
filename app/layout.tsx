@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/BottomNav"
 import { Navigation } from "@/components/Navigation/Navigation"
 import { SplashScreen } from "@/components/SplashScreen"
 import { AnalyticsProvider } from "@/components/AnalyticsProvider"
+import { AuthProvider } from "./components/AuthContext"
 
 export const viewport = {
   themeColor: '#0B1F3A',
@@ -89,12 +90,14 @@ export default function RootLayout({
         <link rel="alternate icon" href="/favicon.png" type="image/png" />
       </head>
       <body className="font-inter flex min-h-full flex-col relative bg-black text-white">
-        <AnalyticsProvider>
-          <SplashScreen />
-          <Navigation />
-          <BottomNav />
-          <main className="flex-1 pb-16">{children}</main>
-        </AnalyticsProvider>
+        <AuthProvider>
+          <AnalyticsProvider>
+            <SplashScreen />
+            <Navigation />
+            <BottomNav />
+            <main className="flex-1 pb-16">{children}</main>
+          </AnalyticsProvider>
+        </AuthProvider>
       </body>
     </html>
   )
