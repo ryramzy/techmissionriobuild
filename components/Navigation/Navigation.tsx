@@ -27,6 +27,14 @@ export function Navigation() {
             Mission
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
           </Link>
+          <Link href="/fellows" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Meet our fellows">
+            Fellows
+            <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
+          </Link>
+          <Link href="/dashboard" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Verified impact dashboard">
+            Dashboard
+            <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
+          </Link>
           <Link href="/programs" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Our programs">
             Programs
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>

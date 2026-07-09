@@ -1,6 +1,6 @@
 "use client"
 
-import { Calendar, Grid, Heart, Home, Target } from "lucide-react"
+import { Users, Grid, Heart, Home, Target } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -32,11 +32,11 @@ export function BottomNav() {
         <span className={`text-[10px] ${pathname === "/mission" ? "text-[#5ae0a0]" : "text-white/40"}`}>Mission</span>
       </Link>
       
-      <Link href="/events" className="flex flex-col items-center justify-center w-full h-full">
-        <Calendar 
-          className={`w-6 h-6 mb-1 ${pathname === "/events" ? "text-[#5ae0a0] fill-current" : "text-white/40 fill-none"}`}
+      <Link href="/fellows" className="flex flex-col items-center justify-center w-full h-full">
+        <Users 
+          className={`w-6 h-6 mb-1 ${pathname === "/fellows" ? "text-[#5ae0a0] fill-current" : "text-white/40 fill-none"}`}
         />
-        <span className={`text-[10px] ${pathname === "/events" ? "text-[#5ae0a0]" : "text-white/40"}`}>Events</span>
+        <span className={`text-[10px] ${pathname === "/fellows" ? "text-[#5ae0a0]" : "text-white/40"}`}>Fellows</span>
       </Link>
 
       <Link href="/donate" className="flex flex-col items-center justify-center w-full h-full">

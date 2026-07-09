@@ -21,6 +21,16 @@ export function QuickLinks() {
           </Link>
         </li>
         <li>
+          <Link href="/fellows" className="block w-full py-4 px-6 bg-gray-50/50 rounded-2xl font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 hover:scale-[1.02] transform transition-all duration-200">
+            Meet Our Fellows
+          </Link>
+        </li>
+        <li>
+          <Link href="/login" className="block w-full py-4 px-6 bg-gray-50/50 rounded-2xl font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 hover:scale-[1.02] transform transition-all duration-200">
+            Returning Donors Portal
+          </Link>
+        </li>
+        <li>
           <Link href="/roadmap" className="block w-full py-4 px-6 bg-gray-50/50 rounded-2xl font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 hover:scale-[1.02] transform transition-all duration-200">
             6-Month Master Plan
           </Link>
