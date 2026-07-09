@@ -33,6 +33,7 @@ interface Fellow {
   linkedin: string
   portfolio: string
   videoUrl: string
+  isEndorsed?: boolean
 }
 
 export default function FellowsPage() {
@@ -50,7 +51,8 @@ export default function FellowsPage() {
       github: "https://github.com",
       linkedin: "https://linkedin.com",
       portfolio: "https://github.com",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-his-computer-34282-large.mp4"
+      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-his-computer-34282-large.mp4",
+      isEndorsed: true
     },
     {
       id: "2",
@@ -65,7 +67,8 @@ export default function FellowsPage() {
       github: "https://github.com",
       linkedin: "https://linkedin.com",
       portfolio: "https://github.com",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-coding-on-computer-in-glasses-40742-large.mp4"
+      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-coding-on-computer-in-glasses-40742-large.mp4",
+      isEndorsed: true
     },
     {
       id: "3",
@@ -80,7 +83,8 @@ export default function FellowsPage() {
       github: "https://github.com",
       linkedin: "https://linkedin.com",
       portfolio: "https://github.com",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-programmer-typing-on-a-keyboard-34280-large.mp4"
+      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-programmer-typing-on-a-keyboard-34280-large.mp4",
+      isEndorsed: true
     },
     {
       id: "4",
@@ -95,7 +99,8 @@ export default function FellowsPage() {
       github: "https://github.com",
       linkedin: "https://linkedin.com",
       portfolio: "https://github.com",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-designer-working-on-his-ipad-at-home-40292-large.mp4"
+      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-designer-working-on-his-ipad-at-home-40292-large.mp4",
+      isEndorsed: true
     },
     {
       id: "5",
@@ -110,7 +115,8 @@ export default function FellowsPage() {
       github: "https://github.com",
       linkedin: "https://linkedin.com",
       portfolio: "https://github.com",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-man-working-on-laptop-computer-in-dark-room-40740-large.mp4"
+      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-man-working-on-laptop-computer-in-dark-room-40740-large.mp4",
+      isEndorsed: true
     },
     {
       id: "6",
@@ -125,7 +131,8 @@ export default function FellowsPage() {
       github: "https://github.com",
       linkedin: "https://linkedin.com",
       portfolio: "https://github.com",
-      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-working-on-a-laptop-at-night-40743-large.mp4"
+      videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-working-on-a-laptop-at-night-40743-large.mp4",
+      isEndorsed: true
     }
   ]
 
@@ -268,7 +275,14 @@ export default function FellowsPage() {
                             )}
                           </div>
                         </div>
-                        <p className="text-green-400 text-sm font-semibold mt-0.5">{fellow.track}</p>
+                        <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                          <p className="text-green-400 text-sm font-semibold">{fellow.track}</p>
+                          {fellow.isEndorsed && (
+                            <span className="inline-flex items-center gap-0.5 bg-green-500/15 border border-green-500/25 text-[#5ae0a0] text-[9px] py-0.5 px-2 rounded-full font-bold uppercase tracking-wider">
+                              ✓ Teacher Endorsed
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
 
@@ -356,12 +370,23 @@ export default function FellowsPage() {
 
             {/* Video Player */}
             <div className="relative aspect-video bg-black flex items-center justify-center">
-              <video 
-                src={activeVideoUrl} 
-                controls 
-                autoPlay 
-                className="w-full h-full object-cover"
-              />
+              {activeVideoUrl.includes("youtube.com/embed") || activeVideoUrl.includes("youtube-nocookie.com/embed") ? (
+                <iframe
+                  src={activeVideoUrl}
+                  title="60s Pitch Video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <video 
+                  src={activeVideoUrl} 
+                  controls 
+                  autoPlay 
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
 
             {/* Modal Footer / CTA */}

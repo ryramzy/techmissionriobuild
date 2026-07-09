@@ -20,8 +20,9 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { doc, getDoc, setDoc, collection, query, where, orderBy, onSnapshot } from "firebase/firestore"
-import { db } from "@/lib/firebase"
+import { db, auth } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
+import { sendSignInLinkToEmail } from "firebase/auth"
 
 interface DashboardMetrics {
   laptopsDistributed: number
@@ -50,7 +51,17 @@ export default function AdminDashboardPage() {
   const { user, profile, loading: authLoading } = useAuth()
   const router = useRouter()
 
-  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations">("metrics")
+  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite">("metrics")
+
+  // Invite Fellow State
+  const [inviteName, setInviteName] = useState("")
+  const [inviteEmail, setInviteEmail] = useState("")
+  const [inviteCampus, setInviteCampus] = useState("FAETEC Santa Cruz")
+  const [inviteGrade, setInviteGrade] = useState("2nd Year High School")
+  const [inviteTrack, setInviteTrack] = useState("Web Development")
+  const [inviteLoading, setInviteLoading] = useState(false)
+  const [inviteSuccess, setInviteSuccess] = useState(false)
+  const [inviteError, setInviteError] = useState<string | null>(null)
 
   // Metrics State
   const [metrics, setMetrics] = useState<DashboardMetrics>({
@@ -280,6 +291,61 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const handleInviteFellow = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setInviteLoading(true)
+    setInviteError(null)
+    setInviteSuccess(false)
+
+    try {
+      const fellowsColRef = collection(db, "fellows")
+      const fellowDocRef = doc(fellowsColRef)
+      const newFellowId = fellowDocRef.id
+
+      // Seed the fellows profile in Firestore
+      await setDoc(fellowDocRef, {
+        id: newFellowId,
+        name: inviteName,
+        email: inviteEmail.toLowerCase(),
+        schoolCampus: inviteCampus,
+        grade: inviteGrade,
+        track: inviteTrack,
+        initials: inviteName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "ST",
+        location: inviteCampus.split(" ")[0] || "Rio de Janeiro",
+        joinedDate: new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
+        story: "Ready to embark on coding journey.",
+        skills: [inviteTrack],
+        goal: "Transition to technical developer role.",
+        github: "",
+        linkedin: "",
+        portfolio: "",
+        videoUrl: "",
+        isEndorsed: true, // Admin invites are pre-endorsed
+        createdAt: new Date().toISOString()
+      })
+
+      // Configure sign-in action redirect URL containing the pre-created fellow ID
+      const actionCodeSettings = {
+        url: `${window.location.origin}/auth/action?fellowId=${newFellowId}&email=${encodeURIComponent(inviteEmail.toLowerCase())}`,
+        handleCodeInApp: true,
+      }
+
+      await sendSignInLinkToEmail(auth, inviteEmail.toLowerCase(), actionCodeSettings)
+      
+      // Store email locally
+      window.localStorage.setItem("emailForSignIn", inviteEmail.toLowerCase())
+
+      setInviteSuccess(true)
+      setInviteName("")
+      setInviteEmail("")
+    } catch (err: any) {
+      console.error("Invite fellow error:", err)
+      setInviteError(err.message || "Failed to submit invitation link.")
+    } finally {
+      setInviteLoading(false)
+    }
+  }
+
   const hasAdminRole = 
     profile?.isAdmin === true || 
     user?.email === "admin@techmissionrio.org" || 
@@ -332,6 +398,12 @@ export default function AdminDashboardPage() {
                   {nominations.length}
                 </span>
               )}
+            </button>
+            <button
+              onClick={() => setActiveSubTab("invite")}
+              className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeSubTab === "invite" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+            >
+              Invite Fellow
             </button>
           </div>
         </div>
@@ -580,6 +652,120 @@ export default function AdminDashboardPage() {
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 3: Invite Fellow Form */}
+        {activeSubTab === "invite" && (
+          <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Users className="w-6 h-6 text-yellow-400" />
+                Invite Pre-Accredited Fellow
+              </h2>
+              <p className="text-sm text-gray-400">
+                Register a new candidate. The system will send a secure passwordless sign-in invitation directly to their email inbox.
+              </p>
+            </div>
+
+            {inviteSuccess && (
+              <div className="bg-green-950/40 border border-green-500/30 rounded-xl p-4 flex items-center gap-3 text-green-400 text-sm">
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                <span>Invitation email successfully transmitted to candidate! Profile pre-seeded in database.</span>
+              </div>
+            )}
+
+            {inviteError && (
+              <div className="bg-red-950/40 border border-red-500/30 rounded-xl p-4 flex items-center gap-3 text-red-400 text-sm">
+                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+                <span>{inviteError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleInviteFellow} className="space-y-6 max-w-xl">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-300">Student Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Gabriel Barbosa"
+                  value={inviteName}
+                  onChange={(e) => setInviteName(e.target.value)}
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 transition"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-300">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="e.g. gabriel@faetec.br"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 transition"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">School Campus</label>
+                  <select
+                    value={inviteCampus}
+                    onChange={(e) => setInviteCampus(e.target.value)}
+                    className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
+                  >
+                    <option value="FAETEC Santa Cruz">FAETEC Santa Cruz</option>
+                    <option value="FAETEC Quintino">FAETEC Quintino</option>
+                    <option value="IFRJ Duque de Caxias">IFRJ Duque de Caxias</option>
+                    <option value="IFRJ Rio de Janeiro">IFRJ Rio de Janeiro</option>
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-300">Grade Level</label>
+                  <select
+                    value={inviteGrade}
+                    onChange={(e) => setInviteGrade(e.target.value)}
+                    className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
+                  >
+                    <option value="1st Year High School">1st Year High School</option>
+                    <option value="2nd Year High School">2nd Year High School</option>
+                    <option value="3rd Year High School">3rd Year High School</option>
+                    <option value="Technical Prep">Technical Prep</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-300">IT Specialization Track</label>
+                <select
+                  value={inviteTrack}
+                  onChange={(e) => setInviteTrack(e.target.value)}
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
+                >
+                  <option value="Web Development">Web Development</option>
+                  <option value="Mobile App Development">Mobile App Development</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="UI/UX Design">UI/UX Design</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                disabled={inviteLoading}
+                className="bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-500/50 text-black font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer text-sm font-bold"
+              >
+                {inviteLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Sending Invitation...
+                  </>
+                ) : (
+                  "Transmit Invite Link"
+                )}
+              </button>
+            </form>
           </div>
         )}
 
