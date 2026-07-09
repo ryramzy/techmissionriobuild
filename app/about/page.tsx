@@ -1,84 +1,144 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { Button } from "@/components/Button/Button"
+import { ShieldCheck, Heart, Sparkles, BookOpen, Users } from "lucide-react"
 
-/** Force static */
 export const dynamic = "force-static"
 
 export const metadata: Metadata = {
   title: "About Us | TechMission Rio",
-  description: "Learn about our story, mission, and biblical motivation to transform lives through technology",
+  description: "Learn about our story, mission, and biblical motivation to transform lives through technology, education, and faith.",
 }
 
 export default function AboutPage() {
   return (
-    <main className="container mx-auto px-4 py-16">
-      <div className="mx-auto max-w-3xl">
-        <h1 className="mb-8 text-4xl font-bold">About Us</h1>
+    <div className="bg-black text-white min-h-screen relative overflow-hidden">
+      {/* Background Radial Light */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
-        <div className="space-y-12">
-          <section className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-2xl font-semibold">Our Story</h2>
-            <p className="mb-4 text-gray-600 dark:text-gray-300">
-              TechMission Rio was born from the vision of uniting technology and faith to transform lives. 
-              Recognizing the need for access to technology and quality education for youth 
-              in underserved communities in Rio de Janeiro, we are dedicated to creating a space where 
-              education, career, and spiritual growth go hand in hand.
-            </p>
-            <p className="text-gray-600 dark:text-gray-300">
-              Our journey began with a small group of Christian technology professionals, united by the desire 
-              to make a difference in the lives of Brazilian youth.
-            </p>
-          </section>
+      <main className="max-w-5xl mx-auto px-6 py-16 relative z-10 space-y-16">
+        
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full py-1.5 px-3 mb-2">
+            <ShieldCheck className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">About Our Agency</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
+            Our Story & Motivation
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
+            Uniting technology and faith to empower the next generation of Brazilian tech innovators.
+          </p>
+        </div>
 
-          <section className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-2xl font-semibold">Our Motivation</h2>
-            <blockquote className="mb-6 border-l-4 border-blue-600 pl-4 italic text-gray-600 dark:border-blue-500 dark:text-gray-300">
-              "Do not conform to the pattern of this world, but be transformed by the renewing of your mind. 
-              Then you will be able to test and approve what God's will is—his good, pleasing and perfect will."
-              <br />
-              <span className="mt-2 block text-sm">— Romans 12:2</span>
-            </blockquote>
-            <p className="text-gray-600 dark:text-gray-300">
-              We believe that technology can be a powerful tool to transform minds and hearts. Our goal is to 
-              empower youth to develop their technical skills while growing in their faith and purpose in Christ.
-            </p>
-          </section>
-
-          <section className="rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-            <h2 className="mb-4 text-2xl font-semibold">Our Team</h2>
-            <p className="mb-6 text-gray-600 dark:text-gray-300">
-              Our team consists of Christian professionals passionate about technology and education. 
-              Each member brings their unique experience and commitment to the mission of transforming 
-              lives through knowledge and faith.
-            </p>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                <h3 className="mb-2 font-semibold">Leadership</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Our leaders combine technology expertise with a deep commitment to the spiritual 
-                  development of youth.
+        {/* Story and Scripture Split Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* Left Column: Our Story */}
+          <div className="lg:col-span-7 p-[1px] rounded-3xl bg-gradient-to-br from-green-500 to-blue-500 shadow-xl">
+            <div className="h-full bg-black rounded-[23px] p-8 space-y-6 flex flex-col justify-between">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
+                  <BookOpen className="w-6 h-6 text-green-400" />
+                  Our Story
+                </h2>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  TechMission Rio was born from a vision to bridge technical education with spiritual growth. 
+                  Recognizing the lack of laptops, hardware access, and coding guidance for youth in 
+                  underserved favela neighborhoods in Rio de Janeiro, we dedicated our mission to establishing 
+                  active classroom labs and direct mentorship support.
+                </p>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  Our journey began with a small group of Christian tech professionals in the United States and Brazil, 
+                  united by the calling to utilize their industry expertise for social impact. Over the past three years, 
+                  we have graduated dozens of students, placing them in software engineering roles across Brazil.
                 </p>
               </div>
-              <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                <h3 className="mb-2 font-semibold">Volunteers</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  Our volunteer network includes technology professionals, educators, and mentors 
-                  dedicated to sharing their knowledge and faith.
+              <div className="border-t border-gray-900 pt-4 flex items-center gap-2 text-xs text-gray-500">
+                <span>Est. 2023</span>
+                <span>•</span>
+                <span>501(c)(3) Exempt Entity</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Scripture / Motivation */}
+          <div className="lg:col-span-5 p-[1px] rounded-3xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl">
+            <div className="h-full bg-black rounded-[23px] p-8 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
+                  <Sparkles className="w-6 h-6 text-blue-400" />
+                  Our Motivation
+                </h2>
+                
+                <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-300 text-sm leading-relaxed md:text-base">
+                  "Do not conform to the pattern of this world, but be transformed by the renewing of your mind. 
+                  Then you will be able to test and approve what God's will is—his good, pleasing and perfect will."
+                  <span className="mt-3 block text-xs font-bold text-green-400 not-italic uppercase tracking-widest">— Romans 12:2</span>
+                </blockquote>
+              </div>
+
+              <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-900 pt-4">
+                We believe tech is a tool for stewardship. By training minds logically and encouraging spiritual growth in Christ, we prepare young people to lead their communities with high values.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Team Roles Section */}
+        <section className="space-y-6">
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-white justify-center">
+            <Users className="w-6 h-6 text-indigo-400" />
+            Our Global Network
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Leadership Card */}
+            <div className="p-[1px] rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:scale-[1.02] transition-transform duration-300">
+              <div className="h-full bg-black rounded-[23px] p-6 space-y-3">
+                <h3 className="font-bold text-white text-base">Leadership Board</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  Our directors combine years of software development experience at top global tech brands with a deep personal calling for regional development and local church partnerships.
                 </p>
               </div>
             </div>
-          </section>
 
-          <div className="text-center">
+            {/* Volunteers Card */}
+            <div className="p-[1px] rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 hover:scale-[1.02] transition-transform duration-300">
+              <div className="h-full bg-black rounded-[23px] p-6 space-y-3">
+                <h3 className="font-bold text-white text-base">Mentors & Volunteers</h3>
+                <p className="text-xs text-gray-400 leading-relaxed">
+                  A network of bilingual technology professionals and educators from university BRASA chapters and US businesses dedicated to teaching coding and building bridges.
+                </p>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="text-center bg-gradient-to-br from-blue-950/25 via-black to-green-950/25 border border-blue-500/20 rounded-3xl p-10 max-w-3xl mx-auto space-y-6">
+          <h2 className="text-2xl font-bold">Join the Mission</h2>
+          <p className="text-gray-400 text-sm leading-relaxed max-w-md mx-auto">
+            Every contribution directly funds laptops, coding instruction books, and virtual classroom operations for local schools.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/join">
-              <Button size="lg">
+              <span id="btn-about-join" className="bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-6 rounded-xl transition cursor-pointer text-sm flex items-center justify-center gap-1">
                 Get Involved
-              </Button>
+              </span>
+            </Link>
+            <Link href="/donate">
+              <span id="btn-about-donate" className="border border-gray-700 hover:bg-white/10 text-white font-bold py-3.5 px-6 rounded-xl transition cursor-pointer text-sm flex items-center justify-center gap-1">
+                Support Our Mission
+              </span>
             </Link>
           </div>
-        </div>
-      </div>
-    </main>
+        </section>
+
+      </main>
+    </div>
   )
-} 
+}

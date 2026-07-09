@@ -127,8 +127,8 @@ export function MissionCarousel() {
                   alt={slide.alt}
                   fill
                   priority={index === 0}
-                  className={`object-cover object-center w-full h-full transform transition-transform duration-10000 ${
-                    reducedMotion ? "transition-none" : "scale-105 group-hover/carousel:scale-100"
+                  className={`object-cover object-center w-full h-full ${
+                    reducedMotion ? "" : "animate-kenburns"
                   }`}
                   onError={() => handleImageError(slide.id)}
                 />

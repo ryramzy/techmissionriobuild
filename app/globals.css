@@ -146,3 +146,13 @@ html {
     @apply inline-flex items-center gap-2 bg-tmr-green/15 border border-tmr-green/30 rounded-full py-1.5 px-3.5;
   }
 }
+
+@keyframes kenburns {
+  0% { transform: scale(1.02) translate(0, 0); }
+  50% { transform: scale(1.08) translate(-1%, -0.5%); }
+  100% { transform: scale(1.02) translate(0, 0); }
+}
+
+.animate-kenburns {
+  animation: kenburns 20s ease-in-out infinite;
+}
