@@ -47,7 +47,7 @@ interface PendingNomination {
 }
 
 export default function AdminDashboardPage() {
-  const { user, loading: authLoading } = useAuth()
+  const { user, profile, loading: authLoading } = useAuth()
   const router = useRouter()
 
   const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations">("metrics")
@@ -73,20 +73,18 @@ export default function AdminDashboardPage() {
   const [processingAction, setProcessingAction] = useState<string | null>(null) // nominationId
   const [apiError, setApiError] = useState<string | null>(null)
 
-  // Admin UID Guard - Step 1 Spec
+  // Soft Guard redirecting non-organization users
   useEffect(() => {
     if (!authLoading) {
-      const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID || "mock-admin-uid-123"
-      if (!user || user.uid !== adminUid) {
+      if (!user || profile?.profileType !== "organization") {
         router.replace("/")
       }
     }
-  }, [user, authLoading, router])
+  }, [user, profile, authLoading, router])
 
   // Fetch current database statistics (Metrics)
   useEffect(() => {
-    const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID || "mock-admin-uid-123"
-    if (!user || user.uid !== adminUid) return
+    if (!user || profile?.profileType !== "organization") return
 
     const fetchCurrentStats = async () => {
       try {
@@ -114,12 +112,11 @@ export default function AdminDashboardPage() {
     }
 
     fetchCurrentStats()
-  }, [user])
+  }, [user, profile])
 
-  // Real-time listener for pending nominations - Step 6 Spec
+  // Real-time listener for pending nominations
   useEffect(() => {
-    const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID || "mock-admin-uid-123"
-    if (!user || user.uid !== adminUid) return
+    if (!user || profile?.profileType !== "organization") return
 
     const q = query(
       collection(db, "nominations"),
@@ -156,7 +153,7 @@ export default function AdminDashboardPage() {
     })
 
     return () => unsubscribe()
-  }, [user])
+  }, [user, profile])
 
   const handleInputChange = (field: keyof DashboardMetrics, value: number) => {
     setMetrics(prev => ({
@@ -201,21 +198,23 @@ export default function AdminDashboardPage() {
     }
   }
 
-  // API Call - Approve Nomination (atomic batch transaction)
+  // API Call - Approve Nomination (consolidated action route)
   const handleApproveNomination = async (nominationId: string) => {
     if (!user) return
     setProcessingAction(nominationId)
     setApiError(null)
 
     try {
-      const response = await fetch("/api/admin/approve-nomination", {
+      const idToken = await user.getIdToken(true) // Forced refresh token to bypass 1-hour limits
+      const response = await fetch("/api/admin/nomination-action", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           nominationId,
-          adminUid: user.uid
+          action: "approve",
+          idToken
         })
       })
 
@@ -224,7 +223,7 @@ export default function AdminDashboardPage() {
         throw new Error(data.error || "Failed to approve nomination.")
       }
 
-      // Success - update list locally if listener fallback is active
+      // Success - update list locally
       setNominations(prev => prev.filter(nom => nom.id !== nominationId))
     } catch (err: any) {
       console.error(err)
@@ -234,21 +233,23 @@ export default function AdminDashboardPage() {
     }
   }
 
-  // API Call - Archive Nomination
+  // API Call - Archive Nomination (consolidated action route)
   const handleArchiveNomination = async (nominationId: string) => {
     if (!user) return
     setProcessingAction(nominationId)
     setApiError(null)
 
     try {
-      const response = await fetch("/api/admin/archive-nomination", {
+      const idToken = await user.getIdToken(true) // Forced refresh token to bypass 1-hour limits
+      const response = await fetch("/api/admin/nomination-action", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           nominationId,
-          adminUid: user.uid
+          action: "archive",
+          idToken
         })
       })
 
@@ -267,8 +268,7 @@ export default function AdminDashboardPage() {
     }
   }
 
-  const adminUid = process.env.NEXT_PUBLIC_ADMIN_UID || "mock-admin-uid-123"
-  if (authLoading || !user || user.uid !== adminUid) {
+  if (authLoading || !user || profile?.profileType !== "organization") {
     return null
   }
 

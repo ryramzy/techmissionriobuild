@@ -14,7 +14,7 @@ import {
   Award
 } from "lucide-react"
 import Link from "next/link"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { doc, onSnapshot } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
 
@@ -44,22 +44,20 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [selectedSchool, setSelectedSchool] = useState<string | null>("FAETEC Santa Cruz")
 
-  // Fetch metrics from Firestore
+  // Fetch metrics from Firestore in real-time using onSnapshot listener
   useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        const docRef = doc(db, "dashboard_stats", "global_metrics")
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          setMetrics(docSnap.data() as DashboardMetrics)
-        }
-      } catch (error) {
-        console.warn("Could not load Firestore metrics, using default statistics:", error)
-      } finally {
-        setLoading(false)
+    const docRef = doc(db, "dashboard_stats", "global_metrics")
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setMetrics(docSnap.data() as DashboardMetrics)
       }
-    }
-    fetchMetrics()
+      setLoading(false)
+    }, (error) => {
+      console.warn("Could not bind real-time Firestore metrics, using default statistics:", error)
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
   }, [])
 
   const schools = [
