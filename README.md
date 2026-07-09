@@ -2,6 +2,8 @@
 
 Established over three years ago, Tech Mission Rio is a lightweight, responsive web application built with Next.js 16 (App Router) to connect underserved Brazilian youth with tech training, mentorship, and angel opportunities in the United States.
 
+---
+
 ## 🚀 Mission
 
 For more than three years, Tech Mission Rio has provided laptops, coding training, and mentorship to create pathways to tech careers for youth in Rio's underserved communities. Your donations directly fund:
@@ -11,31 +13,33 @@ For more than three years, Tech Mission Rio has provided laptops, coding trainin
 - **Mentorship Programs** - Career guidance from industry professionals
 - **Community Projects** - Real-world experience building tech solutions
 
-## 🌟 Features
+---
 
-- **🎨 Modern UI/UX** - Beautiful, responsive design with Tailwind CSS
-- **💳 Secure Donations** - Stripe integration for safe payment processing
-- **📱 PWA Enabled** - High-resolution icons and splash screens optimized for Chrome, Safari, and mobile app-like installations
-- **⚡ Lightning Fast** - Built with Next.js 16 and optimized for production performance
-- **🔒 Enterprise Security & Analytics** - Clean build pipelines with secure, lazy PostHog event tracking and centralized error boundaries
+## 🌟 Core Features
+
+- **🎨 Modern UI/UX** - Beautiful, responsive dark-themed designs with custom Tailwind CSS styles.
+- **💳 Multi-Currency Checkout** - Safe donation processing supporting cards (USD) and local Brazilian PIX (BRL currency) payments via Stripe.
+- **🔒 GCP Firebase Auth & Profiles** - Dynamic logins for individual repeat donors and B2B Organizations (Churches, Non-profits, and Businesses).
+- **⛪ B2B Church Hub** - Dedicated dashboard tools featuring prayer request walls, Zoom Q&A exchange schedulers, and trip coordinators.
+- **📊 Public Impact Dashboard** - Real-time stats (Laptops distributed, mentorship hours) powered by Cloud Firestore. Includes pulsing maps showing Rio technical school sites (FAETEC, IFRJ) and audit budget breakdown ratios.
+- **🎬 Video Pitch Profiles** - Dynamic fellows roster with 60-second video introductions and interactive in-browser playback.
+- **📱 PWA Optimized** - High-resolution homescreen and Chrome installer icons generated directly from vector SVG parameters representing the header logo.
+- **📈 Lazy Analytics** - Non-blocking PostHog event captures tracking page views, clicks, and donation conversions.
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Framework**: Next.js 16 (App Router)
+- **Framework**: Next.js 16.2.10 (App Router, Turbopack)
 - **Styling**: Tailwind CSS
+- **Database / Auth**: GCP Firebase & Cloud Firestore
+- **Server SDK**: Firebase Admin
 - **Payments**: Stripe
-- **Deployment**: Vercel
-- **Type Safety**: TypeScript
-- **Icons**: Lucide React
-- **Analytics**: PostHog (Session tracking and custom event capture)
+- **Analytics**: PostHog (custom event tracking)
 - **Asset Processing**: Sharp (SVG to PWA icon compilation)
+- **Type Safety**: TypeScript (Strict Mode)
 
-## 🎯 How It Works
-
-1. **Choose Your Impact** - Select from preset donation amounts or enter a custom amount
-2. **One-time or Monthly** - Choose between single donations or recurring support
-3. **Secure Processing** - Your donation is processed safely through Stripe
-4. **Real Impact** - 100% of funds go directly to supporting our programs
+---
 
 ## 🚀 Quick Start
 
@@ -53,7 +57,7 @@ npm install
 3. Set up environment variables:
 ```bash
 cp .env.example .env.local
-# Add your Stripe API keys to .env.local
+# Add your Stripe and Firebase configurations to .env.local
 ```
 
 4. Run the development server:
@@ -61,64 +65,59 @@ cp .env.example .env.local
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) to see the application.
+5. Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+---
 
 ## 📝 Environment Variables
 
 Create a `.env.local` file in the root directory:
 
 ```env
-# Stripe (Required for donations)
+# Stripe Payment Configuration
 STRIPE_SECRET_KEY=sk_test_...
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_URL=http://localhost:3000
 
-# PostHog Analytics (Optional)
+# Firebase Client SDK Configuration (Auth & Firestore)
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=techmission-rio.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=techmission-rio
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=techmission-rio.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=1080225659809
+NEXT_PUBLIC_FIREBASE_APP_ID=1:1080225659809:web:1234
+
+# Firebase Admin SDK Configuration (Webhook Server-side Writes)
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBg..."
+FIREBASE_CLIENT_EMAIL=firebase-adminsdk-xxxxx@techmission-rio.iam.gserviceaccount.com
+
+# PostHog Tracking Configuration
 NEXT_PUBLIC_POSTHOG_KEY=phc_...
 NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 ```
 
-## 🤝 How to Contribute
+---
 
-We welcome contributions! Here's how you can help:
+## 🐛 Error Handling & Degradation
+This platform is engineered to prevent build-time crashes or server crashes if environment variables are not configured in local or preview deployment instances:
+- **Build Fallback**: Firebase client SDK dynamically falls back to mock configurations if credentials are missing during static rendering compile checks.
+- **PostHog Safelock**: Analytics capturing delegates to a no-op handler if keys are absent, avoiding runtime console exceptions.
+- **Admin Graceful Failure**: Server-side Webhook writes bypass DB transactions and emit standard warnings rather than triggering webhook response timeout crashes.
 
-### Code Contributions
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Non-Code Contributions
-- **Donate** - Every dollar helps us reach more young people
-- **Mentor** - Share your tech expertise with our fellows
-- **Spread the Word** - Help us reach more supporters
-
-## 📊 Impact Dashboard
-
-Coming soon! Track your donation's impact and see real results from our programs.
+---
 
 ## 🔧 Development Scripts
 
 ```bash
-npm run dev             # Start development server
-npm run build           # Build for production
-npm run start           # Start production server
-npm run lint            # Run ESLint
-npm run test            # Run tests
-npm run generate-icons  # Compile SVG to PWA and Favicon assets
+npm run dev             # Start local development server
+npm run build           # Compile build artifacts for production
+npm run start           # Run production compiled server instance
+npm run lint            # Run ESLint quality checks
+npm run generate-icons  # Compile vector SVG parameters to high-res PWA png/ico assets
 ```
+
+---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Built with [Next.js Enterprise Boilerplate](https://github.com/Blazity/next-enterprise)
-- Payment processing powered by [Stripe](https://stripe.com)
-- Icons by [Lucide](https://lucide.dev)
-
----
-
-**🌟 Together, we're building Rio's tech future, one young leader at a time.**

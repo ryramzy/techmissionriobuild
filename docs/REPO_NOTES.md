@@ -3,184 +3,99 @@
 ## 📋 Repository Overview
 
 ### Project Status: ✅ PRODUCTION READY
-**Primary Mission**: Established over three years ago, a lightweight donation platform connecting Brazilian youth tech talent with US stakeholders and angel investors.
+**Primary Mission**: Established over three years ago, a lightweight donation platform connecting Brazilian youth tech talent with US stakeholders, churches, and angel investors.
 
 ### 🏗️ Architecture
-- **Framework**: Next.js 16.2.4 with App Router
+- **Framework**: Next.js 16.2.10 with App Router (Turbopack optimized)
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS with custom TMR theme
 - **UI Components**: Radix UI (minimal set)
+- **Database / Auth**: GCP Firebase Authentication & Cloud Firestore
 - **Deployment**: Vercel CI/CD
-- **Target**: US donors + Brazilian youth + Tech stakeholders
-
-### 📦 Dependencies Status
-**Simplified & Secure**: 34 packages (down from 69)
-- ✅ Removed: Storybook, Framer Motion, complex Radix components
-- ✅ Kept: Essential UI, icons, build tools
-- ✅ Added: `posthog-js` (analytics), `sharp` (PWA asset generation)
-- ✅ Security: Regular audits, up-to-date packages
-- ✅ Performance: Optimized bundle size
-
-### 🎯 Core Features Implemented
-1. **Donation Platform** (`/donate`)
-   - Multiple giving tiers ($25, $100, $500)
-   - Custom amount options
-   - Interactive Donation Simulation Fallback mode for environments without live Stripe credentials
-   - Dynamic Checkout success redirection linking selections directly to `/success`
-
-2. **Youth Profiles** (`/fellows`)
-   - 6 featured fellows with detailed profiles
-   - Skills, goals, location, stories
-   - Direct support functionality
-   - Community impact metrics
-
-3. **Stakeholder Connections** (`/connect`)
-   - Angel investor profiles
-   - Company opportunities
-   - Job listings and competitions
-   - Mentorship programs
-
-4. **User Authentication & Repeat Donor Portal** (`/login`)
-   - Interactive Client Portal supporting Individuals & B2B Organizations (Churches/NGOs)
-   - Profile management with dynamic impact summaries and donation tracking stored locally
-   - B2B Church Hub: prayer boards, live exchanges scheduler, mission trip registration, and cohort reports
-   - Robust form validation and client-side error handling
-
-5. **PWA Integration & Favicon Compilation**
-   - High-resolution PWA assets compiled directly from the header logo (`logo.jpg`)
-   - Resized icons (192px, 256px, 384px, 512px) generated via `npm run generate-icons` using `sharp`
-   - Unified homescreen and Chrome installer visuals with navigation header styling
-
-6. **Event Tracking & Site Analytics**
-   - Lazily initialized PostHog provider to ensure build-time warning-free page pre-rendering
-   - Safe global custom hook (`useAnalytics`) bypassing tracking calls cleanly when keys are absent
-
-### 🔧 Technical Implementation
-
-#### File Structure
-```
-app/
-├── page.tsx          # Landing page (donation-focused)
-├── donate/page.tsx    # Donation platform
-├── fellows/page.tsx   # Youth profiles
-├── connect/page.tsx   # Stakeholder connections
-├── login/page.tsx     # User authentication
-└── layout.tsx         # Root layout with PWA
-
-components/          # Reusable UI components
-docs/               # Documentation
-public/             # Static assets + PWA icons
-```
-
-#### Key Technologies
-- **Next.js 16**: App Router, Server Components
-- **TypeScript**: Strict typing, full coverage
-- **Tailwind CSS**: Custom TMR color scheme
-- **Radix UI**: Dialog, Label, Slot, Toast
-- **Lucide React**: Icon system
-- **Vercel**: Automatic deployment + CDN
-
-### 🚀 Deployment & CI/CD
-- **Platform**: Vercel (https://techmissionriobuild-4davdnooc-matthew-ramsay-s-projects.vercel.app/)
-- **Domain**: techmissionrio.org (primary)
-- **Build**: Automated on push to main
-- **Environment**: Production optimized
-- **Monitoring**: Vercel Analytics + Core Web Vitals
-
-### 📊 Performance Metrics
-- **Bundle Size**: < 1MB initial load
-- **Build Time**: < 30 seconds
-- **Lighthouse**: 95+ performance score
-- **Mobile**: Fully responsive
-- **SEO**: Optimized metadata + sitemap
-
-### 🔒 Security Status
-- **Dependencies**: 0 high vulnerabilities
-- **Moderate**: 2 remaining (PostCSS, UUID - non-critical)
-- **HTTPS**: Enforced on all endpoints
-- **Input Validation**: All forms protected
-- **No Secrets**: Environment variables only
-
-### 🎨 Design System
-#### TMR Brand Colors
-- **Primary**: #0B1F3A (TMR Blue)
-- **Secondary**: #22C55E (TMR Green)
-- **Accent**: #14B8A6 (TMR Teal), #FB923C (TMR Orange)
-- **Background**: #000000 (Black for visibility)
-
-#### Typography
-- **Headings**: Syne font (bold)
-- **Body**: Inter font (regular)
-- **Icons**: Lucide React system
-
-### 📱 User Journey
-1. **Discovery**: Landing page → Clear mission + CTAs
-2. **Engagement**: Browse fellows → See impact stories
-3. **Action**: Donate → Choose tier + payment
-4. **Connection**: Connect page → Stakeholder matching
-5. **Retention**: Login → Track impact + updates
-
-### 🔧 Development Workflow
-```bash
-# Local development
-npm run dev          # Start dev server
-npm run build        # Production build test
-npm run lint         # Code quality check
-
-# Deployment
-git add .
-git commit -m "feat: update"
-git push origin main  # Triggers Vercel deploy
-```
-
-### 📈 Future Roadmap
-#### Phase 1 (Current)
-- ✅ Core donation platform
-- ✅ Youth profiles
-- ✅ Stakeholder connections
-- ✅ User authentication
-
-#### Phase 2 (Next)
-- 🔄 Real payment processing (Stripe/PayPal)
-- 🔄 Advanced matching algorithms
-- 🔄 Video profiles for fellows
-- 🔄 Impact dashboards
-
-#### Phase 3 (Future)
-- 📋 Mobile app
-- 📋 Advanced analytics
-- 📋 International expansion
-- 📋 Corporate partnerships
-
-### 🐛 Known Issues & Solutions
-1. **PostCSS Warning**: `skipMiddlewareUrlNormalize` deprecated
-   - **Solution**: Update to `skipProxyUrlNormalize` in next.config.js
-   - **Priority**: Low (cosmetic)
-
-2. **UUID Vulnerability**: In nested dependencies
-   - **Solution**: Will resolve with Next.js update
-   - **Priority**: Low (non-exploitable in context)
-
-3. **Middleware Warning**: Deprecated convention
-   - **Solution**: Update to proxy convention
-   - **Priority**: Low (functionality unaffected)
-
-### 📞 Support & Maintenance
-- **Documentation**: Complete (DEBUGGING.md, MCP_RULES.md)
-- **Monitoring**: Vercel Analytics + custom logging
-- **Backup**: Git version control + Vercel snapshots
-- **Updates**: Regular dependency updates + security patches
-
-### 🎯 Success Metrics
-- **Donations**: Track conversion rates
-- **Engagement**: Time on site, pages visited
-- **Connections**: Youth-stakeholder matches
-- **Impact**: Stories + testimonials
-- **Growth**: User acquisition + retention
 
 ---
 
-**Repository Status**: ✅ PRODUCTION READY  
-**Last Updated**: 2026-06-13  
-**Maintainer**: Tech Lead  
-**Deployment**: Vercel CI/CD Active
+## 🎯 Core Features Implemented
+
+1. **Donation Platform (`/donate`)**
+   - Multiple giving tiers ($25, $100, $500)
+   - Custom amount options
+   - Support for both USD ($) and local Brazilian PIX (R$ currency) payments
+   - Integration with Stripe checkout sessions (passing authenticated `userId` in metadata)
+
+2. **GCP Firebase Auth & Repeat Donor Portal (`/login`)**
+   - Client-side individual donor and B2B Organization registration and logins
+   - Firestore mapping for `users` and `organizations` collections
+   - Specialized Church Hub dashboard widgets: prayer boards, cohort milestone progress trackers, Zoom Q&A exchange scheduler, and mission trip registries
+
+3. **Public Student Impact Dashboard (`/dashboard`)**
+   - Real-time impact counters loaded dynamically from Firestore (`dashboard_stats/global_metrics`)
+   - Interactive SVG mapping of Rio de Janeiro showing partnering campuses (FAETEC, IFRJ) and student allocations
+   - Budget transparency graph illustrating equipment, bootcamp training, and operation percentages
+   - Secure Admin statistics editor (`/dashboard/admin`) for organization partners to update metrics dynamically in the database
+
+4. **Youth Video Profiles (`/fellows`)**
+   - Meet page featuring active TMR coding fellows
+   - Integrated 60-second video elevator pitch modals with dynamic browser playback
+   - Clickable developer social links (GitHub, LinkedIn, and personal portfolio websites)
+
+5. **PWA Integration & Favicon Compilation**
+   - High-resolution PWA assets compiled directly from vector SVG parameters representing the exact TMR nav bar logo
+   - Resized icons (192px, 256px, 384px, 512px) generated via `npm run generate-icons` using `sharp`
+   - Unified homescreen and Chrome installer visuals with navigation header styling
+
+6. **PostHog Analytics Integration**
+   - Lazy PostHog provider configuration preventing pre-rendering build-time crash warnings
+   - Custom events: page views, social profile clicks, video watch times, donation conversions, and funnel milestones
+
+---
+
+## 🐛 Error Handling & Graceful Degradation
+
+Our architecture is designed to fail gracefully without disrupting the user experience when API keys or server credentials are unconfigured:
+
+### 1. Firebase Client SDK Fallback
+* **Problem**: Next.js evaluates file imports at compile time to pre-render static pages (`_not-found`, `/about`). If Firebase env variables are missing, the client SDK immediately throws an `auth/invalid-api-key` error and halts compilation.
+* **Solution**: `lib/firebase.ts` evaluates the presence of `NEXT_PUBLIC_FIREBASE_API_KEY`. If empty, it initializes Firebase with dummy credentials, allowing compilation to proceed successfully.
+
+### 2. Stripe Webhook Resiliency
+* **Problem**: In test/preview serverless environments, GCP service account credentials (`FIREBASE_SERVICE_ACCOUNT_KEY`) might be missing, causing server-side firestore writes to crash the webhook endpoint.
+* **Solution**: `lib/firebase-admin.ts` checks for required cert details. If missing, it log warnings (`console.warn`) and skips writes, returning a successful `200 OK` response to Stripe.
+
+### 3. PostHog Tracking Fallback
+* **Problem**: If PostHog keys are missing, capturing events will throw undefined errors.
+* **Solution**: `hooks/useAnalytics.ts` detects the state of PostHog initialization. If null, it exports a mock API container containing no-op functions (`noop = () => {}`) that drop the events without throwing runtime exceptions.
+
+### 4. Interactive Form Validations
+* Form components enforce strict regex parameters for credentials, minimum password lengths (6+ characters), and statistical ratios (budget edits must sum to exactly 100% before publishing).
+
+---
+
+## 📅 Roadmap Execution Progress
+
+### Phase 1 (Completed)
+- [x] Core donation landing page and contact forms
+- [x] Youth profiles
+- [x] Stakeholder connections
+
+### Phase 2 (Completed)
+- [x] Firebase authentication & Firestore user schemas
+- [x] PWA icon generation matching header logo
+- [x] Video pitch overlays on fellows profiles
+- [x] Multi-currency checkout (USD / BRL PIX payments)
+- [x] Real-time impact dashboard & admin portal
+
+### Phase 3 (Next Sprints)
+- [ ] FCM (Firebase Cloud Messaging) service worker logic for PWA push alerts
+- [ ] Real-time student-to-mentor messaging portal
+- [ ] Multi-language i18n localization (EN / PT toggles)
+- [ ] Automated tax receipt generation for US churches
+
+---
+
+## 📞 Support & Maintenance
+- **Documentation**: `DEBUGGING.md`, `MCP_RULES.md`, `MASTER_PLAN.md`
+- **Updates**: Regular dependency updates + security patches
+- **Last Updated**: 2026-07-09
+- **Maintainer**: Antigravity Developer Agent
+- **Deployment**: Vercel CI/CD Active
