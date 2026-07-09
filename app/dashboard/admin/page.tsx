@@ -73,10 +73,15 @@ export default function AdminDashboardPage() {
   const [processingAction, setProcessingAction] = useState<string | null>(null) // nominationId
   const [apiError, setApiError] = useState<string | null>(null)
 
-  // Soft Guard redirecting non-organization users
+  // Soft Guard redirecting non-admin users
   useEffect(() => {
     if (!authLoading) {
-      if (!user || profile?.profileType !== "organization") {
+      const hasAdminRole = 
+        profile?.isAdmin === true || 
+        user?.email === "admin@techmissionrio.org" || 
+        user?.email === "techmissionrio@gmail.com"
+      
+      if (!user || !hasAdminRole) {
         router.replace("/")
       }
     }
@@ -84,7 +89,11 @@ export default function AdminDashboardPage() {
 
   // Fetch current database statistics (Metrics)
   useEffect(() => {
-    if (!user || profile?.profileType !== "organization") return
+    const hasAdminRole = 
+      profile?.isAdmin === true || 
+      user?.email === "admin@techmissionrio.org" || 
+      user?.email === "techmissionrio@gmail.com"
+    if (!user || !hasAdminRole) return
 
     const fetchCurrentStats = async () => {
       try {
@@ -114,9 +123,12 @@ export default function AdminDashboardPage() {
     fetchCurrentStats()
   }, [user, profile])
 
-  // Real-time listener for pending nominations
   useEffect(() => {
-    if (!user || profile?.profileType !== "organization") return
+    const hasAdminRole = 
+      profile?.isAdmin === true || 
+      user?.email === "admin@techmissionrio.org" || 
+      user?.email === "techmissionrio@gmail.com"
+    if (!user || !hasAdminRole) return
 
     const q = query(
       collection(db, "nominations"),
@@ -268,7 +280,12 @@ export default function AdminDashboardPage() {
     }
   }
 
-  if (authLoading || !user || profile?.profileType !== "organization") {
+  const hasAdminRole = 
+    profile?.isAdmin === true || 
+    user?.email === "admin@techmissionrio.org" || 
+    user?.email === "techmissionrio@gmail.com"
+
+  if (authLoading || !user || !hasAdminRole) {
     return null
   }
 
