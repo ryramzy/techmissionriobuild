@@ -10,11 +10,7 @@ export function QuickLinks() {
             About Us
           </Link>
         </li>
-        <li>
-          <Link href="/programs" className="block w-full py-4 px-6 bg-gray-50/50 rounded-2xl font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 hover:scale-[1.02] transform transition-all duration-200">
-            Programs
-          </Link>
-        </li>
+
         <li>
           <Link href="/join" className="block w-full py-4 px-6 bg-gray-50/50 rounded-2xl font-semibold text-gray-700 hover:text-blue-600 hover:bg-blue-50/80 hover:scale-[1.02] transform transition-all duration-200">
             Get Involved

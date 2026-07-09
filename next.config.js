@@ -26,6 +26,14 @@ const nextConfig = {
     root: __dirname,
   },
   allowedDevOrigins: ['127.0.0.1'],
+  async redirects() {
+    return [
+      { source: "/mission",  destination: "/about",   permanent: true },
+      { source: "/connect",  destination: "/partner", permanent: true },
+      { source: "/programs", destination: "/about",   permanent: true },
+      { source: "/events",   destination: "/about",   permanent: true },
+    ];
+  },
 }
 
 module.exports = nextConfig

@@ -1,35 +1,73 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import { ShieldCheck, Heart, Sparkles, BookOpen, Users } from "lucide-react"
+import RioCarousel from "@/components/RioCarousel"
+import { Code2, Users, MapPin, Sparkles, BookOpen, Heart, ShieldCheck } from "lucide-react"
 
 export const dynamic = "force-static"
 
 export const metadata: Metadata = {
-  title: "About Us | TechMission Rio",
-  description: "Learn about our story, mission, and biblical motivation to transform lives through technology, education, and faith.",
+  title: "About Our Story & Mission | TechMission Rio",
+  description: "Learn about our founding story, our core educational pillars, and our biblical motivation to transform lives in Rio de Janeiro.",
 }
 
 export default function AboutPage() {
+  const pillars = [
+    {
+      id: "pillar-coding",
+      icon: <Code2 className="w-6 h-6 text-green-400" />,
+      title: "Coding Workshops",
+      description: "Free technical software development classes for youth in favelas and local technical colleges.",
+      gradient: "from-green-500 to-blue-500"
+    },
+    {
+      id: "pillar-meetups",
+      icon: <Users className="w-6 h-6 text-blue-400" />,
+      title: "Meetups & Events",
+      description: "Regular networking forums where ideas, mentors, local IT experts, and sponsors collide.",
+      gradient: "from-blue-500 to-indigo-500"
+    },
+    {
+      id: "pillar-outreach",
+      icon: <MapPin className="w-6 h-6 text-indigo-400" />,
+      title: "Local Outreach",
+      description: "Direct community assistance, equipment distribution, and physical classroom lab installations in Rio.",
+      gradient: "from-indigo-500 to-purple-500"
+    },
+    {
+      id: "pillar-faith",
+      icon: <Sparkles className="w-6 h-6 text-yellow-400" />,
+      title: "Faith & Purpose",
+      description: "Valuing stewardship and human dignity. Open to everyone without judgment - sem julgamentos.",
+      gradient: "from-yellow-400 to-orange-500"
+    }
+  ]
+
   return (
     <div className="bg-black text-white min-h-screen relative overflow-hidden">
-      {/* Background Radial Light */}
+      {/* Background Radial Lights */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
-      <main className="max-w-5xl mx-auto px-6 py-16 relative z-10 space-y-16">
+      <main className="max-w-6xl mx-auto px-6 py-16 relative z-10 space-y-16">
         
-        {/* Header */}
+        {/* Title Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full py-1.5 px-3 mb-2">
             <ShieldCheck className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">About Our Agency</span>
+            <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">Our Story & Mission</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            Our Story & Motivation
+            Empowering Rio's Youth,<br />
+            <span className="bg-gradient-to-r from-green-400 via-teal-400 to-blue-400 bg-clip-text text-transparent">Renewing Minds</span>
           </h1>
           <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
-            Uniting technology and faith to empower the next generation of Brazilian tech innovators.
+            TechMission Rio bridges the gap between underprivileged technical talent in Rio and B2B resources and mentorship in the US.
           </p>
         </div>
+
+        {/* Animated Rio Carousel Slideshow */}
+        <section className="w-full">
+          <RioCarousel />
+        </section>
 
         {/* Story and Scripture Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
@@ -86,6 +124,39 @@ export default function AboutPage() {
 
         </div>
 
+        {/* Pillars / What We Do (With premium gradient-border wrapper pattern) */}
+        <section className="space-y-8">
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-white justify-center">
+            <Heart className="w-6 h-6 text-green-400" />
+            Our Core Pillars
+          </h2>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {pillars.map((pillar) => (
+              /* Gradient border div wrapper (1px padding) */
+              <div 
+                key={pillar.id}
+                className={`p-[1px] rounded-3xl bg-gradient-to-br ${pillar.gradient} shadow-lg hover:scale-[1.03] transition-transform duration-300`}
+              >
+                {/* Solid black inner container */}
+                <div className="h-full bg-black rounded-[23px] p-6 flex flex-col justify-between space-y-4">
+                  <div className="space-y-3">
+                    <div className="w-10 h-10 rounded-xl bg-gray-900 flex items-center justify-center border border-gray-800">
+                      {pillar.icon}
+                    </div>
+                    <h3 className="font-bold text-white text-base leading-tight">
+                      {pillar.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    {pillar.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Team Roles Section */}
         <section className="space-y-6">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-white justify-center">
@@ -118,7 +189,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* CTA */}
+        {/* CTA Section */}
         <section className="text-center bg-gradient-to-br from-blue-950/25 via-black to-green-950/25 border border-blue-500/20 rounded-3xl p-10 max-w-3xl mx-auto space-y-6">
           <h2 className="text-2xl font-bold">Join the Mission</h2>
           <p className="text-gray-400 text-sm leading-relaxed max-w-md mx-auto">

@@ -11,7 +11,7 @@ interface CarouselSlide {
   description: string
 }
 
-export function MissionCarousel() {
+export default function RioCarousel() {
   const slides: CarouselSlide[] = [
     {
       id: 1,

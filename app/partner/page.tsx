@@ -59,6 +59,7 @@ export default function PartnerPortalPage() {
   const [nominating, setNominating] = useState(false)
   const [nominationSuccess, setNominationSuccess] = useState(false)
   const [nominationError, setNominationError] = useState<string | null>(null)
+  const [consentChecked, setConsentChecked] = useState(false)
 
   // Hardware State
   const [hardwareRequest, setHardwareRequest] = useState<HardwareRequest>({
@@ -129,15 +130,31 @@ export default function PartnerPortalPage() {
       return
     }
 
+    if (!consentChecked) {
+      setNominationError("You must verify parental consent under LGPD regulations.")
+      setNominating(false)
+      return
+    }
+
     try {
       // Log to database
       await addDoc(collection(db, "nominations"), {
-        ...nomination,
+        studentName: nomination.studentName,
+        studentEmail: nomination.studentEmail,
+        schoolCampus: nomination.school,
+        grade: nomination.grade,
+        itTracks: nomination.tracks,
+        justification: nomination.justification,
+        comments: nomination.comments,
+        submittedBy: user.uid,
         nominatorId: user.uid,
         nominatorEmail: user.email,
+        status: "pending",
+        createdAt: new Date().toISOString(),
         date: new Date().toISOString()
       })
       setNominationSuccess(true)
+      setConsentChecked(false)
       // Reset form
       setNomination({
         studentName: "",
@@ -443,6 +460,25 @@ export default function PartnerPortalPage() {
                     placeholder="Highlight special attributes, logical skills, or classroom achievements..."
                     className="w-full h-20 bg-black/60 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 text-sm leading-relaxed"
                   />
+                </div>
+
+                {/* Consent checkbox — MUST link to /privacy */}
+                <div className="flex items-start gap-3 py-2">
+                  <input
+                    type="checkbox"
+                    checked={consentChecked}
+                    onChange={(e) => setConsentChecked(e.target.checked)}
+                    style={{ marginTop: 2, flexShrink: 0 }}
+                    required
+                    className="w-4 h-4 rounded text-green-500 bg-black border-gray-800 focus:ring-0 mt-0.5 cursor-pointer"
+                  />
+                  <span className="text-xs text-gray-400 leading-normal">
+                    I confirm that the student's parent or legal guardian has provided explicit consent for their personal data to be processed by TechMission Rio under{" "}
+                    <Link href="/privacy" target="_blank" className="text-green-400 hover:underline font-semibold">
+                      our Privacy Policy
+                    </Link>
+                    {" "}(LGPD Art. 14 — processing data of minors).
+                  </span>
                 </div>
 
                 {/* Action button */}
