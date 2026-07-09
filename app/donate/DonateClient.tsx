@@ -8,6 +8,7 @@ export default function DonateClient() {
   const { user } = useAuth()
   const [selectedAmount, setSelectedAmount] = useState(25)
   const [isMonthly, setIsMonthly] = useState(false)
+  const [isPix, setIsPix] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -26,6 +27,7 @@ export default function DonateClient() {
           amount,
           isMonthly,
           userId: user ? user.uid : null,
+          isPix,
         }),
       })
 
@@ -102,7 +104,7 @@ export default function DonateClient() {
               <div className="flex gap-4 justify-center">
                 <button
                   onClick={() => {
-                    window.location.href = `/success?session_id=demo_session_${Date.now()}&amount=${selectedAmount}&monthly=${isMonthly}`
+                    window.location.href = `/success?session_id=demo_session_${Date.now()}&amount=${selectedAmount}&monthly=${isMonthly}&isPix=${isPix}`
                   }}
                   className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-5 rounded-lg transition-all"
                 >
@@ -125,7 +127,7 @@ export default function DonateClient() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center">
-              <div className="text-4xl font-bold text-green-400 mb-2">$25</div>
+              <div className="text-4xl font-bold text-green-400 mb-2">{isPix ? 'R$25' : '$25'}</div>
               <div className="text-white font-semibold mb-2">Tech Starter</div>
               <p className="text-gray-400 text-sm mb-4">Provides coding workshop materials for one student</p>
               <button 
@@ -133,7 +135,7 @@ export default function DonateClient() {
                 disabled={isLoading}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
               >
-                {isLoading ? 'Processing...' : 'Donate $25'}
+                {isLoading ? 'Processing...' : `Donate ${isPix ? 'R$' : '$'}25`}
               </button>
             </div>
             
@@ -141,7 +143,7 @@ export default function DonateClient() {
               <div className="absolute -top-3 -right-3 bg-yellow-500 text-black text-xs px-2 py-1 rounded-full font-bold">
                 MOST POPULAR
               </div>
-              <div className="text-4xl font-bold text-green-400 mb-2">$100</div>
+              <div className="text-4xl font-bold text-green-400 mb-2">{isPix ? 'R$100' : '$100'}</div>
               <div className="text-white font-semibold mb-2">Tech Champion</div>
               <p className="text-gray-400 text-sm mb-4">Sponsors one month of mentorship for a fellow</p>
               <button 
@@ -149,7 +151,7 @@ export default function DonateClient() {
                 disabled={isLoading}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
               >
-                {isLoading ? 'Processing...' : 'Donate $100'}
+                {isLoading ? 'Processing...' : `Donate ${isPix ? 'R$' : '$'}100`}
               </button>
             </div>
             
@@ -157,7 +159,7 @@ export default function DonateClient() {
               <div className="absolute -top-3 -right-3 bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                 HIGH IMPACT
               </div>
-              <div className="text-4xl font-bold text-green-400 mb-2">$500</div>
+              <div className="text-4xl font-bold text-green-400 mb-2">{isPix ? 'R$500' : '$500'}</div>
               <div className="text-white font-semibold mb-2">Tech Visionary</div>
               <p className="text-gray-400 text-sm mb-4">Funds a laptop and full program for one student</p>
               <button 
@@ -165,26 +167,54 @@ export default function DonateClient() {
                 disabled={isLoading}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
               >
-                {isLoading ? 'Processing...' : 'Donate $500'}
+                {isLoading ? 'Processing...' : `Donate ${isPix ? 'R$' : '$'}500`}
               </button>
             </div>
           </div>
 
-          {/* Monthly Toggle */}
-          <div className="bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-2xl p-8 text-center mb-12">
-            <h3 className="text-2xl font-bold text-white mb-4">Monthly Support</h3>
-            <p className="text-gray-400 text-sm mb-4">Monthly donations provide sustainable support for our programs</p>
-            <div className="flex items-center justify-center gap-4">
-              <span className="text-gray-400 font-semibold">One-time</span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={isMonthly}
-                  onChange={(e) => setIsMonthly(e.target.checked)}
-                />
-                <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-              </label>
-              <span className="text-green-400 font-semibold">Monthly</span>
+          {/* Preferences Toggles */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {/* Monthly Toggle */}
+            <div className="bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-2xl p-8 text-center">
+              <h3 className="text-xl font-bold text-white mb-2">Support Interval</h3>
+              <p className="text-gray-400 text-xs mb-4">Choose recurring monthly support for sustainable impact</p>
+              <div className="flex items-center justify-center gap-4">
+                <span className={`text-sm ${!isMonthly ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>One-time</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={isMonthly}
+                    onChange={(e) => {
+                      const val = e.target.checked
+                      setIsMonthly(val)
+                      if (val) setIsPix(false) // Disable PIX on monthly
+                    }}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 relative"></div>
+                </label>
+                <span className={`text-sm ${isMonthly ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>Monthly</span>
+              </div>
+            </div>
+
+            {/* PIX/BRL Toggle */}
+            <div className={`bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-2xl p-8 text-center transition-all ${isMonthly ? 'opacity-40 pointer-events-none' : ''}`}>
+              <h3 className="text-xl font-bold text-white mb-2">Brazil Local Payment (PIX)</h3>
+              <p className="text-gray-400 text-xs mb-4">Pay in BRL using PIX instant transfer or card</p>
+              <div className="flex items-center justify-center gap-4">
+                <span className={`text-sm ${!isPix ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>USD ($)</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={isPix}
+                    disabled={isMonthly}
+                    onChange={(e) => setIsPix(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 relative"></div>
+                </label>
+                <span className={`text-sm ${isPix ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>BRL (R$ / PIX)</span>
+              </div>
             </div>
           </div>
 
@@ -205,7 +235,7 @@ export default function DonateClient() {
                 disabled={isLoading || selectedAmount <= 0}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all disabled:opacity-50"
               >
-                {isLoading ? 'Processing...' : `Donate $${selectedAmount}`}
+                {isLoading ? 'Processing...' : `Donate ${isPix ? 'R$' : '$'}${selectedAmount}`}
               </button>
             </div>
           </div>

@@ -15,13 +15,14 @@ export default function SuccessClient() {
   // Donation data - fallback to search params or default $100
   const donationAmount = Number(searchParams.get('amount') || 100)
   const isMonthly = searchParams.get('monthly') === 'true'
+  const isPix = searchParams.get('isPix') === 'true'
 
   useEffect(() => {
     // Track successful donation completion
     if (sessionId) {
       analytics.trackDonationComplete(donationAmount, isMonthly, sessionId)
       analytics.trackFunnelStep('donation', 4)
-      analytics.trackRevenue(donationAmount, 'USD', {
+      analytics.trackRevenue(donationAmount, isPix ? 'BRL' : 'USD', {
         isMonthly,
         sessionId,
         source: 'stripe_checkout'
@@ -94,7 +95,7 @@ export default function SuccessClient() {
             </p>
           </div>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-            Your donation of ${donationAmount} {isMonthly ? 'monthly' : ''} is already creating opportunities for young people in Rio's underserved communities.
+            Your donation of {isPix ? 'R$' : '$'}{donationAmount} {isMonthly ? 'monthly' : ''} is already creating opportunities for young people in Rio's underserved communities.
           </p>
         </div>
 

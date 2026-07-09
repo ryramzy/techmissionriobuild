@@ -28,3 +28,19 @@ const activeConfig = isConfigured
 const app = getApps().length === 0 ? initializeApp(activeConfig) : getApp();
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// Dynamic import for Firebase Cloud Messaging (Client-only & Service Worker check)
+export const getFCM = async () => {
+  if (typeof window !== "undefined") {
+    try {
+      const { getMessaging, isSupported } = await import("firebase/messaging");
+      const supported = await isSupported();
+      if (supported) {
+        return getMessaging(app);
+      }
+    } catch (err) {
+      console.warn("FCM is not supported or failed to load:", err);
+    }
+  }
+  return null;
+};

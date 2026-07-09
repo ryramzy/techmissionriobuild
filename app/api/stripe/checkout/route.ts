@@ -12,13 +12,26 @@ const getStripe = () => {
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, isMonthly, userId } = await request.json()
+    const { amount, isMonthly, userId, isPix } = await request.json()
+
+    // PIX is only supported on one-time payments in BRL
+    const usePix = isPix && !isMonthly
+    const currency = usePix ? 'brl' : 'usd'
+    const paymentMethodTypes = usePix 
+      ? ['card', 'pix'] 
+      : ['card']
 
     // Create Stripe Checkout Session
     const stripe = getStripe()
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: paymentMethodTypes as any,
       mode: isMonthly ? 'subscription' : 'payment',
+      
+      payment_method_options: usePix ? {
+        pix: {
+          expires_after_seconds: 3600, // 1 hour
+        }
+      } : undefined,
       
       line_items: isMonthly ? [
         {
@@ -38,24 +51,25 @@ export async function POST(request: NextRequest) {
       ] : [
         {
           price_data: {
-            currency: 'usd',
-            unit_amount: amount * 100, // Convert to cents
+            currency: currency,
+            unit_amount: amount * 100, // Convert to cents/centavos
             product_data: {
               name: 'TechMission Rio Donation',
-              description: `One-time donation of $${amount} to support Rio's youth tech education`,
+              description: `One-time donation of ${usePix ? 'R$' : '$'}${amount} to support Rio's youth tech education`,
               images: ['https://techmissionrio.org/icon.png'],
             },
           },
         },
       ],
 
-      success_url: `${process.env.NEXT_PUBLIC_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXT_PUBLIC_URL}/success?session_id={CHECKOUT_SESSION_ID}&amount=${amount}&monthly=${isMonthly}`,
       cancel_url: `${process.env.NEXT_PUBLIC_URL}/donate?cancelled=true`,
 
       metadata: {
         donation_type: isMonthly ? 'monthly' : 'one-time',
         amount: amount.toString(),
         userId: userId || '',
+        currency,
       },
 
       customer_email: undefined, // Let Stripe collect email
