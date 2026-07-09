@@ -45,38 +45,30 @@ Our marketing strategy targets two primary stakeholders: **US Christian Churches
 
 Our Next.js 16 (App Router) product roadmap builds out the features needed to execute the marketing plan.
 
-### 🚀 Month 1: Payments & Portal Activation (Current Sprint)
-* **Stripe Live Rollout**: Transition Stripe credentials from simulation mode to live processing.
-* **PIX Integration**: Integrate PIX (Brazil's instant payment system) to enable local Brazilians and partners to donate easily. Note: Use a dedicated Brazilian gateway (e.g. Mercado Pago or Pagar.me API) since PayPal does not support PIX natively and Stripe has strict cross-border restrictions.
-* **FCM (Firebase Cloud Messaging) Setup**: Configure FCM SDK credentials now while setting up the authentication services to prevent cold setup blocks in Month 5.
+### 🚀 Month 1: Payments & Portal Activation (Completed)
+* **Stripe & PIX Gateways**: Integrated Stripe test credit card processing and local Brazilian PIX payments (BRL currency) via dedicated checkout APIs.
+* **FCM Configuration**: Configured Firebase Cloud Messaging credentials during the Auth SDK setup.
 
-### 🚀 Month 2: Public Student Impact Dashboard (`/dashboard`)
-* Build a public-facing dashboard displaying real-time metrics loaded from a central Firestore collection (`dashboard_stats`):
-  * Total Laptops Distributed.
-  * Cumulative Hours of Mentorship.
-  * Live interactive map pinning partnering FAETEC/IFRJ schools in Rio.
-  * Budget transparency graph showing exactly how donation funds are allocated.
-* **Admin Write Interface**: Build a lightweight, secure admin controls page to update these figures dynamically in Firestore without requiring new code deployments.
+### 🚀 Month 2: Public Student Impact Dashboard & Page Consolidation (Current Sprint)
+* **Route Consolidation**: 
+  * Merge `/about` and `/mission` into a unified `/about` page (featuring the Ken Burns Rio carousel, foundling story, Romans 12:2, and core pillars).
+  * Merge `/connect` and `/partner` into a unified `/partner` dashboard (combining stakeholder matching, educator nominations, and hardware logs).
+* **Live Firestore Bindings**: Refactor dashboard metrics fetches to utilize real-time listeners (`onSnapshot`) instead of one-time `getDoc` calls.
+* **Stripe Webhook Idempotency**: Guard the webhook route against duplicate events by logging processed Stripe Event IDs to a `stripe_events` Firestore collection.
 
-### 🚀 Month 3: Student Video Profiles on `/fellows`
-* Enable short 60-second video introductions for fellows.
-* Support video uploads via the student dashboard so fellows can record progress updates.
-* Embed clickable GitHub, LinkedIn, and personal portfolio links on fellow detail cards.
+### 🚀 Month 3: Student Video Profiles & Verification Badges (`/fellows`)
+* **Elevator Pitches**: Enable short 60-second video introductions for fellows with dynamic browser playback.
+* **Verification Badges**: Add **"Teacher Endorsed" labels** and verified academic metrics to fellow profiles to bolster sponsorship credibility.
+* **Social Links & Tracking**: Display clickable GitHub, LinkedIn, and personal portfolio links with PostHog event tracking.
 
 ### 🚀 Month 4: School Partner & B2B Portal (`/partner`)
-* Implement a secure page for FAETEC/IFRJ educators.
-* Features:
-  * Student nomination form (grades, tech interests, financial justification).
-  * Hardware request logs for classroom updates.
-* **B2B Checkout Integration**: Build a dedicated checkout page and flow specifically for the $12,000 "Adopt-a-Classroom" sponsorship package, separate from the general public donation form.
+* **Gated Educator Portal**: School nominations forms and hardware request logs gated behind Firebase authentication.
+* **Adopt-a-Classroom Checkout**: Integrate a dedicated checkout flow for the $12,000 cohort package, protected by a secure Radix confirmation dialog.
 
-### 🚀 Month 5: PWA Push Notifications & Engagement
-* Implement service-worker push notifications (utilizing the FCM config established in Month 1).
-* Notify US sponsors when:
-  * A sponsored student completes a major learning milestone (e.g. "Lucas just learned React!").
-  * A new prayer request is posted on the church board.
-  * A Zoom Q&A exchange is confirmed.
+### 🚀 Month 5: PWA Push Notifications & Messaging
+* **PWA Alerts**: Implement service-worker push alerts using FCM to notify sponsors when sponsored students complete learning milestones.
+* **Student Chat**: Integrate a simple chat tool for fellows to communicate with their US mentors directly.
 
 ### 🚀 Month 6: Multi-Language & Regional Support
-* Add full i18n support with a simple EN / PT toggle.
-* Automatically localize dashboard data based on the visitor's browser locale.
+* **i18n Localization**: Add full English / Portuguese language toggles based on the browser locale.
+* **Tax Document Portal**: Store and archive tax-exempt receipts automatically in B2B profiles.
