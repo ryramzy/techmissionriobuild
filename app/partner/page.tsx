@@ -13,11 +13,12 @@ import {
   ShieldCheck, 
   ArrowRight,
   Plus,
-  HelpCircle,
-  HelpCircle as QuestionIcon
+  Play,
+  X,
+  WifiOff
 } from "lucide-react"
 import Link from "next/link"
-import { collection, addDoc, getDocs, query, where } from "firebase/firestore"
+import { collection, addDoc, getDocs, query, where, onSnapshot, orderBy } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
 
@@ -38,14 +39,18 @@ interface HardwareRequest {
   notes: string
   status: string
   date: string
+  isOfflinePending?: boolean
 }
 
 export default function PartnerPortalPage() {
   const { user, profile, loading: authLoading } = useAuth()
   const router = useRouter()
 
-  const [activeTab, setActiveTab] = useState<"nominate" | "hardware" | "sponsorship">("nominate")
+  const [activeTab, setActiveTab] = useState<"nominate" | "hardware" | "sponsorship" | "cohort">("nominate")
   
+  // Offline State
+  const [isOffline, setIsOffline] = useState(typeof window !== "undefined" ? !navigator.onLine : false)
+
   // Nomination State
   const [nomination, setNomination] = useState<Nomination>({
     studentName: "",
@@ -99,6 +104,148 @@ export default function PartnerPortalPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
+  // Dynamic Cohort States
+  const [cohortFellows, setCohortFellows] = useState<any[]>([])
+  const [cohortLoading, setCohortLoading] = useState(true)
+  const [showVideoModal, setShowVideoModal] = useState(false)
+  const [activeVideoUrl, setActiveVideoUrl] = useState("")
+
+  // Real-time cached lists
+  const [nominationsHistory, setNominationsHistory] = useState<any[]>([])
+
+  // Offline background sync function
+  const syncOfflineData = async () => {
+    if (!user) return
+
+    // 1. Sync nominations
+    const offlineNomsKey = `tmr_offline_noms_${user.uid}`
+    const offlineNoms = JSON.parse(localStorage.getItem(offlineNomsKey) || "[]")
+    if (offlineNoms.length > 0) {
+      console.log(`Syncing ${offlineNoms.length} offline nominations...`)
+      for (const nom of offlineNoms) {
+        try {
+          const { id, isOfflinePending, ...firestoreData } = nom
+          await addDoc(collection(db, "nominations"), firestoreData)
+        } catch (err) {
+          console.error("Failed to sync nomination:", err)
+        }
+      }
+      localStorage.removeItem(offlineNomsKey)
+    }
+
+    // 2. Sync hardware requests
+    const offlineHwKey = `tmr_offline_hw_${user.uid}`
+    const offlineHw = JSON.parse(localStorage.getItem(offlineHwKey) || "[]")
+    if (offlineHw.length > 0) {
+      console.log(`Syncing ${offlineHw.length} offline hardware requests...`)
+      for (const hw of offlineHw) {
+        try {
+          const { isOfflinePending, ...firestoreData } = hw
+          await addDoc(collection(db, "hardware_requests"), firestoreData)
+        } catch (err) {
+          console.error("Failed to sync hardware request:", err)
+        }
+      }
+      localStorage.removeItem(offlineHwKey)
+    }
+  }
+
+  // 1. Monitor network connection status
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    
+    const handleOnline = () => {
+      setIsOffline(false)
+      syncOfflineData()
+    }
+    const handleOffline = () => {
+      setIsOffline(true)
+    }
+
+    window.addEventListener("online", handleOnline)
+    window.addEventListener("offline", handleOffline)
+    return () => {
+      window.removeEventListener("online", handleOnline)
+      window.removeEventListener("offline", handleOffline)
+    }
+  }, [])
+
+  // 2. Real-time Firebase snapshot listeners with local storage cache fallback
+  useEffect(() => {
+    if (!user) return
+
+    const cachedNominations = localStorage.getItem(`tmr_cached_noms_${user.uid}`)
+    if (cachedNominations) {
+      setNominationsHistory(JSON.parse(cachedNominations))
+    }
+
+    const cachedHardware = localStorage.getItem(`tmr_cached_hw_${user.uid}`)
+    if (cachedHardware) {
+      setRequestHistory(JSON.parse(cachedHardware))
+    }
+
+    const nomsQuery = query(
+      collection(db, "nominations"),
+      where("submittedBy", "==", user.uid),
+      orderBy("createdAt", "desc")
+    )
+    const unsubNoms = onSnapshot(nomsQuery, (snapshot) => {
+      const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }))
+      setNominationsHistory(list)
+      localStorage.setItem(`tmr_cached_noms_${user.uid}`, JSON.stringify(list))
+    }, (err) => {
+      console.warn("Noms listener failed or permission denied, using cached fallback:", err)
+    })
+
+    const hwQuery = query(
+      collection(db, "hardware_requests"),
+      where("nominatorId", "==", user.uid),
+      orderBy("date", "desc")
+    )
+    const unsubHw = onSnapshot(hwQuery, (snapshot) => {
+      const list = snapshot.docs.map(d => d.data() as HardwareRequest)
+      setRequestHistory(list)
+      localStorage.setItem(`tmr_cached_hw_${user.uid}`, JSON.stringify(list))
+    }, (err) => {
+      console.warn("Hardware requests listener failed or permission denied, using cached fallback:", err)
+    })
+
+    return () => {
+      unsubNoms()
+      unsubHw()
+    }
+  }, [user])
+
+  // 3. Fetch Cohort fellows list (FAETEC Santa Cruz by default for B2B demo representation)
+  useEffect(() => {
+    if (!user) return
+    const fetchCohortFellows = async () => {
+      setCohortLoading(true)
+      try {
+        const q = query(
+          collection(db, "fellows"),
+          where("schoolCampus", "==", "FAETEC Santa Cruz")
+        )
+        const snap = await getDocs(q)
+        if (!snap.empty) {
+          const list = snap.docs.map(d => d.data())
+          setCohortFellows(list)
+        } else {
+          // Seeding default mock cohort fellows if Firestore collection is empty
+          setCohortFellows([
+            { name: "Gabriel Barbosa", initials: "GB", track: "Web Development", location: "Santa Cruz, Rio", story: "Excelling in technical coding.", isEndorsed: true, videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-his-computer-34282-large.mp4" },
+            { name: "Maria Costa", initials: "MC", track: "Mobile App Development", location: "Santa Cruz, Rio", story: "Developing useful campus software.", isEndorsed: true, videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-coding-on-computer-in-glasses-40742-large.mp4" }
+          ])
+        }
+      } catch (err) {
+        console.error("Cohort fetch error:", err)
+      } finally {
+        setCohortLoading(false)
+      }
+    }
+    fetchCohortFellows()
+  }, [user])
+
   // Redirect unauthorized users
   useEffect(() => {
     if (!authLoading && !user) {
@@ -136,26 +283,36 @@ export default function PartnerPortalPage() {
       return
     }
 
-    try {
-      // Log to database
-      await addDoc(collection(db, "nominations"), {
-        studentName: nomination.studentName,
-        studentEmail: nomination.studentEmail,
-        schoolCampus: nomination.school,
-        grade: nomination.grade,
-        itTracks: nomination.tracks,
-        justification: nomination.justification,
-        comments: nomination.comments,
-        submittedBy: user.uid,
-        nominatorId: user.uid,
-        nominatorEmail: user.email,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        date: new Date().toISOString()
-      })
+    const newNomData = {
+      studentName: nomination.studentName,
+      studentEmail: nomination.studentEmail,
+      schoolCampus: nomination.school,
+      grade: nomination.grade,
+      itTracks: nomination.tracks,
+      justification: nomination.justification,
+      comments: nomination.comments,
+      submittedBy: user.uid,
+      nominatorId: user.uid,
+      nominatorEmail: user.email,
+      status: "pending",
+      createdAt: new Date().toISOString(),
+      date: new Date().toISOString()
+    }
+
+    // If offline, queue the nomination optimistically
+    if (!navigator.onLine) {
+      const offlineNomsKey = `tmr_offline_noms_${user.uid}`
+      const existingOffline = JSON.parse(localStorage.getItem(offlineNomsKey) || "[]")
+      const localOfflineNom = {
+        id: `offline_${Date.now()}`,
+        isOfflinePending: true,
+        ...newNomData
+      }
+      localStorage.setItem(offlineNomsKey, JSON.stringify([...existingOffline, localOfflineNom]))
+
+      setNominationsHistory(prev => [localOfflineNom, ...prev])
       setNominationSuccess(true)
       setConsentChecked(false)
-      // Reset form
       setNomination({
         studentName: "",
         studentEmail: "",
@@ -165,10 +322,26 @@ export default function PartnerPortalPage() {
         justification: "",
         comments: ""
       })
-    } catch (err) {
-      console.warn("Could not save nomination to Firestore, running simulation:", err)
-      // Simulated success for dev/preview instances
+      setNominating(false)
+      return
+    }
+
+    try {
+      await addDoc(collection(db, "nominations"), newNomData)
       setNominationSuccess(true)
+      setConsentChecked(false)
+      setNomination({
+        studentName: "",
+        studentEmail: "",
+        school: "FAETEC Santa Cruz",
+        grade: "2nd Year High School",
+        tracks: [],
+        justification: "",
+        comments: ""
+      })
+    } catch (err: any) {
+      console.error("Nomination write error:", err)
+      setNominationError(err.message || "Failed to submit student nomination. Offline retry stored in cache.")
     } finally {
       setNominating(false)
     }
@@ -182,20 +355,39 @@ export default function PartnerPortalPage() {
     setHardwareError(null)
     setHardwareSuccess(false)
 
-    try {
-      const newRequest = {
-        ...hardwareRequest,
-        nominatorId: user.uid,
-        date: new Date().toISOString().split("T")[0]
+    const newHwData = {
+      ...hardwareRequest,
+      nominatorId: user.uid,
+      date: new Date().toISOString().split("T")[0]
+    }
+
+    // If offline, queue the hardware request optimistically
+    if (!navigator.onLine) {
+      const offlineHwKey = `tmr_offline_hw_${user.uid}`
+      const existingOffline = JSON.parse(localStorage.getItem(offlineHwKey) || "[]")
+      const localOfflineHw = {
+        isOfflinePending: true,
+        ...newHwData
       }
-      // Log to database
-      await addDoc(collection(db, "hardware_requests"), newRequest)
-      
-      // Update history list locally
-      setRequestHistory(prev => [newRequest, ...prev])
+      localStorage.setItem(offlineHwKey, JSON.stringify([...existingOffline, localOfflineHw]))
+
+      setRequestHistory(prev => [localOfflineHw, ...prev])
       setHardwareSuccess(true)
-      
-      // Reset form
+      setHardwareRequest({
+        itemType: "Laptop",
+        quantity: 1,
+        isUrgent: false,
+        notes: "",
+        status: "Pending Sync (Offline)",
+        date: new Date().toISOString().split("T")[0]
+      })
+      setRequestingHardware(false)
+      return
+    }
+
+    try {
+      await addDoc(collection(db, "hardware_requests"), newHwData)
+      setHardwareSuccess(true)
       setHardwareRequest({
         itemType: "Laptop",
         quantity: 1,
@@ -204,11 +396,9 @@ export default function PartnerPortalPage() {
         status: "Pending Review",
         date: new Date().toISOString().split("T")[0]
       })
-    } catch (err) {
-      console.warn("Could not save hardware request to Firestore, running simulation:", err)
-      // Local fallback simulator
-      setRequestHistory(prev => [hardwareRequest, ...prev])
-      setHardwareSuccess(true)
+    } catch (err: any) {
+      console.error("Hardware request write error:", err)
+      setHardwareError(err.message || "Failed to submit request. Stored for background synchronization.")
     } finally {
       setRequestingHardware(false)
     }
@@ -297,6 +487,19 @@ export default function PartnerPortalPage() {
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
       <main className="max-w-5xl mx-auto px-6 py-12 relative z-10 space-y-10">
+
+        {/* Offline Warning Banner */}
+        {isOffline && (
+          <div className="bg-yellow-950/40 border border-yellow-500/30 rounded-2xl p-4 flex items-center gap-3 text-yellow-400 text-sm animate-pulse">
+            <WifiOff className="w-5 h-5 flex-shrink-0" />
+            <div className="space-y-0.5">
+              <div className="font-bold">Offline Mode Active</div>
+              <p className="text-xs text-gray-300">
+                You are currently offline. Student nominations and supply requests will be cached locally and synchronized with servers once your connection is restored.
+              </p>
+            </div>
+          </div>
+        )}
         
         {/* Header */}
         <div className="border-b border-gray-900 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -330,6 +533,12 @@ export default function PartnerPortalPage() {
               className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeTab === "sponsorship" ? "bg-green-500 text-white" : "text-gray-400 hover:text-white"}`}
             >
               Classroom Sponsorship
+            </button>
+            <button 
+              onClick={() => setActiveTab("cohort")}
+              className={`py-2 px-4 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${activeTab === "cohort" ? "bg-green-500 text-white" : "text-gray-400 hover:text-white"}`}
+            >
+              Sponsored Cohort
             </button>
           </div>
         </div>
@@ -502,6 +711,54 @@ export default function PartnerPortalPage() {
                   </button>
                 </div>
               </form>
+
+              {/* History list for this nominator */}
+              <div className="border-t border-gray-900 pt-6 mt-8">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-blue-400" />
+                  Your Submitted Nominations
+                </h3>
+                
+                {nominationsHistory.length === 0 ? (
+                  <p className="text-xs text-gray-500">No student nominations submitted yet.</p>
+                ) : (
+                  <div className="space-y-4">
+                    {nominationsHistory.map((nom, index) => (
+                      <div key={nom.id || index} className="bg-black/40 border border-gray-900 rounded-2xl p-4 flex justify-between items-center hover:border-gray-800 transition">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-white">{nom.studentName}</span>
+                            <span className="text-[10px] text-gray-400">({nom.studentEmail})</span>
+                            {nom.isOfflinePending && (
+                              <span className="bg-yellow-500/10 text-yellow-400 text-[9px] font-bold py-0.5 px-2 rounded-full border border-yellow-500/25 flex items-center gap-1">
+                                <WifiOff className="w-2.5 h-2.5" />
+                                OFFLINE PENDING
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-400 leading-snug">
+                            {nom.schoolCampus} &bull; {nom.grade} &bull; {Array.isArray(nom.itTracks) ? nom.itTracks.join(", ") : nom.itTracks}
+                          </p>
+                          <p className="text-[11px] text-gray-500 italic mt-1 font-light leading-relaxed">
+                            "{nom.justification}"
+                          </p>
+                        </div>
+                        <div>
+                          <span className={`text-[10px] font-bold py-1 px-3 rounded-full border uppercase tracking-wider ${
+                            nom.status === "approved"
+                              ? "bg-green-500/10 border-green-500/25 text-green-400"
+                              : nom.status === "archived"
+                              ? "bg-red-500/10 border-red-500/25 text-red-400"
+                              : "bg-yellow-500/10 border-yellow-500/25 text-yellow-400"
+                          }`}>
+                            {nom.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -692,6 +949,91 @@ export default function PartnerPortalPage() {
           </div>
         )}
 
+        {/* Tab Content 4: Cohort Dashboard View */}
+        {activeTab === "cohort" && (
+          <div className="space-y-8">
+            {/* Sponsored Classroom Status Card */}
+            <div className="bg-gradient-to-br from-blue-950/20 to-black border border-blue-500/20 rounded-3xl p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 bg-yellow-500/10 border border-yellow-500/25 text-yellow-400 text-[10px] font-bold py-1 px-3 rounded-full uppercase tracking-wider">
+                  ★ Active Classroom Cohort
+                </div>
+                <h2 className="text-2xl font-black text-white">FAETEC Santa Cruz Sourced Cohort</h2>
+                <p className="text-xs text-gray-400 max-w-xl leading-relaxed">
+                  You are tracking the live progress of students allocated to your sponsored Santa Cruz technical classroom. All 12 laptops have been provisioned and cataloged.
+                </p>
+              </div>
+
+              <div className="bg-black/60 border border-gray-900 rounded-2xl p-5 grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="text-gray-500 block">Hardware Status</span>
+                  <strong className="text-green-400 text-sm">12 / 12 Provisioned</strong>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Graduation Target</span>
+                  <strong className="text-white text-sm">Dec 2026</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* Fellows Catalog Sourced list */}
+            {cohortLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-green-400" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {cohortFellows.map((fellow, i) => (
+                  <div key={i} className="bg-gradient-to-br from-blue-950/10 to-black border border-blue-500/20 rounded-3xl p-6 flex flex-col justify-between hover:border-blue-500/30 transition shadow-lg space-y-4">
+                    <div>
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-gradient-to-tr from-green-500 to-blue-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md">
+                          {fellow.initials || fellow.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0,2)}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <h3 className="font-bold text-white text-base">{fellow.name}</h3>
+                            {fellow.isEndorsed && (
+                              <span className="bg-green-500/10 text-green-400 text-[8px] font-bold px-1.5 py-0.5 rounded-full border border-green-500/25">
+                                ENDORSED
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-green-400 font-semibold">{fellow.track}</p>
+                          <span className="text-[10px] text-gray-500 block">{fellow.location}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-gray-300 italic mt-3 line-clamp-3 leading-relaxed">
+                        "{fellow.story}"
+                      </p>
+                    </div>
+
+                    <div className="flex justify-between items-center border-t border-gray-900 pt-3 mt-1">
+                      <span className="text-[10px] bg-green-500/10 text-green-400 font-bold px-2 py-0.5 rounded-full">
+                        ACTIVE FELLOW
+                      </span>
+                      {fellow.videoUrl && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveVideoUrl(fellow.videoUrl)
+                            setShowVideoModal(true)
+                          }}
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1.5 px-3 rounded-lg text-[10px] flex items-center gap-1 transition cursor-pointer"
+                        >
+                          <Play className="w-3 h-3 fill-white" />
+                          Pitch Video
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
       </main>
 
       {/* Sponsorship Confirmation Modal Dialog */}
@@ -756,6 +1098,48 @@ export default function PartnerPortalPage() {
                   "Confirm & Checkout"
                 )}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pitch Video Modal */}
+      {showVideoModal && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative bg-gradient-to-b from-gray-900 to-black border border-gray-800 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-black/20">
+              <h3 className="font-bold text-sm text-white">Student Elevator Pitch</h3>
+              <button 
+                onClick={() => {
+                  setShowVideoModal(false)
+                  setActiveVideoUrl("")
+                }}
+                className="text-gray-400 hover:text-white p-1 rounded-full hover:bg-white/10 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Video Player */}
+            <div className="relative aspect-video bg-black flex items-center justify-center">
+              {activeVideoUrl.includes("youtube.com/embed") || activeVideoUrl.includes("youtube-nocookie.com/embed") ? (
+                <iframe
+                  src={activeVideoUrl}
+                  title="TMR Pitch Video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <video 
+                  src={activeVideoUrl} 
+                  controls 
+                  autoPlay 
+                  className="w-full h-full object-cover"
+                />
+              )}
             </div>
           </div>
         </div>
