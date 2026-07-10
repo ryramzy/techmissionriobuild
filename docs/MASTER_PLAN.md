@@ -6,6 +6,28 @@
 
 ---
 
+## 🎯 Strategic Principles
+
+### Product Principles
+Every feature must satisfy one or more of the following:
+- **Increase donor trust**: Deliver strict transparency on budgets and metrics.
+- **Improve student opportunity**: Secure access to hardware, curriculum, and native US mentorship.
+- **Reduce operational burden**: Automate invitations, role gates, and webhook transactions.
+- **Remain accessible on low-bandwidth connections**: Ensure offline resilience via cache fallbacks.
+- **Be maintainable by a small engineering team**: Keep dependencies low and serverless slots clean.
+
+### Engineering Principles
+- **Mobile-first** design workflows.
+- **Accessibility-first** targets (WCAG 2.2 AA target).
+- **API-first** decoupled server designs.
+- **Serverless where practical** to avoid infrastructure hosting costs.
+- **Progressive enhancement** via local sync queues and offline recovery.
+- **Performance before animation** to optimize mobile bandwidth rendering.
+- **Security by default** via Firebase Admin ID token verifications.
+- **Cloud portable architecture** using standardized API interfaces.
+
+---
+
 ## 📅 Part 1: The 6-Month Marketing & Outreach Plan
 
 Our marketing strategy targets two primary stakeholders: **US Christian Churches/Organizations** (funding & mentorship) and **Rio de Janeiro Technical Schools** (student pipeline).
@@ -66,13 +88,52 @@ graph TD
 
 ---
 
-## 🖼️ Media Optimization Asset Pipeline
+## 🐳 CI/CD Deployment Flow
 
-To maintain premium lighthouse scores and fast initial loads in favelas, files process through this pipeline:
+```
+Developer ➔ Local Git Commit ➔ GitHub Pull Request ➔ Vercel Preview Deploy ➔ QA Review / Approval ➔ Merge to main ➔ Production Release ➔ PostHog Analytics Monitor ➔ Cloud Monitoring Alerts
+```
+
+---
+
+## 🗃️ Firestore Collections Schema
+
+* **`users/`**: Standard client accounts (email, names, metadata, roles, associated fellow/organization ID references).
+* **`fellows/`**: pre-seeded student profiles (academic tracks, biografic details, linked auth userIds, video pitch URLs).
+* **`donations/`**: Sub-collections under users mapping transactions, payment dates, B2B status, and receipts.
+* **`schools/`**: School coordinates, maps pins, active class sizes, and hardware metrics.
+* **`organizations/`**: B2B church/corporate entities, cohort sponsorship flags, and prayer encouragement walls.
+* **`nominations/`**: Educator nomination documents (student details, technical justifications, approval status).
+* **`notifications/`**: Event alert items, system logs, and delivery states.
+
+---
+
+## 📦 Repository Structure
+
+* **`app/`**: Next.js App Router components, server actions, and layouts.
+* **`components/`**: Reusable components (Navigation, Forms, Alert Banners).
+* **`lib/`**: Firebase client instantiations, server SDK admin setups, and payment configs.
+* **`hooks/`**: Custom React states hooks (Auth context, analytics hooks).
+* **`public/`**: Manifest definitions, PWA icons, dynamic SVG vector logos, and offline fallbacks.
+* **`docs/`**: Strategic plans, debugging guidelines, and repository notes.
+* **`scripts/`**: PWA asset converters and local compile runners.
+
+---
+
+## 🖼️ Media Optimization & Cloud Storage
+
+To maintain premium Lighthouse scores and fast initial loads in favelas, files process through this pipeline:
 
 ```
 Camera/Photo Capture ➔ Client Optimize (Compression) ➔ GCP Storage Upload ➔ CDN Cache Layer ➔ Next.js Image Optimization Component ➔ Browser Storage Cache
 ```
+
+Cloud Storage maintains all core binary datasets:
+* **Student Photos**: Crop compressed image thumbnails.
+* **Pitch Videos**: Standalone elevator pitches and backup files.
+* **Student Portfolios**: PDF resume files and portfolio snapshots.
+* **B2B Pitch Decks**: Strategic PDFs for church/angel reviews.
+* **Donation Receipts**: Automated tax PDF archives for B2B accounts.
 
 ---
 
@@ -92,6 +153,57 @@ Camera/Photo Capture ➔ Client Optimize (Compression) ➔ GCP Storage Upload �
 * **i18n Translation Switcher**: Bilingual EN/PT toggles for headers, footers, and dynamically updated databases (Month 6).
 * **Tax-exempt receipts generator** for US B2B partners.
 * **Volunteer & Alumni Pipeline**: Tools for corporate matchings and employer pipelines.
+
+---
+
+## 🎓 2027 Vision (Scaling Targets)
+* **Active Fellows**: 500 tech candidates.
+* **Partner Schools**: 50 active campuses in Rio de Janeiro.
+* **US Tech Mentors**: 100 onboarded mentors.
+* **Donors Pool**: 1,000 active individual and organizational sponsors.
+* **Corporate Internship Networks**: Direct hiring pathways in Rio/US tech sectors.
+* **Mobile App Releases**: Google Play and iOS App Store native builds.
+* **AI Interview Platforms**: Standalone mock tech interviews and resume reviews.
+
+---
+
+## 🏆 Product Maturity Model
+
+| Stage | Primary Goal |
+| :--- | :--- |
+| **1. Foundation** (Completed) | Ship core functionality (payments, auth, dashboards) and validate. |
+| **2. Validation** (Current) | Onboard first donors, technical fellows, and schools; test flows. |
+| **3. Optimization** (Future) | Run A/B tests, improve conversion, retain cohorts, optimize offline loads. |
+| **4. Scale** (Backlog) | Containerize infrastructure, automate processes, expand technical schools network. |
+
+---
+
+## ⚠️ Risk Registry & Mitigations
+
+* **Limited Donor Acquisition**: Mitigated by B2B Adopt-a-Classroom packages and church outreach drives.
+* **Stripe Transaction Fee Changes**: Mitigated by providing fallback local BRL channels (Mercado Pago / direct banks).
+* **LGPD Regulatory Updates**: Checked by mandatory parent verification inputs and explicit consent gates.
+* **Volunteer / Mentor Retention**: Mitigated by partnering with BRASA chapters and automating syncs.
+* **API Pricing Overages**: Mitigated by client-only rule engines and lazy analytics triggers.
+
+---
+
+## 💼 Disaster Recovery & Business Continuity
+
+* **Firestore Backups**: Scheduled daily database backup dumps to GCP Bucket.
+* **Secret Rotation**: Quarterly rotation policies for Stripe keys, service accounts, and API signatures.
+* **Domain Recovery**: Ownership handles registered to non-personal trust entities.
+* **Stripe Failover**: Direct bank PIX fallback guides for donors if cards processing fails.
+
+---
+
+## 🏛️ Governance & Partnerships
+
+* **Board of Directors**: Strategic non-profit oversight.
+* **Advisory Councils**: US technology leaders and theological advisors.
+* **Educational Partners**: FAETEC, IFRJ, and Rio public high schools.
+* **Corporate Sponsors**: Technology firms and NGO matching foundations.
+* **Volunteers**: Bilingual university student mentors and trip coordinators.
 
 ---
 
