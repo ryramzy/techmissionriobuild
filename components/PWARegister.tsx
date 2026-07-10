@@ -5,9 +5,9 @@ import { useEffect } from "react"
 export default function PWARegister() {
   useEffect(() => {
     if (
+      process.env.NODE_ENV === "production" &&
       typeof window !== "undefined" &&
-      "serviceWorker" in navigator &&
-      window.workbox === undefined // Avoid duplicate registrations in dev tools
+      "serviceWorker" in navigator
     ) {
       window.addEventListener("load", () => {
         navigator.serviceWorker

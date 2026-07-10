@@ -17,6 +17,13 @@ export default function DonateClient() {
     setIsLoading(true)
     setErrorMessage(null)
     
+    // Offline progressive check
+    if (typeof window !== "undefined" && !navigator.onLine) {
+      setErrorMessage("Network Offline: You must be connected to the internet to initialize Stripe checkout transactions. Please check your connection and retry.")
+      setIsLoading(false)
+      return
+    }
+    
     try {
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',

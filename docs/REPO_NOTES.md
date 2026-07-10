@@ -44,7 +44,12 @@
    - Resized icons (192px, 256px, 384px, 512px) generated via `npm run generate-icons` using `sharp`
    - Unified homescreen and Chrome installer visuals with navigation header styling
 
-6. **PostHog Analytics Integration**
+6. **Installable PWA & Offline Support**
+   - **Service Worker (`public/sw.js`)**: Configured with custom caching strategies: Cache First for static images, Stale While Revalidate for JS/CSS resource bundles, and Network First with Offline Fallback for HTML routing.
+   - **Registration Component (`components/PWARegister.tsx`)**: Registered on client-side mount, restricted strictly to `production` environments to preserve development efficiency.
+   - **Offline Fallback Page (`/offline`)**: Custom styled, brand-consistent warning page displaying last sync timestamps and previous session restore buttons. Excludes sensitive endpoints (auth, API, admin dashboards) from stale pre-caches.
+
+7. **PostHog Analytics Integration**
    - Lazy PostHog provider configuration preventing pre-rendering build-time crash warnings
    - Custom events: page views, social profile clicks, video watch times, donation conversions, and funnel milestones
 
