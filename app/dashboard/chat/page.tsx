@@ -78,21 +78,25 @@ export default function ChatPage() {
 
         // If user is a student (fellow), populate US mentors / org contacts
         if (profile.profileType === "fellow") {
-          tempContacts.push(
-            { uid: "admin-tmr-support", name: "TMR Support & Operations", role: "Administrator" },
-            { uid: "sponsor-church-1", name: "FAETEC Santa Cruz Church Sponsor", role: "Mentor Partner" }
-          )
+          if (process.env.NODE_ENV === "development") {
+            tempContacts.push(
+              { uid: "admin-tmr-support", name: "TMR Support & Operations", role: "Administrator" },
+              { uid: "sponsor-church-1", name: "FAETEC Santa Cruz Church Sponsor", role: "Mentor Partner" }
+            )
+          }
         } else {
           // If user is a donor, organization, or admin, query dynamic fellows list from DB
           const fellowsRef = collection(db, "fellows")
           const snapshot = await getDocs(query(fellowsRef, limit(10)))
           
           if (snapshot.empty) {
-            // Seeding mock contacts if firestore is empty
-            tempContacts.push(
-              { uid: "fellow-mock-1", name: "Thiago Silva Santos", role: "Fellow Candidate", track: "Software Engineer" },
-              { uid: "fellow-mock-2", name: "Beatriz Oliveira", role: "Fellow Candidate", track: "Full Stack Web Developer" }
-            )
+            if (process.env.NODE_ENV === "development") {
+              // Seeding mock contacts if firestore is empty
+              tempContacts.push(
+                { uid: "fellow-mock-1", name: "Thiago Silva Santos", role: "Fellow Candidate", track: "Software Engineer" },
+                { uid: "fellow-mock-2", name: "Beatriz Oliveira", role: "Fellow Candidate", track: "Full Stack Web Developer" }
+              )
+            }
           } else {
             snapshot.forEach((doc) => {
               const data = doc.data()
@@ -384,25 +388,31 @@ export default function ChatPage() {
               Contacts Directory
             </h2>
             <div className="space-y-2 max-h-[25vh] overflow-y-auto">
-              {contacts.map((contact) => (
-                <button
-                  key={contact.uid}
-                  onClick={() => handleStartChat(contact)}
-                  className="w-full text-left p-3 rounded-xl bg-black/40 border border-gray-900 hover:border-gray-800 transition flex items-center justify-between cursor-pointer group"
-                >
-                  <div>
-                    <span className="font-semibold text-xs text-white block group-hover:text-green-400 transition">
-                      {contact.name}
+              {contacts.length === 0 ? (
+                <p className="text-[10px] text-gray-500 italic py-2">
+                  No active contacts found. Contacts populate automatically when student applications are verified by school partners.
+                </p>
+              ) : (
+                contacts.map((contact) => (
+                  <button
+                    key={contact.uid}
+                    onClick={() => handleStartChat(contact)}
+                    className="w-full text-left p-3 rounded-xl bg-black/40 border border-gray-900 hover:border-gray-800 transition flex items-center justify-between cursor-pointer group"
+                  >
+                    <div>
+                      <span className="font-semibold text-xs text-white block group-hover:text-green-400 transition">
+                        {contact.name}
+                      </span>
+                      <span className="text-[10px] text-gray-500 block mt-0.5">
+                        {contact.role} {contact.track ? `• ${contact.track}` : ""}
+                      </span>
+                    </div>
+                    <span className="text-[10px] bg-green-500/15 border border-green-500/20 text-green-400 font-extrabold px-2 py-0.5 rounded-full uppercase">
+                      Chat
                     </span>
-                    <span className="text-[10px] text-gray-500 block mt-0.5">
-                      {contact.role} {contact.track ? `• ${contact.track}` : ""}
-                    </span>
-                  </div>
-                  <span className="text-[10px] bg-green-500/15 border border-green-500/20 text-green-400 font-extrabold px-2 py-0.5 rounded-full uppercase">
-                    Chat
-                  </span>
-                </button>
-              ))}
+                  </button>
+                ))
+              )}
             </div>
           </div>
         </section>
