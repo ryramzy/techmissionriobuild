@@ -7,6 +7,7 @@ import { SplashScreen } from "@/components/SplashScreen"
 import { AnalyticsProvider } from "@/components/AnalyticsProvider"
 import { AuthProvider } from "./components/AuthContext"
 import PWARegister from "@/components/PWARegister"
+import PWANotifications from "@/components/PWANotifications"
 
 export const viewport = {
   themeColor: '#0B1F3A',
@@ -93,6 +94,7 @@ export default function RootLayout({
       <body className="font-inter flex min-h-full flex-col relative bg-black text-white">
         <PWARegister />
         <AuthProvider>
+          <PWANotifications />
           <AnalyticsProvider>
             <SplashScreen />
             <Navigation />

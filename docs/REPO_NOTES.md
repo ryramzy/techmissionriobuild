@@ -53,6 +53,11 @@
    - Lazy PostHog provider configuration preventing pre-rendering build-time crash warnings
    - Custom events: page views, social profile clicks, video watch times, donation conversions, and funnel milestones
 
+8. **Student-to-Mentor Chat MVP & FCM Push Alerts**
+   - **Background PWA service workers (`public/firebase-messaging-sw.js`)**: Configured dynamically using client URL query parameters.
+   - **Dynamic device token registration (`components/PWANotifications.tsx`)**: Asks for permissions and records client VAPID tokens to Firestore collection: `device_tokens/{uid}/tokens/{tokenId}` dynamically.
+   - **Real-time messages thread bindings (`/dashboard/chat`)**: Client-side chat room component connected via `onSnapshot` listeners. Enforced constraint: `onSnapshot` chat listeners are ONLY permitted under `/dashboard/chat` to keep Vercel resources optimized. Never import or render chat components under `/partner`.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation

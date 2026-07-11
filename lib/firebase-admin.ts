@@ -1,8 +1,11 @@
-import * as admin from 'firebase-admin'
+import { initializeApp, getApps, cert } from "firebase-admin/app"
+import { getFirestore } from "firebase-admin/firestore"
+import { getMessaging } from "firebase-admin/messaging"
 
 const getFirebaseAdmin = () => {
-  if (admin.apps.length > 0) {
-    return admin.app()
+  const apps = getApps()
+  if (apps.length > 0) {
+    return apps[0]
   }
 
   const privateKey = process.env.FIREBASE_PRIVATE_KEY
@@ -11,11 +14,10 @@ const getFirebaseAdmin = () => {
 
   if (privateKey && clientEmail) {
     try {
-      return admin.initializeApp({
-        credential: admin.credential.cert({
+      return initializeApp({
+        credential: cert({
           projectId,
           clientEmail,
-          // Replace escaped newlines if present
           privateKey: privateKey.replace(/\\n/g, '\n'),
         }),
       })
@@ -31,4 +33,5 @@ const getFirebaseAdmin = () => {
 }
 
 const adminApp = getFirebaseAdmin()
-export const adminDb = adminApp ? adminApp.firestore() : null
+export const adminDb = adminApp ? getFirestore(adminApp) : null
+export const adminMessaging = adminApp ? getMessaging(adminApp) : null
