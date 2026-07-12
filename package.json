@@ -24,6 +24,7 @@
     "next-intl": "^3.26.3",
     "posthog-js": "^1.372.6",
     "react": "^18.2.0",
+    "@react-pdf/renderer": "^4.0.0",
     "react-dom": "^18.2.0",
     "stripe": "^22.1.0",
     "tailwind-merge": "^2.2.1",
