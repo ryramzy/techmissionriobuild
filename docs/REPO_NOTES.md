@@ -2,7 +2,7 @@
 
 ## 📋 Repository Overview
 
-### Project Status: ✅ PRODUCTION READY
+### Project Status: ✅ RELEASE CANDIDATE (v0.9 -> v1.0 Ready)
 **Primary Mission**: Established over three years ago, a lightweight donation platform connecting Brazilian youth tech talent with US stakeholders, churches, and angel investors.
 
 ### 🏗️ Architecture
@@ -17,46 +17,47 @@
 
 ## 🎯 Core Features Implemented
 
-1. **Donation Platform (`/donate`)**
-   - Multiple giving tiers ($25, $100, $500)
-   - Custom amount options
-   - Support for both USD ($) and local Brazilian PIX (R$ currency) payments
-   - Integration with Stripe checkout sessions (passing authenticated `userId` in metadata)
+1. **Production Stripe Payments & Webhooks**
+   - Multi-currency USD and BRL checkout sessions.
+   - Raw request body parsing (`req.text()`) to verify webhook signatures using Stripe’s dynamic constructors.
+   - Database writes to `users/{uid}/donations/{session.id}` with legacy metrics fields preserved.
+   - **Idempotency Guard**: Event logs added to `stripe_events` collection to intercept duplicate webhook retries.
+   - **Auto Emails**: Webhook event logs added to `mail` collection triggering the **Firebase Trigger Email Extension**.
 
-2. **GCP Firebase Auth & Repeat Donor Portal (`/login`)**
-   - Client-side individual donor and B2B Organization registration and logins
-   - Firestore mapping for `users` and `organizations` collections
-   - Specialized Church Hub dashboard widgets: prayer boards, cohort milestone progress trackers, Zoom Q&A exchange scheduler, and mission trip registries
+2. **Server-side PDF Receipts Engine**
+   - Branded PDF statement documents dynamically generated via `@react-pdf/renderer`.
+   - Secure POST `/api/receipts/generate` endpoint verifying caller ID tokens.
+   - Seamless PDF downloads on the donor dashboard contribution tables.
 
-3. **Public Student Impact Dashboard (`/dashboard`)**
-   - Real-time impact counters loaded dynamically from Firestore (`dashboard_stats/global_metrics`)
-   - Interactive SVG mapping of Rio de Janeiro showing partnering campuses (FAETEC, IFRJ) and student allocations
-   - Budget transparency graph illustrating equipment, bootcamp training, and operation percentages
-   - Secure Admin statistics editor (`/dashboard/admin`) for organization partners to update metrics dynamically in the database
+3. **GCP Firebase Auth & Repeat Donor Portal (`/login`)**
+   - Client-side individual donor and B2B Organization registration and logins.
+   - Firestore mapping for `users` and `organizations` collections.
+   - Specialized Church Hub dashboard widgets: prayer boards, Zoom Q&A scheduling, and mission trip registries.
 
-4. **Youth Video Profiles (`/fellows`)**
-   - Meet page featuring active TMR coding fellows
-   - Integrated 60-second video elevator pitch modals with dynamic browser playback
-   - Clickable developer social links (GitHub, LinkedIn, and personal portfolio websites)
+4. **Public Student Impact Dashboard (`/dashboard`)**
+   - Real-time impact counters loaded dynamically from Firestore (`dashboard_stats/global_metrics`).
+   - Interactive SVG mapping of Rio de Janeiro showing partnering campuses (FAETEC, IFRJ).
+   - Budget transparency graph illustrating equipment, bootcamp training, and operation percentages.
+   - Secure Admin statistics editor (`/dashboard/admin`) for organization partners.
 
-5. **PWA Integration & Favicon Compilation**
-   - High-resolution PWA assets compiled directly from vector SVG parameters representing the exact TMR nav bar logo
-   - Resized icons (192px, 256px, 384px, 512px) generated via `npm run generate-icons` using `sharp`
-   - Unified homescreen and Chrome installer visuals with navigation header styling
+5. **Youth Video Profiles & Endorsements (`/fellows`)**
+   - Meet page featuring active TMR coding fellows with verified `"✓ Teacher Endorsed"` trust badges.
+   - Integrated 60-second video elevator pitch modals with dynamic browser playback.
+   - Clickable developer social links (GitHub, LinkedIn, and portfolios).
 
-6. **Installable PWA & Offline Support**
-   - **Service Worker (`public/sw.js`)**: Configured with custom caching strategies: Cache First for static images, Stale While Revalidate for JS/CSS resource bundles, and Network First with Offline Fallback for HTML routing.
-   - **Registration Component (`components/PWARegister.tsx`)**: Registered on client-side mount, restricted strictly to `production` environments to preserve development efficiency.
-   - **Offline Fallback Page (`/offline`)**: Custom styled, brand-consistent warning page displaying last sync timestamps and previous session restore buttons. Excludes sensitive endpoints (auth, API, admin dashboards) from stale pre-caches.
+6. **PWA Integration & Caching**
+   - High-resolution PWA assets compiled via `sharp` and registered service worker caching strategies (`public/sw.js`).
+   - Custom styled `/offline` session recovery screens.
 
-7. **PostHog Analytics Integration**
-   - Lazy PostHog provider configuration preventing pre-rendering build-time crash warnings
-   - Custom events: page views, social profile clicks, video watch times, donation conversions, and funnel milestones
+7. **Clean i18n Routing (EN/PT)**
+   - Clean, URL prefix-free multilingual experiences via cookie resolution across all public screens and private dashboards.
+   - Bilingual language selectors embedded in nav headers.
 
-8. **Student-to-Mentor Chat MVP & FCM Push Alerts**
-   - **Background PWA service workers (`public/firebase-messaging-sw.js`)**: Configured dynamically using client URL query parameters.
-   - **Dynamic device token registration (`components/PWANotifications.tsx`)**: Asks for permissions and records client VAPID tokens to Firestore collection: `device_tokens/{uid}/tokens/{tokenId}` dynamically.
-   - **Real-time messages thread bindings (`/dashboard/chat`)**: Client-side chat room component connected via `onSnapshot` listeners. Enforced constraint: `onSnapshot` chat listeners are ONLY permitted under `/dashboard/chat` to keep Vercel resources optimized. Never import or render chat components under `/partner`.
+8. **PostHog-Gated Cookie Consent**
+   - GDPR/LGPD compliant cookie banner that gates PostHog initialization until user acceptance.
+
+9. **Bilingual Terms of Service**
+   - Bilingual `/terms` page containing acceptance clauses, donation disclaimers, and LGPD minor nominations rules.
 
 ---
 
@@ -65,19 +66,16 @@
 Our architecture is designed to fail gracefully without disrupting the user experience when API keys or server credentials are unconfigured:
 
 ### 1. Firebase Client SDK Fallback
-* **Problem**: Next.js evaluates file imports at compile time to pre-render static pages (`_not-found`, `/about`). If Firebase env variables are missing, the client SDK immediately throws an `auth/invalid-api-key` error and halts compilation.
-* **Solution**: `lib/firebase.ts` evaluates the presence of `NEXT_PUBLIC_FIREBASE_API_KEY`. If empty, it initializes Firebase with dummy credentials, allowing compilation to proceed successfully.
+* **Problem**: Next.js pre-renders static pages at compile time. Missing keys crash compilation.
+* **Solution**: `lib/firebase.ts` evaluates client variables and initializes dummy credentials when empty.
 
 ### 2. Stripe Webhook Resiliency
-* **Problem**: In test/preview serverless environments, GCP service account credentials (`FIREBASE_SERVICE_ACCOUNT_KEY`) might be missing, causing server-side firestore writes to crash the webhook endpoint.
-* **Solution**: `lib/firebase-admin.ts` checks for required cert details. If missing, it log warnings (`console.warn`) and skips writes, returning a successful `200 OK` response to Stripe.
+* **Problem**: Missing GCP service credentials cause Firestore writes to crash the webhook endpoint.
+* **Solution**: `lib/firebase-admin.ts` logs warnings and returns `200 OK` to Stripe to bypass terminal exceptions in dev.
 
 ### 3. PostHog Tracking Fallback
-* **Problem**: If PostHog keys are missing, capturing events will throw undefined errors.
-* **Solution**: `hooks/useAnalytics.ts` detects the state of PostHog initialization. If null, it exports a mock API container containing no-op functions (`noop = () => {}`) that drop the events without throwing runtime exceptions.
-
-### 4. Interactive Form Validations
-* Form components enforce strict regex parameters for credentials, minimum password lengths (6+ characters), and statistical ratios (budget edits must sum to exactly 100% before publishing).
+* **Problem**: Uninitialized PostHog instances cause click events to throw exceptions.
+* **Solution**: `hooks/useAnalytics.ts` maps Mock no-op functions when PostHog variables are absent.
 
 ---
 
@@ -95,17 +93,23 @@ Our architecture is designed to fail gracefully without disrupting the user expe
 - [x] Multi-currency checkout (USD / BRL PIX payments)
 - [x] Real-time impact dashboard & admin portal
 
-### Phase 3 (Next Sprints)
-- [ ] FCM (Firebase Cloud Messaging) service worker logic for PWA push alerts
-- [ ] Real-time student-to-mentor messaging portal
-- [ ] Multi-language i18n localization (EN / PT toggles)
-- [ ] Automated tax receipt generation for US churches
+### Phase 3 (Completed)
+- [x] FCM (Firebase Cloud Messaging) service worker logic for PWA push alerts
+- [x] Real-time student-to-mentor messaging portal
+- [x] Multi-language i18n localization (EN / PT toggles with clean URLs)
+- [x] Production payments webhook idempotency & signatures
+- [x] Server-side PDF tax receipt generation
+
+### Phase 4 (Future Launch Operations)
+- [ ] Bubblewrap / TWA store package compilation for Google Play Store.
+- [ ] Observability setup (Sentry, PostHog logs, Uptime monitoring).
+- [ ] Containerization (Docker, Artifact Registry, GCP Cloud Run, Secret Manager).
 
 ---
 
 ## 📞 Support & Maintenance
-- **Documentation**: `DEBUGGING.md`, `MCP_RULES.md`, `MASTER_PLAN.md`
+- **Documentation**: `docs/DEBUGGING.md`, `docs/MCP_RULES.md`, `docs/MASTER_PLAN.md`
 - **Updates**: Regular dependency updates + security patches
-- **Last Updated**: 2026-07-09
+- **Last Updated**: 2026-07-12
 - **Maintainer**: Antigravity Developer Agent
 - **Deployment**: Vercel CI/CD Active

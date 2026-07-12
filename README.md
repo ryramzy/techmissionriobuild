@@ -18,13 +18,18 @@ For more than three years, Tech Mission Rio has provided laptops, coding trainin
 ## 🌟 Core Features
 
 - **🎨 Modern UI/UX** - Beautiful, responsive dark-themed designs with custom Tailwind CSS styles.
-- **💳 Multi-Currency Checkout** - Safe donation processing supporting cards (USD) and local Brazilian PIX (BRL currency) payments via Stripe.
+- **💳 Production Stripe Payments & Idempotency** - Live multi-currency payment checkout (USD/BRL) with strict webhook signature verification, automatic failed payment handlers, and Firestore-based idempotency checks.
+- **📄 Server-Side PDF Receipts** - Dynamically generated contribution statement PDFs utilizing `@react-pdf/renderer` streamed on-demand.
+- **✉️ Automated Trigger Emails** - Webhook-driven mail logs mapped directly to the Firebase Trigger Email Extension.
+- **🔤 Clean i18n Routing (EN/PT)** - Clean, URL prefix-free multilingual experiences via cookie resolution across all public screens and private dashboards.
+- **🍪 PostHog-Gated Cookie Consent** - GDPR/LGPD compliant banner that gates PostHog initialization until the user explicitly accepts cookie guidelines.
+- **⚖️ Bilingual Terms of Service** - Bilingual `/terms` page containing acceptance clauses, donation disclaimers, and LGPD rules.
 - **🔒 GCP Firebase Auth & Profiles** - Dynamic logins supporting standard credentials and Google Sign-in authentication.
 - **🔀 Dynamic Role Dashboard Gateway** - A unified gate at `/dashboard` dynamically routing users to `/dashboard/admin`, `/dashboard/fellow`, or `/dashboard/donor` based on their authenticated Firestore profiles.
 - **⛪ B2B Church Hub** - Dedicated dashboard tools featuring prayer request walls, Zoom Q&A exchange schedulers, and trip coordinators.
 - **📊 Public Impact Dashboard** - Real-time stats (Laptops distributed, mentorship hours) powered by Cloud Firestore. Includes pulsing maps showing Rio technical school sites (FAETEC, IFRJ) and audit budget breakdown ratios at `/impact`.
 - **🎬 Video Pitch Profiles** - Dynamic fellows roster at `/fellows` with 60-second YouTube video pitch embeds and interactive modal playback. Includes verified `"✓ Teacher Endorsed"` trust badges.
-- **📱 PWA Optimized** - High-resolution homescreen and Chrome installer icons generated directly from vector SVG parameters representing the header logo.
+- **📱 PWA Optimized** - High-resolution homescreen and Chrome installer icons generated directly from vector SVG parameters representing the header logo. Runs a production-gated caching service worker.
 - **📈 Lazy Analytics** - Non-blocking PostHog event captures tracking page views, clicks, and donation conversions.
 
 ---
