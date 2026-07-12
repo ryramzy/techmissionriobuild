@@ -186,7 +186,7 @@ export default function DonateClient() {
               <h3 className="text-xl font-bold text-white mb-2">Support Interval</h3>
               <p className="text-gray-400 text-xs mb-4">Choose recurring monthly support for sustainable impact</p>
               <div className="flex items-center justify-center gap-4">
-                <span className={`text-sm ${!isMonthly ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>One-time</span>
+                <span className={`text-sm ${!isMonthly ? 'text-green-400 font-bold' : 'text-gray-300 font-semibold'}`}>One-time</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input 
                     type="checkbox" 
@@ -197,10 +197,11 @@ export default function DonateClient() {
                       if (val) setIsPix(false) // Disable PIX on monthly
                     }}
                     className="sr-only peer"
+                    aria-label="Toggle Monthly Recurring Support"
                   />
                   <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 relative"></div>
                 </label>
-                <span className={`text-sm ${isMonthly ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>Monthly</span>
+                <span className={`text-sm ${isMonthly ? 'text-green-400 font-bold' : 'text-gray-300 font-semibold'}`}>Monthly</span>
               </div>
             </div>
 
@@ -209,7 +210,7 @@ export default function DonateClient() {
               <h3 className="text-xl font-bold text-white mb-2">Brazil Local Payment (PIX)</h3>
               <p className="text-gray-400 text-xs mb-4">Pay in BRL using PIX instant transfer or card</p>
               <div className="flex items-center justify-center gap-4">
-                <span className={`text-sm ${!isPix ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>USD ($)</span>
+                <span className={`text-sm ${!isPix ? 'text-green-400 font-bold' : 'text-gray-300 font-semibold'}`}>USD ($)</span>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input 
                     type="checkbox" 
@@ -217,10 +218,11 @@ export default function DonateClient() {
                     disabled={isMonthly}
                     onChange={(e) => setIsPix(e.target.checked)}
                     className="sr-only peer"
+                    aria-label="Toggle BRL PIX Payment Mode"
                   />
                   <div className="w-11 h-6 bg-gray-700 rounded-full peer peer-focus:ring-2 peer-focus:ring-green-500 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500 relative"></div>
                 </label>
-                <span className={`text-sm ${isPix ? 'text-green-400 font-bold' : 'text-gray-400 font-semibold'}`}>BRL (R$ / PIX)</span>
+                <span className={`text-sm ${isPix ? 'text-green-400 font-bold' : 'text-gray-300 font-semibold'}`}>BRL (R$ / PIX)</span>
               </div>
             </div>
           </div>
@@ -235,7 +237,8 @@ export default function DonateClient() {
                 placeholder="Enter amount" 
                 value={selectedAmount}
                 onChange={(e) => setSelectedAmount(Number(e.target.value))}
-                className="flex-1 bg-black/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500"
+                className="flex-1 bg-black/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 placeholder-gray-400"
+                aria-label="Custom Donation Amount"
               />
               <button 
                 onClick={() => handleDonate(selectedAmount)}

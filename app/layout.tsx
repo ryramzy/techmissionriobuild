@@ -92,6 +92,12 @@ export default function RootLayout({
         <link rel="alternate icon" href="/favicon.png" type="image/png" />
       </head>
       <body className="font-inter flex min-h-full flex-col relative bg-black text-white">
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-black focus:text-[#5ae0a0] focus:px-4 focus:py-2 focus:rounded focus:ring-2 focus:ring-[#5ae0a0] focus:outline-none"
+        >
+          Skip to main content
+        </a>
         <PWARegister />
         <AuthProvider>
           <PWANotifications />
@@ -99,7 +105,8 @@ export default function RootLayout({
             <SplashScreen />
             <Navigation />
             <BottomNav />
-            <main className="flex-1 pb-16">{children}</main>
+            <main id="main-content" className="flex-1 pb-16">{children}</main>
+            <footer className="sr-only">TechMission Rio Footer</footer>
           </AnalyticsProvider>
         </AuthProvider>
       </body>

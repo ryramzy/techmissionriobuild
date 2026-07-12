@@ -174,7 +174,7 @@ export default function RioCarousel() {
             key={index}
             onClick={() => handleDotClick(index)}
             className={`h-2.5 rounded-full transition-all duration-300 ${
-              index === activeIndex ? "bg-green-500 w-6" : "bg-white/40 w-2.5 hover:bg-white/60"
+              index === activeIndex ? "bg-green-500 w-6" : "bg-white/60 w-2.5 hover:bg-white/80"
             }`}
             aria-label={`Navigate to slide ${index + 1}`}
             aria-current={index === activeIndex ? "true" : "false"}

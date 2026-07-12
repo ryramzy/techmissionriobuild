@@ -69,24 +69,24 @@ export default function HomeClient() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Your Impact</h2>
-            <p className="text-gray-400 text-lg">Every donation creates real change in Rio's communities</p>
+            <p className="text-gray-300 text-lg">Every donation creates real change in Rio's communities</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center">
               <Users className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <div className="text-4xl font-bold text-white mb-2">200+</div>
-              <div className="text-gray-400">Students Supported</div>
+              <div className="text-gray-300">Students Supported</div>
             </div>
             <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center">
               <Target className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <div className="text-4xl font-bold text-white mb-2">12</div>
-              <div className="text-gray-400">Tech Programs</div>
+              <div className="text-gray-300">Tech Programs</div>
             </div>
             <div className="bg-gradient-to-br from-green-900/20 to-blue-900/20 border border-green-500/20 rounded-2xl p-8 text-center">
               <Heart className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <div className="text-4xl font-bold text-white mb-2">5</div>
-              <div className="text-gray-400">Rio Communities</div>
+              <div className="text-gray-300">Rio Communities</div>
             </div>
           </div>
         </div>
@@ -102,15 +102,15 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="text-3xl font-bold text-red-400 mb-2">70%</div>
-              <p className="text-gray-400">Of Rio youth lack tech training access</p>
+              <p className="text-gray-300">Of Rio youth lack tech training access</p>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-red-400 mb-2">3x</div>
-              <p className="text-gray-400">Higher unemployment in underserved areas</p>
+              <p className="text-gray-300">Higher unemployment in underserved areas</p>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-red-400 mb-2">85%</div>
-              <p className="text-gray-400">Want tech careers but don't know where to start</p>
+              <p className="text-gray-300">Want tech careers but don't know where to start</p>
             </div>
           </div>
         </div>
@@ -127,17 +127,17 @@ export default function HomeClient() {
             <div className="text-center">
               <Award className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">World-Class Training</h3>
-              <p className="text-gray-400">Industry-standard tech skills and mentorship</p>
+              <p className="text-gray-300">Industry-standard tech skills and mentorship</p>
             </div>
             <div className="text-center">
               <Users className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Direct Connections</h3>
-              <p className="text-gray-400">Link with investors and hiring companies</p>
+              <p className="text-gray-300">Link with investors and hiring companies</p>
             </div>
             <div className="text-center">
               <Target className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Career Launch</h3>
-              <p className="text-gray-400">Job placement and startup support</p>
+              <p className="text-gray-300">Job placement and startup support</p>
             </div>
           </div>
         </div>
@@ -148,15 +148,15 @@ export default function HomeClient() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Your Impact in Action</h2>
-            <p className="text-gray-400 text-lg">Every dollar creates measurable change</p>
+            <p className="text-gray-300 text-lg">Every dollar creates measurable change</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <div className="bg-black/50 border border-green-500/30 rounded-2xl p-8 text-center">
               <div className="text-4xl font-bold text-green-400 mb-2">$25</div>
               <div className="text-white font-semibold mb-2">Tech Starter</div>
-              <p className="text-gray-400 mb-4">Funds one week of training materials</p>
-              <div className="text-sm text-gray-500">
+              <p className="text-gray-300 mb-4">Funds one week of training materials</p>
+              <div className="text-sm text-gray-400">
                 ✓ Coding curriculum<br/>
                 ✓ Online resources<br/>
                 ✓ Mentor access
@@ -169,8 +169,8 @@ export default function HomeClient() {
               </div>
               <div className="text-4xl font-bold text-green-400 mb-2">$100</div>
               <div className="text-white font-semibold mb-2">Tech Champion</div>
-              <p className="text-gray-400 mb-4">Supports a student for a full month</p>
-              <div className="text-sm text-gray-500">
+              <p className="text-gray-300 mb-4">Supports a student for a full month</p>
+              <div className="text-sm text-gray-400">
                 ✓ 1:1 mentorship<br/>
                 ✓ Project portfolio<br/>
                 ✓ Career coaching
@@ -183,8 +183,8 @@ export default function HomeClient() {
               </div>
               <div className="text-4xl font-bold text-green-400 mb-2">$500</div>
               <div className="text-white font-semibold mb-2">Tech Visionary</div>
-              <p className="text-gray-400 mb-4">Launches a student into job readiness</p>
-              <div className="text-sm text-gray-500">
+              <p className="text-gray-300 mb-4">Launches a student into job readiness</p>
+              <div className="text-sm text-gray-400">
                 ✓ Laptop provision<br/>
                 ✓ 3-month program<br/>
                 ✓ Job placement support
@@ -201,7 +201,7 @@ export default function HomeClient() {
             <div className="w-full bg-gray-700 rounded-full h-4">
               <div className="bg-gradient-to-r from-green-500 to-blue-500 h-4 rounded-full" style={{width: '24%'}}></div>
             </div>
-            <p className="text-gray-400 text-sm mt-2">38 more students need your support to launch their tech careers</p>
+            <p className="text-gray-300 text-sm mt-2">38 more students need your support to launch their tech careers</p>
           </div>
         </div>
       </section>
@@ -211,7 +211,7 @@ export default function HomeClient() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Where Your Money Goes</h2>
-            <p className="text-gray-400 text-lg">100% transparent funding breakdown</p>
+            <p className="text-gray-300 text-lg">100% transparent funding breakdown</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
@@ -219,19 +219,19 @@ export default function HomeClient() {
               <h3 className="text-xl font-bold text-white mb-4">Program Expenses (85%)</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Training Materials</span>
+                  <span className="text-gray-300">Training Materials</span>
                   <span className="text-green-400">35%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Mentorship Programs</span>
+                  <span className="text-gray-300">Mentorship Programs</span>
                   <span className="text-green-400">25%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Equipment & Laptops</span>
+                  <span className="text-gray-300">Equipment & Laptops</span>
                   <span className="text-green-400">15%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Student Support</span>
+                  <span className="text-gray-300">Student Support</span>
                   <span className="text-green-400">10%</span>
                 </div>
               </div>
@@ -241,15 +241,15 @@ export default function HomeClient() {
               <h3 className="text-xl font-bold text-white mb-4">Operations (15%)</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Platform & Technology</span>
+                  <span className="text-gray-300">Platform & Technology</span>
                   <span className="text-blue-400">8%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Administrative</span>
+                  <span className="text-gray-300">Administrative</span>
                   <span className="text-blue-400">4%</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-400">Fundraising Costs</span>
+                  <span className="text-gray-300">Fundraising Costs</span>
                   <span className="text-blue-400">3%</span>
                 </div>
               </div>
@@ -300,7 +300,8 @@ export default function HomeClient() {
               <input 
                 type="email" 
                 placeholder="your@email.com" 
-                className="flex-1 bg-black/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500"
+                className="flex-1 bg-black/50 border border-gray-600 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 placeholder-gray-400"
+                aria-label="Email Address for Updates"
               />
               <button 
                 onClick={() => analytics.trackEmailSignup('homepage')}
@@ -309,7 +310,7 @@ export default function HomeClient() {
                 Subscribe
               </button>
             </div>
-            <p className="text-gray-400 text-sm mt-4">
+            <p className="text-gray-300 text-sm mt-4">
               Join 500+ supporters making a difference in Rio's tech community
             </p>
           </div>
@@ -321,7 +322,7 @@ export default function HomeClient() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Real Success Stories</h2>
-            <p className="text-gray-400 text-lg">Meet the students whose lives you've transformed</p>
+            <p className="text-gray-300 text-lg">Meet the students whose lives you've transformed</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

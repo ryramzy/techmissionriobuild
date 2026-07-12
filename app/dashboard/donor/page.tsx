@@ -106,7 +106,7 @@ export default function DonorDashboardPage() {
       {/* Background gradients */}
       <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
-      <main className="max-w-7xl mx-auto px-4 py-12 relative z-10 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 py-12 relative z-10 space-y-8">
         
         {/* Dashboard Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gradient-to-r from-blue-900/20 via-black to-green-900/20 border border-blue-500/20 rounded-3xl p-8 gap-4">
@@ -187,7 +187,8 @@ export default function DonorDashboardPage() {
                 </p>
                 <textarea 
                   placeholder="Enter a message of prayer or encouragement..." 
-                  className="w-full h-24 bg-black/60 border border-gray-600 rounded-lg p-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 mb-3"
+                  className="w-full h-24 bg-black/60 border border-gray-600 rounded-lg p-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 mb-3"
+                  aria-label="Enter a message of prayer or encouragement"
                 />
                 <button 
                   onClick={() => alert("Prayer message submitted to the Rio team! They will translate and deliver it to your cohort.")}
@@ -210,8 +211,12 @@ export default function DonorDashboardPage() {
                   <input 
                     type="date" 
                     className="w-full bg-black/60 border border-gray-600 rounded-lg p-2.5 text-xs text-white" 
+                    aria-label="Select date for Youth Group Exchange"
                   />
-                  <select className="w-full bg-black/60 border border-gray-600 rounded-lg p-2.5 text-xs text-white">
+                  <select 
+                    className="w-full bg-black/60 border border-gray-600 rounded-lg p-2.5 text-xs text-white"
+                    aria-label="Select time slot for Youth Group Exchange"
+                  >
                     <option>Sunday Afternoon (Best for churches)</option>
                     <option>Wednesday Evening (Best for Youth Group)</option>
                     <option>Saturday Morning</option>
@@ -319,7 +324,7 @@ export default function DonorDashboardPage() {
           )}
         </div>
 
-      </main>
+      </div>
     </div>
   )
 }

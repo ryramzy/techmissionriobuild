@@ -169,7 +169,7 @@ export default function RoadmapPage() {
                 <h2 className="text-2xl font-bold text-white tracking-tight">{item.title}</h2>
                 <div className="text-sm font-semibold text-gray-400 mt-1 mb-4 flex items-center gap-2">
                   <span>{item.subtitle}</span>
-                  <span className="text-gray-600">•</span>
+                  <span className="text-gray-400">•</span>
                   <span className="capitalize">{item.category} Track</span>
                 </div>
                 <p className="text-gray-300 leading-relaxed mb-6">{item.description}</p>
@@ -178,8 +178,8 @@ export default function RoadmapPage() {
                 <div className="space-y-3 border-t border-gray-900 pt-6">
                   {item.items.map((subitem, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-gray-400 leading-snug">{subitem}</span>
+                      <CheckCircle2 className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-gray-300 leading-snug">{subitem}</span>
                     </div>
                   ))}
                 </div>
@@ -191,7 +191,7 @@ export default function RoadmapPage() {
         {/* Bottom Call to Action */}
         <div className="text-center mt-20 bg-gradient-to-r from-blue-950/25 via-black to-green-950/25 border border-blue-500/20 rounded-3xl p-10 max-w-4xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Want to partner with us?</h2>
-          <p className="text-gray-400 mb-6 max-w-xl mx-auto text-sm md:text-base">
+          <p className="text-gray-300 mb-6 max-w-xl mx-auto text-sm md:text-base">
             Whether you represent a technical college in Rio de Janeiro looking to join our student pipeline or a US organization looking to sponsor a student cohort, we want to hear from you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -40,7 +40,7 @@ export function SplashScreen() {
         <h1 className="text-white text-[2.5rem] font-bold mb-1">
           TechMission Rio
         </h1>
-        <p className="text-white uppercase tracking-widest opacity-60 text-sm mb-8">
+        <p className="text-white uppercase tracking-widest opacity-80 text-sm mb-8">
           Rio de Janeiro
         </p>
         <div className="w-3 h-3 rounded-full bg-[#5ae0a0] animate-ping" />

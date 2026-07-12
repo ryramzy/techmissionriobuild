@@ -310,8 +310,8 @@ export default function ChatPage() {
       {/* Header Bar */}
       <header className="border-b border-gray-900 bg-black/40 backdrop-blur-md relative z-10 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard">
-            <span className="text-gray-400 hover:text-white transition cursor-pointer p-1.5 hover:bg-white/5 rounded-full">
+          <Link href="/dashboard" aria-label="Back to dashboard">
+            <span className="text-gray-400 hover:text-white transition cursor-pointer p-1.5 hover:bg-white/5 rounded-full block">
               <ArrowLeft className="w-5 h-5" />
             </span>
           </Link>
@@ -319,7 +319,7 @@ export default function ChatPage() {
             <h1 className="text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500 uppercase tracking-wider">
               Student-Mentor Messaging
             </h1>
-            <span className="text-[10px] text-gray-500 block uppercase font-bold tracking-widest">
+            <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-widest">
               Live Chat Portal
             </span>
           </div>
@@ -332,7 +332,7 @@ export default function ChatPage() {
       </header>
 
       {/* Main Container Grid */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10 overflow-hidden">
+      <div className="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10 overflow-hidden">
         
         {/* Left Side: Chats and contacts directory list */}
         <section className="lg:col-span-4 bg-gradient-to-b from-gray-950 to-black border border-gray-900 rounded-3xl p-6 flex flex-col space-y-6 max-h-[80vh] overflow-y-auto">
@@ -471,7 +471,7 @@ export default function ChatPage() {
                           <p>{message.text}</p>
                           <div
                             className={`text-[8px] mt-1.5 text-right ${
-                              isOwnMessage ? "text-black/60" : "text-gray-500"
+                              isOwnMessage ? "text-black/80" : "text-gray-400"
                             }`}
                           >
                             {message.createdAt?.seconds 
@@ -495,11 +495,13 @@ export default function ChatPage() {
                   onChange={(e) => setInputText(e.target.value)}
                   className="flex-1 bg-black border border-gray-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-blue-500/50"
                   disabled={sending}
+                  aria-label="Type your message"
                 />
                 <button
                   type="submit"
                   disabled={sending || !inputText.trim()}
                   className="bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-2xl transition disabled:opacity-50 flex items-center justify-center cursor-pointer shadow-lg"
+                  aria-label="Send message"
                 >
                   {sending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -523,7 +525,7 @@ export default function ChatPage() {
             </div>
           )}
         </section>
-      </main>
+      </div>
     </div>
   )
 }

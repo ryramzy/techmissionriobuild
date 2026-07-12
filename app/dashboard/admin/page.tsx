@@ -313,7 +313,10 @@ export default function AdminDashboardPage() {
         initials: inviteName.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "ST",
         location: inviteCampus.split(" ")[0] || "Rio de Janeiro",
         joinedDate: new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" }),
-        story: "Ready to embark on coding journey.",
+        bio: {
+          en: "Ready to embark on coding journey.",
+          pt: "Pronto para iniciar a jornada de programação."
+        },
         skills: [inviteTrack],
         goal: "Transition to technical developer role.",
         github: "",
@@ -359,7 +362,7 @@ export default function AdminDashboardPage() {
     <div className="bg-black text-white min-h-screen relative overflow-hidden">
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-yellow-950/10 via-black to-transparent pointer-events-none" />
 
-      <main className="max-w-5xl mx-auto px-6 py-12 relative z-10 space-y-8">
+      <div className="max-w-5xl mx-auto px-6 py-12 relative z-10 space-y-8">
         
         {/* Navigation back */}
         <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm transition">
@@ -446,8 +449,9 @@ export default function AdminDashboardPage() {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Laptops Distributed</label>
+                      <label htmlFor="metrics-laptops" className="text-xs font-bold uppercase tracking-wider text-gray-400">Laptops Distributed</label>
                       <input
+                        id="metrics-laptops"
                         type="number"
                         value={metrics.laptopsDistributed}
                         onChange={(e) => handleInputChange("laptopsDistributed", Number(e.target.value))}
@@ -457,8 +461,9 @@ export default function AdminDashboardPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Mentorship Hours</label>
+                      <label htmlFor="metrics-hours" className="text-xs font-bold uppercase tracking-wider text-gray-400">Mentorship Hours</label>
                       <input
+                        id="metrics-hours"
                         type="number"
                         value={metrics.mentorshipHours}
                         onChange={(e) => handleInputChange("mentorshipHours", Number(e.target.value))}
@@ -468,8 +473,9 @@ export default function AdminDashboardPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Active Partners</label>
+                      <label htmlFor="metrics-partners" className="text-xs font-bold uppercase tracking-wider text-gray-400">Active Partners</label>
                       <input
+                        id="metrics-partners"
                         type="number"
                         value={metrics.activePartners}
                         onChange={(e) => handleInputChange("activePartners", Number(e.target.value))}
@@ -489,8 +495,9 @@ export default function AdminDashboardPage() {
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Laptops & Hardware (%)</label>
+                      <label htmlFor="budget-hardware" className="text-xs font-bold uppercase tracking-wider text-gray-400">Laptops & Hardware (%)</label>
                       <input
+                        id="budget-hardware"
                         type="number"
                         value={metrics.budgetHardware}
                         onChange={(e) => handleInputChange("budgetHardware", Number(e.target.value))}
@@ -501,8 +508,9 @@ export default function AdminDashboardPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Technical Training (%)</label>
+                      <label htmlFor="budget-training" className="text-xs font-bold uppercase tracking-wider text-gray-400">Technical Training (%)</label>
                       <input
+                        id="budget-training"
                         type="number"
                         value={metrics.budgetTraining}
                         onChange={(e) => handleInputChange("budgetTraining", Number(e.target.value))}
@@ -513,8 +521,9 @@ export default function AdminDashboardPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Administration & Ops (%)</label>
+                      <label htmlFor="budget-ops" className="text-xs font-bold uppercase tracking-wider text-gray-400">Administration & Ops (%)</label>
                       <input
+                        id="budget-ops"
                         type="number"
                         value={metrics.budgetOperations}
                         onChange={(e) => handleInputChange("budgetOperations", Number(e.target.value))}
@@ -526,7 +535,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
                   <div className="border-t border-gray-900 pt-4 flex justify-between items-center text-xs">
-                    <span className="text-gray-500 font-semibold uppercase tracking-wider">Total Ratio Verification Check:</span>
+                    <span className="text-gray-400 font-semibold uppercase tracking-wider">Total Ratio Verification Check:</span>
                     <span className={`font-bold text-sm ${
                       (Number(metrics.budgetHardware) + Number(metrics.budgetTraining) + Number(metrics.budgetOperations)) === 100
                         ? 'text-green-400'
@@ -684,33 +693,36 @@ export default function AdminDashboardPage() {
 
             <form onSubmit={handleInviteFellow} className="space-y-6 max-w-xl">
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-300">Student Name</label>
+                <label htmlFor="invite-name" className="block text-sm font-medium text-gray-300">Student Name</label>
                 <input
+                  id="invite-name"
                   type="text"
                   required
                   placeholder="e.g. Gabriel Barbosa"
                   value={inviteName}
                   onChange={(e) => setInviteName(e.target.value)}
-                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 transition"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-300">Email Address</label>
+                <label htmlFor="invite-email" className="block text-sm font-medium text-gray-300">Email Address</label>
                 <input
+                  id="invite-email"
                   type="email"
                   required
                   placeholder="e.g. gabriel@faetec.br"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-yellow-500 transition"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-300">School Campus</label>
+                  <label htmlFor="invite-campus" className="block text-sm font-medium text-gray-300">School Campus</label>
                   <select
+                    id="invite-campus"
                     value={inviteCampus}
                     onChange={(e) => setInviteCampus(e.target.value)}
                     className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
@@ -723,8 +735,9 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-300">Grade Level</label>
+                  <label htmlFor="invite-grade" className="block text-sm font-medium text-gray-300">Grade Level</label>
                   <select
+                    id="invite-grade"
                     value={inviteGrade}
                     onChange={(e) => setInviteGrade(e.target.value)}
                     className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
@@ -738,8 +751,9 @@ export default function AdminDashboardPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-300">IT Specialization Track</label>
+                <label htmlFor="invite-track" className="block text-sm font-medium text-gray-300">IT Specialization Track</label>
                 <select
+                  id="invite-track"
                   value={inviteTrack}
                   onChange={(e) => setInviteTrack(e.target.value)}
                   className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
@@ -769,7 +783,7 @@ export default function AdminDashboardPage() {
           </div>
         )}
 
-      </main>
+      </div>
     </div>
   )
 }

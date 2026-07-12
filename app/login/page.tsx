@@ -189,7 +189,7 @@ export default function LoginPage() {
       {/* Background gradients */}
       <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
-      <main className="max-w-xl mx-auto px-6 relative z-10">
+      <div className="max-w-xl mx-auto px-6 relative z-10">
         
         {/* Header */}
         <div className="text-center mb-8">
@@ -216,7 +216,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => { setIsLogin(true); setFormError(null); }}
               className={`flex-1 pb-4 text-center font-bold transition-all border-b-2 text-sm cursor-pointer ${
-                isLogin ? "border-green-500 text-green-400" : "border-transparent text-gray-500 hover:text-white"
+                isLogin ? "border-green-500 text-green-400" : "border-transparent text-gray-400 hover:text-white"
               }`}
             >
               Sign In
@@ -225,7 +225,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => { setIsLogin(false); setFormError(null); }}
               className={`flex-1 pb-4 text-center font-bold transition-all border-b-2 text-sm cursor-pointer ${
-                !isLogin ? "border-green-500 text-green-400" : "border-transparent text-gray-500 hover:text-white"
+                !isLogin ? "border-green-500 text-green-400" : "border-transparent text-gray-400 hover:text-white"
               }`}
             >
               Create Profile
@@ -257,7 +257,7 @@ export default function LoginPage() {
                     className={`py-3 px-4 rounded-xl border font-bold transition-all flex items-center justify-center gap-2 text-xs cursor-pointer ${
                       profileType === "individual"
                         ? "bg-green-500/10 border-green-500 text-green-400"
-                        : "bg-transparent border-gray-700 text-gray-500 hover:border-gray-500"
+                        : "bg-transparent border-gray-700 text-gray-400 hover:border-gray-500"
                     }`}
                   >
                     <User className="w-4 h-4" />
@@ -269,7 +269,7 @@ export default function LoginPage() {
                     className={`py-3 px-4 rounded-xl border font-bold transition-all flex items-center justify-center gap-2 text-xs cursor-pointer ${
                       profileType === "organization"
                         ? "bg-green-500/10 border-green-500 text-green-400"
-                        : "bg-transparent border-gray-700 text-gray-500 hover:border-gray-500"
+                        : "bg-transparent border-gray-700 text-gray-400 hover:border-gray-500"
                     }`}
                   >
                     <Building2 className="w-4 h-4" />
@@ -285,7 +285,7 @@ export default function LoginPage() {
                 Email Address
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <Mail className="w-5 h-5" />
                 </span>
                 <input
@@ -295,7 +295,7 @@ export default function LoginPage() {
                   placeholder="name@church.org"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                  className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition"
                 />
               </div>
             </div>
@@ -306,7 +306,7 @@ export default function LoginPage() {
                 Password
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <Lock className="w-5 h-5" />
                 </span>
                 <input
@@ -316,7 +316,7 @@ export default function LoginPage() {
                   placeholder="Min 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                  className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition"
                 />
               </div>
             </div>
@@ -334,7 +334,7 @@ export default function LoginPage() {
                   placeholder="Jane Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                  className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition"
                 />
               </div>
             )}
@@ -353,7 +353,7 @@ export default function LoginPage() {
                     placeholder="Grace Community Church"
                     value={orgName}
                     onChange={(e) => setOrgName(e.target.value)}
-                    className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                    className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition"
                   />
                 </div>
 
@@ -368,7 +368,7 @@ export default function LoginPage() {
                     placeholder="Presbyterian, Baptist, Methodist, Nondenominational, etc."
                     value={churchDenomination}
                     onChange={(e) => setChurchDenomination(e.target.value)}
-                    className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                    className="w-full bg-black/60 border border-gray-700 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition"
                   />
                 </div>
               </>
@@ -398,7 +398,7 @@ export default function LoginPage() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-800"></div>
             </div>
-            <span className="relative bg-[#0c0e16] px-4 text-xs font-semibold text-gray-500 uppercase tracking-widest">
+            <span className="relative bg-[#0c0e16] px-4 text-xs font-semibold text-gray-400 uppercase tracking-widest">
               or
             </span>
           </div>
@@ -432,7 +432,7 @@ export default function LoginPage() {
           </button>
         </div>
 
-      </main>
+      </div>
     </div>
   )
 }

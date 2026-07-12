@@ -47,7 +47,7 @@ export default function AboutPage() {
       {/* Background Radial Lights */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
-      <main className="max-w-6xl mx-auto px-6 py-16 relative z-10 space-y-16">
+      <div className="max-w-6xl mx-auto px-6 py-16 relative z-10 space-y-16">
         
         {/* Title Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -59,7 +59,7 @@ export default function AboutPage() {
             Empowering Rio's Youth,<br />
             <span className="bg-gradient-to-r from-green-400 via-teal-400 to-blue-400 bg-clip-text text-transparent">Renewing Minds</span>
           </h1>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
+          <p className="text-gray-300 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
             TechMission Rio bridges the gap between underprivileged technical talent in Rio and B2B resources and mentorship in the US.
           </p>
         </div>
@@ -92,7 +92,7 @@ export default function AboutPage() {
                   we have graduated dozens of students, placing them in software engineering roles across Brazil.
                 </p>
               </div>
-              <div className="border-t border-gray-900 pt-4 flex items-center gap-2 text-xs text-gray-500">
+              <div className="border-t border-gray-900 pt-4 flex items-center gap-2 text-xs text-gray-300">
                 <span>Est. 2023</span>
                 <span>•</span>
                 <span>501(c)(3) Exempt Entity</span>
@@ -116,7 +116,7 @@ export default function AboutPage() {
                 </blockquote>
               </div>
 
-              <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-900 pt-4">
+              <p className="text-xs text-gray-300 leading-relaxed border-t border-gray-900 pt-4">
                 We believe tech is a tool for stewardship. By training minds logically and encouraging spiritual growth in Christ, we prepare young people to lead their communities with high values.
               </p>
             </div>
@@ -148,7 +148,7 @@ export default function AboutPage() {
                       {pillar.title}
                     </h3>
                   </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">
+                  <p className="text-xs text-gray-300 leading-relaxed">
                     {pillar.description}
                   </p>
                 </div>
@@ -170,7 +170,7 @@ export default function AboutPage() {
             <div className="p-[1px] rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:scale-[1.02] transition-transform duration-300">
               <div className="h-full bg-black rounded-[23px] p-6 space-y-3">
                 <h3 className="font-bold text-white text-base">Leadership Board</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
+                <p className="text-xs text-gray-300 leading-relaxed">
                   Our directors combine years of software development experience at top global tech brands with a deep personal calling for regional development and local church partnerships.
                 </p>
               </div>
@@ -180,7 +180,7 @@ export default function AboutPage() {
             <div className="p-[1px] rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 hover:scale-[1.02] transition-transform duration-300">
               <div className="h-full bg-black rounded-[23px] p-6 space-y-3">
                 <h3 className="font-bold text-white text-base">Mentors & Volunteers</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
+                <p className="text-xs text-gray-300 leading-relaxed">
                   A network of bilingual technology professionals and educators from university BRASA chapters and US businesses dedicated to teaching coding and building bridges.
                 </p>
               </div>
@@ -192,7 +192,7 @@ export default function AboutPage() {
         {/* CTA Section */}
         <section className="text-center bg-gradient-to-br from-blue-950/25 via-black to-green-950/25 border border-blue-500/20 rounded-3xl p-10 max-w-3xl mx-auto space-y-6">
           <h2 className="text-2xl font-bold">Join the Mission</h2>
-          <p className="text-gray-400 text-sm leading-relaxed max-w-md mx-auto">
+          <p className="text-gray-300 text-sm leading-relaxed max-w-md mx-auto">
             Every contribution directly funds laptops, coding instruction books, and virtual classroom operations for local schools.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -209,7 +209,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-      </main>
+      </div>
     </div>
   )
 }

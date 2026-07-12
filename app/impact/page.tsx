@@ -94,13 +94,13 @@ export default function ImpactPage() {
   ]
 
   const activeSchool = schools.find(s => s.name === selectedSchool) || schools[0]
+  const analytics = { trackEngagement: (event: string, data: any) => console.log(event, data) }
 
   return (
     <div className="bg-black text-white min-h-screen relative overflow-hidden pt-24 pb-16">
       {/* Background Radial Light */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
-
-      <main className="max-w-7xl mx-auto px-4 py-12 relative z-10 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 py-12 relative z-10 space-y-12">
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full py-1.5 px-3 mb-6">
@@ -108,25 +108,25 @@ export default function ImpactPage() {
             <span className="text-xs font-semibold text-green-400 tracking-wider uppercase">Live Operations Metrics</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-            Our Verified Impact
+            Our Measurable Impact
           </h1>
-          <p className="text-gray-400 mt-4 text-sm md:text-base">
-            TechMission Rio guarantees 100% financial transparency. Review our live equipment allocation, school partnerships, and verified budget breakdowns in real-time.
+          <p className="text-gray-300 text-sm md:text-base max-w-xl mx-auto mt-4 leading-relaxed">
+            TechMission Rio is committed to 100% financial transparency and verified metrics tracking.
           </p>
         </div>
 
-        {/* Real-time Counter Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Top grid stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Metric 1 */}
           <div className="bg-gradient-to-br from-blue-950/20 to-black border border-blue-500/20 rounded-3xl p-8 text-center relative group hover:border-blue-500/40 transition duration-300">
             <div className="absolute top-4 right-4 bg-blue-500/10 border border-blue-500/20 rounded-full p-1.5">
               <Laptop className="w-5 h-5 text-blue-400" />
             </div>
-            <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Laptops Delivered</h3>
+            <h2 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Laptops Delivered</h2>
             <div className="text-5xl font-black text-white mt-4 tracking-tight">
               {loading ? "..." : metrics.laptopsDistributed}
             </div>
-            <p className="text-xs text-gray-500 mt-2">Essential hardware tracking index</p>
+            <p className="text-xs text-gray-400 mt-2">Essential hardware tracking index</p>
           </div>
 
           {/* Metric 2 */}
@@ -134,11 +134,11 @@ export default function ImpactPage() {
             <div className="absolute top-4 right-4 bg-green-500/10 border border-green-500/20 rounded-full p-1.5">
               <Clock className="w-5 h-5 text-green-400" />
             </div>
-            <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Mentorship Hours</h3>
+            <h2 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Mentorship Hours</h2>
             <div className="text-5xl font-black text-white mt-4 tracking-tight">
               {loading ? "..." : metrics.mentorshipHours.toLocaleString()}
             </div>
-            <p className="text-xs text-gray-500 mt-2">Classroom and virtual sessions</p>
+            <p className="text-xs text-gray-400 mt-2">Classroom and virtual sessions</p>
           </div>
 
           {/* Metric 3 */}
@@ -146,11 +146,11 @@ export default function ImpactPage() {
             <div className="absolute top-4 right-4 bg-yellow-500/10 border border-yellow-500/20 rounded-full p-1.5">
               <Building2 className="w-5 h-5 text-yellow-400" />
             </div>
-            <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Active Partner Schools</h3>
+            <h2 className="text-gray-300 text-xs font-bold uppercase tracking-widest">Active Partner Schools</h2>
             <div className="text-5xl font-black text-white mt-4 tracking-tight">
               {loading ? "..." : metrics.activePartners}
             </div>
-            <p className="text-xs text-gray-500 mt-2">FAETEC & IFRJ campuses</p>
+            <p className="text-xs text-gray-400 mt-2">FAETEC & IFRJ campuses</p>
           </div>
         </div>
 
@@ -159,11 +159,11 @@ export default function ImpactPage() {
           {/* Pulsing Partner Map */}
           <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 flex flex-col justify-between">
             <div>
-              <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              <h2 className="text-2xl font-bold flex items-center gap-2 mb-2">
                 <MapPin className="w-6 h-6 text-green-400" />
                 Rio School Partnerships
               </h2>
-              <p className="text-sm text-gray-400 mb-6">
+              <p className="text-sm text-gray-300 mb-6">
                 Hover or click map nodes to explore current active nominees and laptop deployments.
               </p>
             </div>
@@ -200,8 +200,8 @@ export default function ImpactPage() {
               <div className="md:col-span-5 bg-black/40 border border-gray-800 rounded-2xl p-5 space-y-4">
                 <div>
                   <h3 className="font-bold text-white text-base">{activeSchool.name}</h3>
-                  <p className="text-gray-400 text-xs flex items-center gap-1 mt-0.5">
-                    <MapPin className="w-3.5 h-3.5 text-gray-500" />
+                  <p className="text-gray-300 text-xs flex items-center gap-1 mt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-gray-400" />
                     {activeSchool.location}
                   </p>
                 </div>
@@ -209,15 +209,15 @@ export default function ImpactPage() {
                 <div className="grid grid-cols-2 gap-2 text-center">
                   <div className="bg-black/50 border border-gray-900 rounded-xl p-2.5">
                     <div className="text-xl font-black text-green-400">{activeSchool.students}</div>
-                    <div className="text-[10px] text-gray-500 uppercase font-semibold">Trainees</div>
+                    <div className="text-[10px] text-gray-400 uppercase font-semibold">Trainees</div>
                   </div>
                   <div className="bg-black/50 border border-gray-900 rounded-xl p-2.5">
                     <div className="text-xl font-black text-blue-400">{activeSchool.laptops}</div>
-                    <div className="text-[10px] text-gray-500 uppercase font-semibold">Laptops</div>
+                    <div className="text-[10px] text-gray-400 uppercase font-semibold">Laptops</div>
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-400 leading-relaxed border-t border-gray-900 pt-3">
+                <p className="text-xs text-gray-300 leading-relaxed border-t border-gray-900 pt-3">
                   {activeSchool.description}
                 </p>
               </div>
@@ -280,7 +280,7 @@ export default function ImpactPage() {
               </div>
             </div>
 
-            <p className="text-[10px] text-gray-500 leading-snug border-t border-gray-900 pt-6 mt-6">
+            <p className="text-[10px] text-gray-400 leading-snug border-t border-gray-900 pt-6 mt-6">
               💰 TMR operations are audited annually by third-party non-profit watchdogs. 501(c)(3) religious/educational exemption documents are available for download in your donor profile portal.
             </p>
           </div>
@@ -294,7 +294,7 @@ export default function ImpactPage() {
                 <ShieldCheck className="w-5 h-5 text-yellow-400" />
                 Administrative Database Manager
               </h3>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-300">
                 You have administrative access to update these global dashboard statistics in Firestore in real-time.
               </p>
             </div>
@@ -306,7 +306,7 @@ export default function ImpactPage() {
             </Link>
           </div>
         )}
-      </main>
+      </div>
     </div>
   )
 }

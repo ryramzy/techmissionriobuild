@@ -26,7 +26,8 @@ interface Fellow {
   track: string
   location: string
   joinedDate: string
-  story: string
+  bio: { en: string | null; pt: string | null }
+  story?: string
   skills: string[]
   goal: string
   github: string
@@ -45,7 +46,10 @@ export default function FellowsPage() {
       track: "Web Development",
       location: "Rocinha, Rio",
       joinedDate: "January 2024",
-      story: "TechMission Rio opened doors I never knew existed. Now I'm building websites for local businesses and helping my community.",
+      bio: {
+        en: "TechMission Rio opened doors I never knew existed. Now I'm building websites for local businesses and helping my community.",
+        pt: "A TechMission Rio abriu portas que eu nunca soube que existiam. Agora estou construindo sites para empresas locais e ajudando minha comunidade."
+      },
       skills: ["HTML", "CSS", "JavaScript", "React"],
       goal: "Become a full-stack developer and start a tech company in Rio",
       github: "https://github.com",
@@ -61,7 +65,10 @@ export default function FellowsPage() {
       track: "Mobile App Development",
       location: "Complexo do Alemão, Rio",
       joinedDate: "February 2024",
-      story: "I went from knowing nothing about coding to developing apps that help my community access essential services.",
+      bio: {
+        en: "I went from knowing nothing about coding to developing apps that help my community access essential services.",
+        pt: "Passei de não saber nada sobre programação para desenvolver aplicativos que ajudam minha comunidade a acessar serviços essenciais."
+      },
       skills: ["React Native", "Firebase", "UI/UX Design"],
       goal: "Create apps that solve problems in underserved communities",
       github: "https://github.com",
@@ -77,7 +84,10 @@ export default function FellowsPage() {
       track: "Data Science",
       location: "Vila Kennedy, Rio",
       joinedDate: "March 2024",
-      story: "The mentorship and training gave me the confidence to pursue a career in tech. Now I'm working with data to help local businesses.",
+      bio: {
+        en: "The mentorship and training gave me the confidence to pursue a career in tech. Now I'm working with data to help local businesses.",
+        pt: "A mentoria e o treinamento me deram confiança para seguir carreira em tecnologia. Agora trabalho com dados para ajudar empresas locais."
+      },
       skills: ["Python", "Machine Learning", "Data Analysis"],
       goal: "Use data science to improve urban planning in Rio",
       github: "https://github.com",
@@ -93,7 +103,10 @@ export default function FellowsPage() {
       track: "UI/UX Design",
       location: "Maré, Rio",
       joinedDate: "January 2024",
-      story: "Design has always been my passion, but I never thought I could make a career of it. TechMission Rio showed me how.",
+      bio: {
+        en: "Design has always been my passion, but I never thought I could make a career of it. TechMission Rio showed me how.",
+        pt: "O design sempre foi minha paixão, mas nunca pensei que pudesse fazer carreira com isso. A TechMission Rio me mostrou como."
+      },
       skills: ["Figma", "Adobe XD", "Prototyping"],
       goal: "Design accessible technology for people with disabilities",
       github: "https://github.com",
@@ -109,7 +122,10 @@ export default function FellowsPage() {
       track: "Backend Development",
       location: "Jacarezinho, Rio",
       joinedDate: "February 2024",
-      story: "I love solving problems with code. The fellowship program gave me the skills and network to turn this passion into a career.",
+      bio: {
+        en: "I love solving problems with code. The fellowship program gave me the skills and network to turn this passion into a career.",
+        pt: "Adoro resolver problemas com código. O programa de bolsa me deu as habilidades e a rede para transformar essa paixão em uma carreira."
+      },
       skills: ["Node.js", "PostgreSQL", "AWS"],
       goal: "Build scalable systems for social impact organizations",
       github: "https://github.com",
@@ -125,7 +141,10 @@ export default function FellowsPage() {
       track: "Frontend Development",
       location: "Tijuca, Rio",
       joinedDate: "March 2024",
-      story: "Being a woman in tech can be challenging, but TechMission Rio created a supportive environment where I can thrive.",
+      bio: {
+        en: "Being a woman in tech can be challenging, but TechMission Rio created a supportive environment where I can thrive.",
+        pt: "Ser mulher na tecnologia pode ser desafiador, mas a TechMission Rio criou um ambiente de apoio onde posso prosperar."
+      },
       skills: ["Vue.js", "TypeScript", "CSS"],
       goal: "Mentor other young women interested in technology",
       github: "https://github.com",
@@ -287,19 +306,19 @@ export default function FellowsPage() {
                     </div>
 
                     {/* Location & Date */}
-                    <div className="flex items-center gap-4 text-gray-400 text-xs mb-4">
+                    <div className="flex items-center gap-4 text-gray-300 text-xs mb-4">
                       <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-gray-500" />
+                        <MapPin className="w-3.5 h-3.5 text-gray-400" />
                         {fellow.location}
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <Calendar className="w-3.5 h-3.5 text-gray-500" />
+                        <Calendar className="w-3.5 h-3.5 text-gray-400" />
                         {fellow.joinedDate}
                       </div>
                     </div>
 
                     {/* Story */}
-                    <p className="text-gray-300 text-sm mb-4 italic leading-relaxed">"{fellow.story}"</p>
+                    <p className="text-gray-300 text-sm mb-4 italic leading-relaxed">"{fellow.bio?.en || fellow.bio?.pt || fellow.story || ""}"</p>
 
                     {/* Skills */}
                     <div className="mb-4">
@@ -316,7 +335,7 @@ export default function FellowsPage() {
                     {/* Goal */}
                     <div className="border-t border-gray-900 pt-4 mb-4">
                       <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-1">Career Goal</h4>
-                      <p className="text-gray-400 text-sm">{fellow.goal}</p>
+                      <p className="text-gray-300 text-sm">{fellow.goal}</p>
                     </div>
                   </div>
 

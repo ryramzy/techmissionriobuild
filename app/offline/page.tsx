@@ -30,7 +30,7 @@ export default function OfflinePage() {
       {/* Background radial visual lights */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-yellow-950/10 via-transparent to-transparent pointer-events-none" />
 
-      <main className="max-w-md w-full bg-gradient-to-br from-blue-950/20 to-black border border-blue-500/20 rounded-3xl p-8 text-center space-y-6 relative z-10 shadow-2xl">
+      <div className="max-w-md w-full bg-gradient-to-br from-blue-950/20 to-black border border-blue-500/20 rounded-3xl p-8 text-center space-y-6 relative z-10 shadow-2xl">
         {/* TMR Brand Branding Logo */}
         <div className="flex items-center justify-center gap-2 mb-2">
           <span className="text-xl font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500 uppercase">
@@ -44,12 +44,12 @@ export default function OfflinePage() {
 
         <div className="space-y-2">
           <h1 className="text-2xl font-black tracking-tight">Connection Interrupted</h1>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-gray-300 text-sm leading-relaxed">
             You are currently offline. But don't worry—the TechMission Rio standalone PWA app is configured to operate offline.
           </p>
         </div>
 
-        <div className="bg-black/50 border border-gray-900 rounded-2xl p-4 text-xs text-gray-400 leading-normal text-left space-y-2">
+        <div className="bg-black/50 border border-gray-900 rounded-2xl p-4 text-xs text-gray-300 leading-normal text-left space-y-2">
           <div className="flex justify-between border-b border-gray-900 pb-2 mb-2 font-bold">
             <span>PWA Status:</span>
             <span className="text-yellow-400">Offline Shell Ready</span>
@@ -63,8 +63,8 @@ export default function OfflinePage() {
             <span>Nominations and hardware requests will auto-sync on reconnect.</span>
           </div>
           {syncTime && (
-            <div className="text-[10px] text-gray-500 text-center pt-2">
-              Last dynamic session check: <span className="font-semibold text-gray-400">{syncTime}</span>
+            <div className="text-[10px] text-gray-400 text-center pt-2">
+              Last dynamic session check: <span className="font-semibold text-gray-300">{syncTime}</span>
             </div>
           )}
         </div>
@@ -123,7 +123,7 @@ export default function OfflinePage() {
             </button>
           </div>
         )}
-      </main>
+      </div>
     </div>
   )
 }

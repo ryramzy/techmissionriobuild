@@ -176,12 +176,13 @@ export default function SuccessClient() {
         {/* Retention Loop */}
         <div className="bg-black/50 border border-gray-700 rounded-2xl p-6 mb-8">
           <h3 className="text-lg font-bold text-white mb-2">Stay Connected to Your Impact</h3>
-          <p className="text-gray-400 mb-4">Get monthly updates on the students you're supporting</p>
+          <p className="text-gray-300 mb-4">Get monthly updates on the students you're supporting</p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
             <input 
               type="email" 
               placeholder="your@email.com" 
-              className="flex-1 bg-black/50 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-green-500"
+              className="flex-1 bg-black/50 border border-gray-600 text-white px-4 py-2 rounded-lg focus:outline-none focus:border-green-500 placeholder-gray-400"
+              aria-label="Email Address for monthly updates"
             />
             <button 
               onClick={() => {

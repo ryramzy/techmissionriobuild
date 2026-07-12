@@ -61,7 +61,8 @@ export default function FellowDashboardPage() {
   const [track, setTrack] = useState("Web Development")
   const [location, setLocation] = useState("Rio de Janeiro")
   const [joinedDate, setJoinedDate] = useState("January 2026")
-  const [story, setStory] = useState("")
+  const [bioEn, setBioEn] = useState("")
+  const [bioPt, setBioPt] = useState("")
   const [skills, setSkills] = useState("")
   const [goal, setGoal] = useState("")
   const [github, setGithub] = useState("")
@@ -112,7 +113,9 @@ export default function FellowDashboardPage() {
             setTrack(data.track || "Web Development")
             setLocation(data.location || "Rio de Janeiro")
             setJoinedDate(data.joinedDate || "January 2026")
-            setStory(data.story || "")
+            const bioData = data.bio || {}
+            setBioEn(bioData.en || data.story || "")
+            setBioPt(bioData.pt || "")
             setSkills(Array.isArray(data.skills) ? data.skills.join(", ") : data.skills || "")
             setGoal(data.goal || "")
             setGithub(data.github || "")
@@ -163,7 +166,10 @@ export default function FellowDashboardPage() {
         track,
         location,
         joinedDate,
-        story,
+        bio: {
+          en: bioEn,
+          pt: bioPt
+        },
         skills: skillsArray,
         goal,
         github,
@@ -212,7 +218,7 @@ export default function FellowDashboardPage() {
       {/* Background radial light */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-transparent to-transparent pointer-events-none" />
 
-      <main className="max-w-6xl mx-auto px-6 relative z-10 space-y-8">
+      <div className="max-w-6xl mx-auto px-6 relative z-10 space-y-8">
         {/* Header */}
         <div className="border-b border-gray-900 pb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -259,8 +265,9 @@ export default function FellowDashboardPage() {
             <div className="space-y-4">
               {/* Name */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Full Name</label>
+                <label htmlFor="fellow-name" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Full Name</label>
                 <input
+                  id="fellow-name"
                   type="text"
                   required
                   placeholder="e.g. Gabriel Barbosa"
@@ -273,8 +280,9 @@ export default function FellowDashboardPage() {
               {/* Specialization track */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Specialization Track</label>
+                  <label htmlFor="fellow-track" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Specialization Track</label>
                   <select
+                    id="fellow-track"
                     value={track}
                     onChange={(e) => setTrack(e.target.value)}
                     className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-green-500 transition"
@@ -287,8 +295,9 @@ export default function FellowDashboardPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Location / Neighborhood</label>
+                  <label htmlFor="fellow-location" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Location / Neighborhood</label>
                   <input
+                    id="fellow-location"
                     type="text"
                     required
                     placeholder="e.g. Rocinha, Rio"
@@ -300,22 +309,38 @@ export default function FellowDashboardPage() {
               </div>
 
               {/* Story / Biography */}
-              <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Your Story (Brazilian Testimony)</label>
-                <textarea
-                  required
-                  rows={4}
-                  placeholder="Tell B2B donors and churches about your background, how technology impacted you, and what this fellowship program represents."
-                  value={story}
-                  onChange={(e) => setStory(e.target.value)}
-                  className="w-full bg-black border border-gray-800 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-green-500 transition resize-none"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label htmlFor="fellow-bio-en" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Bio (English)</label>
+                  <textarea
+                    id="fellow-bio-en"
+                    required
+                    rows={4}
+                    placeholder="Tell B2B donors and churches about your background (in English)..."
+                    value={bioEn}
+                    onChange={(e) => setBioEn(e.target.value)}
+                    className="w-full bg-black border border-gray-800 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-green-500 transition resize-none h-32"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="fellow-bio-pt" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Bio (Português)</label>
+                  <textarea
+                    id="fellow-bio-pt"
+                    required
+                    rows={4}
+                    placeholder="Conte sobre sua história e aprendizado (em Português)..."
+                    value={bioPt}
+                    onChange={(e) => setBioPt(e.target.value)}
+                    className="w-full bg-black border border-gray-800 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-green-500 transition resize-none h-32"
+                  />
+                </div>
               </div>
 
               {/* Skills CSV */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Technical Skills (Comma separated)</label>
+                <label htmlFor="fellow-skills" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Technical Skills (Comma separated)</label>
                 <input
+                  id="fellow-skills"
                   type="text"
                   placeholder="e.g. React, Next.js, Figma, Node.js, Python"
                   value={skills}
@@ -326,8 +351,9 @@ export default function FellowDashboardPage() {
 
               {/* Goal */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Career Goal</label>
+                <label htmlFor="fellow-goal" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Career Goal</label>
                 <input
+                  id="fellow-goal"
                   type="text"
                   placeholder="e.g. Build backend systems for global tech firms"
                   value={goal}
@@ -338,15 +364,16 @@ export default function FellowDashboardPage() {
 
               {/* Pitch Video */}
               <div className="space-y-2">
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">YouTube Video Pitch URL</label>
+                <label htmlFor="fellow-video" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">YouTube Video Pitch URL</label>
                 <input
+                  id="fellow-video"
                   type="text"
                   placeholder="e.g. https://www.youtube.com/watch?v=..."
                   value={videoUrlInput}
                   onChange={(e) => setVideoUrlInput(e.target.value)}
                   className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-green-500 transition"
                 />
-                <p className="text-[10px] text-gray-500">
+                <p className="text-[10px] text-gray-400">
                   Accepts watch, youtu.be, and embed link formats. Sanitized automatically.
                 </p>
               </div>
@@ -354,8 +381,9 @@ export default function FellowDashboardPage() {
               {/* Social URLs */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">GitHub Profile URL</label>
+                  <label htmlFor="fellow-github" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">GitHub Profile URL</label>
                   <input
+                    id="fellow-github"
                     type="text"
                     placeholder="https://github.com/..."
                     value={github}
@@ -364,8 +392,9 @@ export default function FellowDashboardPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">LinkedIn Profile URL</label>
+                  <label htmlFor="fellow-linkedin" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">LinkedIn Profile URL</label>
                   <input
+                    id="fellow-linkedin"
                     type="text"
                     placeholder="https://linkedin.com/in/..."
                     value={linkedin}
@@ -374,8 +403,9 @@ export default function FellowDashboardPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Portfolio Website URL</label>
+                  <label htmlFor="fellow-portfolio" className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider">Portfolio Website URL</label>
                   <input
+                    id="fellow-portfolio"
                     type="text"
                     placeholder="https://mywork.dev"
                     value={portfolio}
@@ -454,7 +484,7 @@ export default function FellowDashboardPage() {
                 </div>
 
                 <p className="text-gray-300 text-sm mb-4 italic leading-relaxed">
-                  "{story || "Write your story in the input box on the left. Introduce yourself to prospective international church and corporate donors."}"
+                  "{bioEn || bioPt || "Write your story in the input box on the left. Introduce yourself to prospective international church and corporate donors."}"
                 </p>
 
                 <div className="mb-4 space-y-2">
@@ -488,7 +518,7 @@ export default function FellowDashboardPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   )
 }

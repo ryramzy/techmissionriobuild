@@ -157,23 +157,24 @@ function AuthActionContent() {
         {needEmailInput && !loading && (
           <form onSubmit={handleEmailSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">
+              <label htmlFor="confirm-email" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">
                 Confirm Registration Email
               </label>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                   <Mail className="w-5 h-5" />
                 </span>
                 <input
+                  id="confirm-email"
                   type="email"
                   required
                   placeholder="e.g. student@faetec.br"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-black border border-gray-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-green-500 transition"
+                  className="w-full bg-black border border-gray-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-green-500 transition"
                 />
               </div>
-              <p className="text-[10px] text-gray-500 leading-normal pt-1">
+              <p className="text-[10px] text-gray-400 leading-normal pt-1">
                 Security Check: Input the email address matching your invitation letter to verify session signatures.
               </p>
             </div>

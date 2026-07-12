@@ -4,7 +4,7 @@ import { Button } from "@/components/Button/Button"
 
 export default function EventsPage() {
   return (
-    <main className="min-h-screen bg-[#070b19] text-white overflow-hidden relative selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#070b19] text-white overflow-hidden relative selection:bg-purple-500/30">
       {/* Background ambient light */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[500px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
@@ -21,7 +21,7 @@ export default function EventsPage() {
             Events: Coming Soon
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
             We are curating an exciting lineup of workshops, hackathons, and guest speaker sessions to fuel your journey into tech.
           </p>
 
@@ -31,8 +31,9 @@ export default function EventsPage() {
               <input 
                 type="email" 
                 placeholder="Enter your email to get notified..." 
-                className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-6 pr-40 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 backdrop-blur-md transition-all"
+                className="w-full bg-white/5 border border-white/10 rounded-full py-4 pl-6 pr-40 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 backdrop-blur-md transition-all"
                 required
+                aria-label="Email address for event notifications"
               />
               <div className="absolute right-2">
                 <Button 
@@ -69,7 +70,7 @@ export default function EventsPage() {
                   {item.icon}
                 </div>
                 <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-gray-400 group-hover:text-gray-300 transition-colors">
+                <p className="text-gray-300 group-hover:text-gray-200 transition-colors">
                   {item.desc}
                 </p>
               </div>
@@ -77,6 +78,6 @@ export default function EventsPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-16">
       <div className="mx-auto max-w-5xl">
         <header className="mb-10 text-center">
           <h1 className="text-4xl font-bold">Contact</h1>
@@ -38,7 +38,7 @@ export default function ContactPage() {
               <h3 className="mb-3 text-xl font-semibold">Contact Information</h3>
               <ul className="space-y-3 text-gray-700 dark:text-gray-200">
                 <li>
-                  <span className="block text-sm font-medium text-gray-500 dark:text-gray-400">General</span>
+                  <span className="block text-sm font-medium text-gray-600 dark:text-gray-300">General</span>
                   <a className="text-blue-600 hover:underline dark:text-blue-400" href="mailto:info@techmissionrio.org">
                     info@techmissionrio.org
                   </a>
@@ -104,6 +104,6 @@ export default function ContactPage() {
           </aside>
         </div>
       </div>
-    </main>
+    </div>
   );
 } 

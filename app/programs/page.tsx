@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ProgramsPage() {
   return (
-    <main className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-16">
       <h1 className="mb-8 text-4xl font-bold">Our Programs</h1>
       
       <div className="grid gap-8 md:grid-cols-2">
@@ -48,6 +48,6 @@ export default function ProgramsPage() {
           </button>
         </div>
       </div>
-    </main>
+    </div>
   )
 } 

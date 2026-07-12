@@ -486,7 +486,7 @@ export default function PartnerPortalPage() {
       {/* Background Radial Overlay */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-full max-w-7xl h-[400px] bg-gradient-to-b from-blue-900/10 via-green-900/5 to-transparent pointer-events-none" />
 
-      <main className="max-w-5xl mx-auto px-6 py-12 relative z-10 space-y-10">
+      <div className="max-w-5xl mx-auto px-6 py-12 relative z-10 space-y-10">
 
         {/* Offline Warning Banner */}
         {isOffline && (
@@ -575,8 +575,9 @@ export default function PartnerPortalPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Name */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Name</label>
+                    <label htmlFor="nom-student-name" className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Name</label>
                     <input 
+                      id="nom-student-name"
                       type="text" 
                       value={nomination.studentName}
                       onChange={(e) => setNomination(prev => ({ ...prev, studentName: e.target.value }))}
@@ -588,8 +589,9 @@ export default function PartnerPortalPage() {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Email Address</label>
+                    <label htmlFor="nom-student-email" className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Email Address</label>
                     <input 
+                      id="nom-student-email"
                       type="email" 
                       value={nomination.studentEmail}
                       onChange={(e) => setNomination(prev => ({ ...prev, studentEmail: e.target.value }))}
@@ -603,8 +605,9 @@ export default function PartnerPortalPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* School Dropdown */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Partner School/Campus</label>
+                    <label htmlFor="nom-school" className="text-xs font-bold uppercase tracking-wider text-gray-400">Partner School/Campus</label>
                     <select
+                      id="nom-school"
                       value={nomination.school}
                       onChange={(e) => setNomination(prev => ({ ...prev, school: e.target.value }))}
                       className="w-full bg-black border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 text-sm cursor-pointer"
@@ -618,8 +621,9 @@ export default function PartnerPortalPage() {
 
                   {/* Grade */}
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Current Grade Level</label>
+                    <label htmlFor="nom-grade" className="text-xs font-bold uppercase tracking-wider text-gray-400">Current Grade Level</label>
                     <input 
+                      id="nom-grade"
                       type="text" 
                       value={nomination.grade}
                       onChange={(e) => setNomination(prev => ({ ...prev, grade: e.target.value }))}
@@ -650,8 +654,9 @@ export default function PartnerPortalPage() {
 
                 {/* Financial Justification */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Financial / Social Justification</label>
+                  <label htmlFor="nom-justification" className="text-xs font-bold uppercase tracking-wider text-gray-400">Financial / Social Justification</label>
                   <textarea 
+                    id="nom-justification"
                     value={nomination.justification}
                     onChange={(e) => setNomination(prev => ({ ...prev, justification: e.target.value }))}
                     placeholder="Provide details on family income, lack of computer access, and academic merits..."
@@ -662,8 +667,9 @@ export default function PartnerPortalPage() {
 
                 {/* Teacher Comments */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Teacher Recommendations & Comments (Optional)</label>
+                  <label htmlFor="nom-comments" className="text-xs font-bold uppercase tracking-wider text-gray-400">Teacher Recommendations & Comments (Optional)</label>
                   <textarea 
+                    id="nom-comments"
                     value={nomination.comments}
                     onChange={(e) => setNomination(prev => ({ ...prev, comments: e.target.value }))}
                     placeholder="Highlight special attributes, logical skills, or classroom achievements..."
@@ -673,21 +679,25 @@ export default function PartnerPortalPage() {
 
                 {/* Consent checkbox — MUST link to /privacy */}
                 <div className="flex items-start gap-3 py-2">
-                  <input
-                    type="checkbox"
-                    checked={consentChecked}
-                    onChange={(e) => setConsentChecked(e.target.checked)}
-                    style={{ marginTop: 2, flexShrink: 0 }}
-                    required
-                    className="w-4 h-4 rounded text-green-500 bg-black border-gray-800 focus:ring-0 mt-0.5 cursor-pointer"
-                  />
-                  <span className="text-xs text-gray-400 leading-normal">
-                    I confirm that the student's parent or legal guardian has provided explicit consent for their personal data to be processed by TechMission Rio under{" "}
-                    <Link href="/privacy" target="_blank" className="text-green-400 hover:underline font-semibold">
-                      our Privacy Policy
-                    </Link>
-                    {" "}(LGPD Art. 14 — processing data of minors).
-                  </span>
+                  <label htmlFor="nom-consent" className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      id="nom-consent"
+                      type="checkbox"
+                      checked={consentChecked}
+                      onChange={(e) => setConsentChecked(e.target.checked)}
+                      style={{ flexShrink: 0 }}
+                      required
+                      className="w-4 h-4 rounded text-green-500 bg-black border-gray-800 focus:ring-0 mt-0.5 cursor-pointer"
+                    />
+                    <span className="text-xs text-gray-400 leading-normal">
+                      I confirm that the student's parent or legal guardian has provided explicit consent for their personal data to be processed by TechMission Rio under{" "}
+                      <Link href="/privacy" target="_blank" className="text-green-400 hover:underline font-semibold">
+                        our Privacy Policy
+                      </Link>
+                      {" "}(LGPD Art. 14 — processing data of minors).
+                    </span>
+                  </label>
+                </div>
                 </div>
 
                 {/* Action button */}
@@ -788,8 +798,9 @@ export default function PartnerPortalPage() {
                   <form onSubmit={handleHardwareSubmit} className="space-y-4">
                     {/* Item type */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Equipment Type</label>
+                      <label htmlFor="hard-type" className="text-xs font-bold uppercase tracking-wider text-gray-400">Equipment Type</label>
                       <select
+                        id="hard-type"
                         value={hardwareRequest.itemType}
                         onChange={(e) => setHardwareRequest(prev => ({ ...prev, itemType: e.target.value }))}
                         className="w-full bg-black border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 text-xs cursor-pointer"
@@ -804,8 +815,9 @@ export default function PartnerPortalPage() {
 
                     {/* Quantity */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Quantity Needed</label>
+                      <label htmlFor="hard-qty" className="text-xs font-bold uppercase tracking-wider text-gray-400">Quantity Needed</label>
                       <input 
+                        id="hard-qty"
                         type="number" 
                         value={hardwareRequest.quantity}
                         onChange={(e) => setHardwareRequest(prev => ({ ...prev, quantity: Number(e.target.value) }))}
@@ -831,8 +843,9 @@ export default function PartnerPortalPage() {
 
                     {/* Notes */}
                     <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-400">Classroom Lab Notes</label>
+                      <label htmlFor="hard-notes" className="text-xs font-bold uppercase tracking-wider text-gray-400">Classroom Lab Notes</label>
                       <textarea 
+                        id="hard-notes"
                         value={hardwareRequest.notes}
                         onChange={(e) => setHardwareRequest(prev => ({ ...prev, notes: e.target.value }))}
                         placeholder="Detail which lab bench or specific course is failing..."
@@ -1034,7 +1047,7 @@ export default function PartnerPortalPage() {
           </div>
         )}
 
-      </main>
+      </div>
 
       {/* Sponsorship Confirmation Modal Dialog */}
       {showConfirmModal && (

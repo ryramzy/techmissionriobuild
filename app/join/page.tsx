@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function JoinPage() {
   return (
-    <main className="container mx-auto px-4 py-16">
+    <div className="container mx-auto px-4 py-16">
       <div className="mx-auto max-w-2xl">
         <h1 className="mb-8 text-4xl font-bold">Join Us</h1>
         
@@ -79,6 +79,6 @@ export default function JoinPage() {
           </form>
         </div>
       </div>
-    </main>
+    </div>
   )
 } 
