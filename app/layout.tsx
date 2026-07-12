@@ -8,6 +8,7 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider"
 import { AuthProvider } from "./components/AuthContext"
 import PWARegister from "@/components/PWARegister"
 import PWANotifications from "@/components/PWANotifications"
+import CookieConsent from "@/components/CookieConsent"
 import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { getUserLocale } from "@/lib/locale"
@@ -105,6 +106,7 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <PWARegister />
+        <CookieConsent />
         <AuthProvider>
           <PWANotifications />
           <AnalyticsProvider>

@@ -63,5 +63,15 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAuthenticated();
     }
+
+    // Stripe webhooks idempotency events collection
+    match /stripe_events/{eventId} {
+      allow read, write: if false; // Admin SDK only
+    }
+
+    // Firebase Trigger Email mail collection
+    match /mail/{docId} {
+      allow read, write: if false; // Admin SDK only
+    }
   }
 }

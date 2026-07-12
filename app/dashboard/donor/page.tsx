@@ -95,6 +95,33 @@ export default function DonorDashboardPage() {
     }
   }
 
+  const downloadReceipt = async (donationId: string) => {
+    if (!user) return
+    try {
+      const idToken = await user.getIdToken()
+      const res = await fetch("/api/receipts/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ donationId, userId: user.uid, idToken }),
+      })
+      if (!res.ok) {
+        throw new Error("Failed to generate receipt PDF")
+      }
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `receipt-${donationId}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error("Receipt download error:", err)
+      alert("Failed to download receipt statement. Please try again.")
+    }
+  }
+
   if (authLoading || !user || (profile?.profileType !== "individual" && profile?.profileType !== "organization")) {
     return (
       <div className="bg-black text-white min-h-screen flex items-center justify-center">
@@ -311,7 +338,7 @@ export default function DonorDashboardPage() {
                       </td>
                       <td className="py-4 px-3 text-center">
                         <button 
-                          onClick={() => alert(`Downloading PDF tax statement for transaction ${item.id}...`)}
+                          onClick={() => downloadReceipt(item.id)}
                           className="text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 transition cursor-pointer"
                         >
                           <Download className="w-4 h-4" />

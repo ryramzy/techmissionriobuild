@@ -32,6 +32,6 @@ const getFirebaseAdmin = () => {
   return null
 }
 
-const adminApp = getFirebaseAdmin()
+export const adminApp = getFirebaseAdmin()
 export const adminDb = adminApp ? getFirestore(adminApp) : null
 export const adminMessaging = adminApp ? getMessaging(adminApp) : null

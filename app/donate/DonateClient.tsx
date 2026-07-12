@@ -229,6 +229,14 @@ export default function DonateClient() {
             </div>
           </div>
 
+          {/* 501(c)(3) pending status disclaimer */}
+          <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-6 text-center mb-8 max-w-3xl mx-auto">
+            <p className="text-yellow-400 text-sm font-semibold flex items-center justify-center gap-2">
+              <span>⚠️</span>
+              {t("pendingDisclaimer")}
+            </p>
+          </div>
+
           {/* Custom Amount */}
           <div className="bg-gradient-to-br from-blue-900/30 to-black border border-blue-500/20 rounded-2xl p-8 text-center mb-12">
             <h3 className="text-2xl font-bold text-white mb-4">{t("customAmount")}</h3>

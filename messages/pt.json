@@ -239,8 +239,9 @@
     "securePaymentsDesc": "Criptografia e segurança padrão da indústria",
     "fullTransparency": "Transparência Total",
     "fullTransparencyDesc": "Acompanhe seu impacto e veja resultados reais",
-    "taxDeductible": "Isenção Fiscal nos EUA",
-    "taxDeductibleDesc": "Isenção fiscal sob a seção 501(c)(3)"
+    "taxDeductible": "Status de Isenção Fiscal (EUA)",
+    "taxDeductibleDesc": "Status 501(c)(3) pendente de aprovação da IRS",
+    "pendingDisclaimer": "A TechMission Rio está atualmente aguardando a aprovação do status de isenção fiscal 501(c)(3). As doações não são dedutíveis de impostos até que a aprovação do IRS seja confirmada."
   },
   "Privacy": {
     "title": "Política de Privacidade",
@@ -381,5 +382,25 @@
     "subjectOther": "Outro",
     "messageLabel": "Mensagem",
     "sendButton": "Enviar Mensagem"
+  },
+  "Terms": {
+    "title": "Termos de Serviço",
+    "lastUpdated": "Última Atualização: {date}",
+    "sec1Title": "1. Aceitação dos Termos",
+    "sec1Text": "Ao acessar ou usar a plataforma TechMission Rio, você concorda em cumprir estes Termos de Serviço. Se você não concordar com estes termos, por favor, não utilize nossos serviços.",
+    "sec2Title": "2. Regras de Uso da Plataforma",
+    "sec2Text": "Os usuários devem operar a plataforma de boa-fé. Qualquer uso indevido de formulários de indicação, falsificação de credenciais ou representação falsa de educadores, estudantes ou patrocinadores é estritamente proibido e resultará no cancelamento da conta.",
+    "sec3Title": "3. Acordos de Voluntários e Mentores",
+    "sec3Text": "Mentores e voluntários bilíngues concordam em manter suas escalas de disponibilidade semanal e aderir às nossas diretrizes de proteção infantil ao interagir com estudantes.",
+    "sec4Title": "4. Processamento de Indicações",
+    "sec4Text": "As indicações de alunos são enviadas por educadores. A coleta e o processamento de dados são tratados em estrita conformidade com o Artigo 14 da LGPD brasileira, exigindo o consentimento dos pais para menores. A retenção de dados segue nossa Política de Privacidade.",
+    "sec5Title": "5. Pagamentos e Reembolsos",
+    "sec5Text": "Todas as contribuições de doação feitas à TechMission Rio são definitivas e não reembolsáveis, exceto em casos de erros claros de processamento de pagamento. Aplicam-se os termos de processamento de pagamentos do Stripe e PayPal.",
+    "sec6Title": "6. Limitação de Responsabilidade",
+    "sec6Text": "A TechMission Rio é fornecida 'como está' e conforme a disponibilidade. Não oferecemos garantias sobre o funcionamento ininterrupto da plataforma ou livre de erros, e nos isentamos de qualquer responsabilidade por danos indiretos.",
+    "sec7Title": "7. Lei Aplicável",
+    "sec7Text": "Estes termos são regidos pelas leis do Estado de Delaware, Estados Unidos, e leis federais aplicáveis, bem como pela Lei Geral de Proteção de Dados (LGPD) brasileira para operações em território nacional.",
+    "sec8Title": "8. Informações de Contato",
+    "sec8Text": "Para dúvidas legais ou de proteção de dados, entre em contato conosco pelo e-mail legal@techmissionrio.org."
   }
 }

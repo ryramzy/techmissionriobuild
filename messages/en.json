@@ -239,8 +239,9 @@
     "securePaymentsDesc": "Industry-standard encryption and security",
     "fullTransparency": "Full Transparency",
     "fullTransparencyDesc": "Track your impact and see real results",
-    "taxDeductible": "Tax Deductible",
-    "taxDeductibleDesc": "501(c)(3) tax-exempt organization"
+    "taxDeductible": "Tax Exemption Status",
+    "taxDeductibleDesc": "501(c)(3) status pending IRS approval",
+    "pendingDisclaimer": "TechMission Rio is currently pending 501(c)(3) tax-exempt status. Donations are not tax-deductible until IRS approval is confirmed."
   },
   "Privacy": {
     "title": "Privacy Policy",
@@ -381,5 +382,25 @@
     "subjectOther": "Other",
     "messageLabel": "Message",
     "sendButton": "Send Message"
+  },
+  "Terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last Updated: {date}",
+    "sec1Title": "1. Acceptance of Terms",
+    "sec1Text": "By accessing or using the TechMission Rio platform, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the services.",
+    "sec2Title": "2. Platform Usage Rules",
+    "sec2Text": "Users must operate the platform in good faith. Any misuse of nomination forms, falsification of credentials, or impersonation of educators, students, or sponsors is strictly prohibited and will result in account termination.",
+    "sec3Title": "3. Volunteer & Mentor Agreements",
+    "sec3Text": "Bilingual volunteers and mentors agree to maintain their weekly availability schedules and adhere to our child protection guidelines when interfacing with students.",
+    "sec4Title": "4. Nominations Processing",
+    "sec4Text": "Student nominations are submitted by educators. Data collection and processing are handled in strict compliance with Brazilian LGPD Art. 14, requiring parental consent for minors. Data retention follows our Privacy Policy.",
+    "sec5Title": "5. Payments & Refunds",
+    "sec5Text": "All donation contributions made to TechMission Rio are final and non-refundable, except in cases of clear payment processing errors. Stripe and PayPal payment processing terms apply.",
+    "sec6Title": "6. Limitation of Liability",
+    "sec6Text": "TechMission Rio is provided on an 'as-is' and 'as-available' basis. We make no warranties regarding platform uptime or error-free operations, and deny all liability for indirect damages.",
+    "sec7Title": "7. Governing Law",
+    "sec7Text": "These terms are governed by the laws of the State of Delaware, United States, and applicable federal laws, as well as the Brazilian General Data Protection Law (LGPD) for operations within Brazil.",
+    "sec8Title": "8. Contact Information",
+    "sec8Text": "For legal or data protection inquiries, please contact us at legal@techmissionrio.org."
   }
 }
