@@ -3,9 +3,11 @@
 import { Users, Grid, Heart, Home, Info } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 
 export function BottomNav() {
   const pathname = usePathname()
+  const t = useTranslations("Navigation")
 
   return (
     <nav 
@@ -23,35 +25,35 @@ export function BottomNav() {
         <Home 
           className={`w-6 h-6 mb-1 ${pathname === "/" ? "text-[#5ae0a0] fill-current" : "text-white/70 fill-none"}`}
         />
-        <span className={`text-[10px] ${pathname === "/" ? "text-[#5ae0a0]" : "text-white/70"}`}>Home</span>
+        <span className={`text-[10px] ${pathname === "/" ? "text-[#5ae0a0]" : "text-white/70"}`}>{t("home")}</span>
       </Link>
       
       <Link href="/about" className="flex flex-col items-center justify-center w-full h-full">
         <Info 
           className={`w-6 h-6 mb-1 ${pathname === "/about" ? "text-[#5ae0a0] fill-current" : "text-white/70 fill-none"}`}
         />
-        <span className={`text-[10px] ${pathname === "/about" ? "text-[#5ae0a0]" : "text-white/70"}`}>About</span>
+        <span className={`text-[10px] ${pathname === "/about" ? "text-[#5ae0a0]" : "text-white/70"}`}>{t("about")}</span>
       </Link>
       
       <Link href="/fellows" className="flex flex-col items-center justify-center w-full h-full">
         <Users 
           className={`w-6 h-6 mb-1 ${pathname === "/fellows" ? "text-[#5ae0a0] fill-current" : "text-white/70 fill-none"}`}
         />
-        <span className={`text-[10px] ${pathname === "/fellows" ? "text-[#5ae0a0]" : "text-white/70"}`}>Fellows</span>
+        <span className={`text-[10px] ${pathname === "/fellows" ? "text-[#5ae0a0]" : "text-white/70"}`}>{t("fellows")}</span>
       </Link>
 
       <Link href="/donate" className="flex flex-col items-center justify-center w-full h-full">
         <Heart 
           className={`w-6 h-6 mb-1 ${pathname === "/donate" ? "text-[#5ae0a0] fill-current" : "text-white/70 fill-none"}`}
         />
-        <span className={`text-[10px] ${pathname === "/donate" ? "text-[#5ae0a0]" : "text-white/70"}`}>Donate</span>
+        <span className={`text-[10px] ${pathname === "/donate" ? "text-[#5ae0a0]" : "text-white/70"}`}>{t("donate")}</span>
       </Link>
 
       <Link href="/more" className="flex flex-col items-center justify-center w-full h-full">
         <Grid 
           className={`w-6 h-6 mb-1 ${pathname === "/more" ? "text-[#5ae0a0] fill-current" : "text-white/70 fill-none"}`}
         />
-        <span className={`text-[10px] ${pathname === "/more" ? "text-[#5ae0a0]" : "text-white/70"}`}>More</span>
+        <span className={`text-[10px] ${pathname === "/more" ? "text-[#5ae0a0]" : "text-white/70"}`}>{t("more")}</span>
       </Link>
     </nav>
   )

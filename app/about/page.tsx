@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import RioCarousel from "@/components/RioCarousel"
 import { Code2, Users, MapPin, Sparkles, BookOpen, Heart, ShieldCheck } from "lucide-react"
+import { useTranslations } from "next-intl"
 
 export const dynamic = "force-static"
 
@@ -11,33 +12,35 @@ export const metadata: Metadata = {
 }
 
 export default function AboutPage() {
+  const t = useTranslations("About")
+
   const pillars = [
     {
       id: "pillar-coding",
       icon: <Code2 className="w-6 h-6 text-green-400" />,
-      title: "Coding Workshops",
-      description: "Free technical software development classes for youth in favelas and local technical colleges.",
+      title: t("pillarCodingTitle"),
+      description: t("pillarCodingDesc"),
       gradient: "from-green-500 to-blue-500"
     },
     {
       id: "pillar-meetups",
       icon: <Users className="w-6 h-6 text-blue-400" />,
-      title: "Meetups & Events",
-      description: "Regular networking forums where ideas, mentors, local IT experts, and sponsors collide.",
+      title: t("pillarMeetupsTitle"),
+      description: t("pillarMeetupsDesc"),
       gradient: "from-blue-500 to-indigo-500"
     },
     {
       id: "pillar-outreach",
       icon: <MapPin className="w-6 h-6 text-indigo-400" />,
-      title: "Local Outreach",
-      description: "Direct community assistance, equipment distribution, and physical classroom lab installations in Rio.",
+      title: t("pillarOutreachTitle"),
+      description: t("pillarOutreachDesc"),
       gradient: "from-indigo-500 to-purple-500"
     },
     {
       id: "pillar-faith",
       icon: <Sparkles className="w-6 h-6 text-yellow-400" />,
-      title: "Faith & Purpose",
-      description: "Valuing stewardship and human dignity. Open to everyone without judgment - sem julgamentos.",
+      title: t("pillarFaithTitle"),
+      description: t("pillarFaithDesc"),
       gradient: "from-yellow-400 to-orange-500"
     }
   ]
@@ -53,14 +56,14 @@ export default function AboutPage() {
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full py-1.5 px-3 mb-2">
             <ShieldCheck className="w-4 h-4 text-blue-400" />
-            <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">Our Story & Mission</span>
+            <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">{t("storyMissionTag")}</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight">
-            Empowering Rio's Youth,<br />
-            <span className="bg-gradient-to-r from-green-400 via-teal-400 to-blue-400 bg-clip-text text-transparent">Renewing Minds</span>
+            {t("title1")}<br />
+            <span className="bg-gradient-to-r from-green-400 via-teal-400 to-blue-400 bg-clip-text text-transparent">{t("title2")}</span>
           </h1>
           <p className="text-gray-300 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
-            TechMission Rio bridges the gap between underprivileged technical talent in Rio and B2B resources and mentorship in the US.
+            {t("aboutSubtitle")}
           </p>
         </div>
 
@@ -78,24 +81,19 @@ export default function AboutPage() {
               <div className="space-y-4">
                 <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
                   <BookOpen className="w-6 h-6 text-green-400" />
-                  Our Story
+                  {t("ourStoryTitle")}
                 </h2>
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  TechMission Rio was born from a vision to bridge technical education with spiritual growth. 
-                  Recognizing the lack of laptops, hardware access, and coding guidance for youth in 
-                  underserved favela neighborhoods in Rio de Janeiro, we dedicated our mission to establishing 
-                  active classroom labs and direct mentorship support.
+                  {t("ourStoryP1")}
                 </p>
                 <p className="text-gray-300 text-sm leading-relaxed">
-                  Our journey began with a small group of Christian tech professionals in the United States and Brazil, 
-                  united by the calling to utilize their industry expertise for social impact. Over the past three years, 
-                  we have graduated dozens of students, placing them in software engineering roles across Brazil.
+                  {t("ourStoryP2")}
                 </p>
               </div>
               <div className="border-t border-gray-900 pt-4 flex items-center gap-2 text-xs text-gray-300">
-                <span>Est. 2023</span>
+                <span>{t("est2023")}</span>
                 <span>•</span>
-                <span>501(c)(3) Exempt Entity</span>
+                <span>{t("exemptEntity")}</span>
               </div>
             </div>
           </div>
@@ -106,18 +104,17 @@ export default function AboutPage() {
               <div className="space-y-4">
                 <h2 className="text-2xl font-bold flex items-center gap-2 text-white">
                   <Sparkles className="w-6 h-6 text-blue-400" />
-                  Our Motivation
+                  {t("motivationTitle")}
                 </h2>
                 
                 <blockquote className="border-l-4 border-blue-500 pl-4 italic text-gray-300 text-sm leading-relaxed md:text-base">
-                  "Do not conform to the pattern of this world, but be transformed by the renewing of your mind. 
-                  Then you will be able to test and approve what God's will is—his good, pleasing and perfect will."
-                  <span className="mt-3 block text-xs font-bold text-green-400 not-italic uppercase tracking-widest">— Romans 12:2</span>
+                  {t("scriptureQuote")}
+                  <span className="mt-3 block text-xs font-bold text-green-400 not-italic uppercase tracking-widest">{t("scriptureRef")}</span>
                 </blockquote>
               </div>
 
               <p className="text-xs text-gray-300 leading-relaxed border-t border-gray-900 pt-4">
-                We believe tech is a tool for stewardship. By training minds logically and encouraging spiritual growth in Christ, we prepare young people to lead their communities with high values.
+                {t("motivationText")}
               </p>
             </div>
           </div>
@@ -128,7 +125,7 @@ export default function AboutPage() {
         <section className="space-y-8">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-white justify-center">
             <Heart className="w-6 h-6 text-green-400" />
-            Our Core Pillars
+            {t("pillarsTitle")}
           </h2>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -161,7 +158,7 @@ export default function AboutPage() {
         <section className="space-y-6">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-white justify-center">
             <Users className="w-6 h-6 text-indigo-400" />
-            Our Global Network
+            {t("networkTitle")}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -169,9 +166,9 @@ export default function AboutPage() {
             {/* Leadership Card */}
             <div className="p-[1px] rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:scale-[1.02] transition-transform duration-300">
               <div className="h-full bg-black rounded-[23px] p-6 space-y-3">
-                <h3 className="font-bold text-white text-base">Leadership Board</h3>
+                <h3 className="font-bold text-white text-base">{t("leadershipTitle")}</h3>
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  Our directors combine years of software development experience at top global tech brands with a deep personal calling for regional development and local church partnerships.
+                  {t("leadershipDesc")}
                 </p>
               </div>
             </div>
@@ -179,9 +176,9 @@ export default function AboutPage() {
             {/* Volunteers Card */}
             <div className="p-[1px] rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 hover:scale-[1.02] transition-transform duration-300">
               <div className="h-full bg-black rounded-[23px] p-6 space-y-3">
-                <h3 className="font-bold text-white text-base">Mentors & Volunteers</h3>
+                <h3 className="font-bold text-white text-base">{t("volunteersTitle")}</h3>
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  A network of bilingual technology professionals and educators from university BRASA chapters and US businesses dedicated to teaching coding and building bridges.
+                  {t("volunteersDesc")}
                 </p>
               </div>
             </div>
@@ -191,19 +188,19 @@ export default function AboutPage() {
 
         {/* CTA Section */}
         <section className="text-center bg-gradient-to-br from-blue-950/25 via-black to-green-950/25 border border-blue-500/20 rounded-3xl p-10 max-w-3xl mx-auto space-y-6">
-          <h2 className="text-2xl font-bold">Join the Mission</h2>
+          <h2 className="text-2xl font-bold">{t("joinTitle")}</h2>
           <p className="text-gray-300 text-sm leading-relaxed max-w-md mx-auto">
-            Every contribution directly funds laptops, coding instruction books, and virtual classroom operations for local schools.
+            {t("joinDesc")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/join">
               <span id="btn-about-join" className="bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-6 rounded-xl transition cursor-pointer text-sm flex items-center justify-center gap-1">
-                Get Involved
+                {t("getInvolved")}
               </span>
             </Link>
             <Link href="/donate">
               <span id="btn-about-donate" className="border border-gray-700 hover:bg-white/10 text-white font-bold py-3.5 px-6 rounded-xl transition cursor-pointer text-sm flex items-center justify-center gap-1">
-                Support Our Mission
+                {t("supportMission")}
               </span>
             </Link>
           </div>

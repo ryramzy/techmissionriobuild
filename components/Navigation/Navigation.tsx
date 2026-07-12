@@ -1,7 +1,11 @@
 import Link from "next/link"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
+import { LanguageSwitcher } from "./LanguageSwitcher"
 
 export function Navigation() {
+  const t = useTranslations("Navigation")
+
   return (
     <header className="hidden md:block sticky top-0 z-50 w-full border-b border-tmr-green/20 bg-tmr-blue/80 backdrop-blur-tmr">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4" aria-label="Main navigation">
@@ -18,32 +22,35 @@ export function Navigation() {
           <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
         </Link>
 
-        <div className="hidden space-x-8 md:flex">
+        <div className="hidden space-x-8 md:flex items-center">
           <Link href="/about" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="About us">
-            About
+            {t("about")}
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
           </Link>
           <Link href="/fellows" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Meet our fellows">
-            Fellows
+            {t("fellows")}
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
           </Link>
           <Link href="/impact" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Verified impact dashboard">
-            Impact
+            {t("impact")}
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
           </Link>
           <Link href="/contact" className="text-gray-300 hover:text-tmr-green transition-colors relative group" aria-label="Contact">
-            Contact
+            {t("contact")}
             <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-tmr-gradient group-hover:w-full transition-all duration-300"></div>
           </Link>
         </div>
 
-        <Link href="/donate">
-          <button 
-            className="bg-tmr-gradient hover:shadow-lg hover:shadow-tmr-green/25 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300"
-          >
-            Donate
-          </button>
-        </Link>
+        <div className="flex items-center gap-6">
+          <LanguageSwitcher />
+          <Link href="/donate">
+            <button 
+              className="bg-tmr-gradient hover:shadow-lg hover:shadow-tmr-green/25 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300"
+            >
+              {t("donate")}
+            </button>
+          </Link>
+        </div>
       </nav>
     </header>
   )

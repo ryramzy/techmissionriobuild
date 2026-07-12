@@ -21,10 +21,12 @@ import { collection, getDocs } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
 import { signOut } from "firebase/auth"
+import { useTranslations } from "next-intl"
 
 export default function DonorDashboardPage() {
   const { user, profile, orgProfile, loading: authLoading } = useAuth()
   const router = useRouter()
+  const t = useTranslations("Dashboard")
 
   // Donation history from Firestore
   const [donations, setDonations] = useState<any[]>([])
@@ -114,14 +116,14 @@ export default function DonorDashboardPage() {
             <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full py-1.5 px-3.5 mb-3">
               <CheckCircle2 className="w-4 h-4 text-green-400" />
               <span className="text-xs font-semibold text-green-400 tracking-wider uppercase">
-                {profile?.profileType === "organization" ? "US Organization Partner" : "Individual Fellow Partner"}
+                {profile?.profileType === "organization" ? t("usOrgPartner") : t("individualFellowPartner")}
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl font-extrabold text-white">
-              Welcome, {profile?.name || user.email?.split("@")[0].toUpperCase()}!
+              {t("welcomeUser", { name: profile?.name || user.email?.split("@")[0].toUpperCase() })}
             </h1>
             <p className="text-gray-400 mt-1">
-              Managing support from {user.email}
+              {t("managingSupport", { email: user.email })}
             </p>
           </div>
           <button 
@@ -129,7 +131,7 @@ export default function DonorDashboardPage() {
             className="bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/30 px-5 py-2.5 rounded-xl flex items-center gap-2 transition cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
-            Sign Out
+            {t("signOut")}
           </button>
         </div>
 

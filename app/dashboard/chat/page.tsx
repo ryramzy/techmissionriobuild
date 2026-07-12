@@ -18,6 +18,7 @@ import {
 } from "firebase/firestore"
 import { Send, User, MessageSquare, Loader2, ArrowLeft, Shield } from "lucide-react"
 import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 interface ChatRoom {
   id: string
@@ -45,6 +46,7 @@ interface Contact {
 
 export default function ChatPage() {
   const { user, profile, loading: authLoading } = useAuth()
+  const t = useTranslations("Dashboard")
   
   // Chat Rooms & Messages states
   const [rooms, setRooms] = useState<ChatRoom[]>([])
@@ -317,17 +319,17 @@ export default function ChatPage() {
           </Link>
           <div>
             <h1 className="text-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500 uppercase tracking-wider">
-              Student-Mentor Messaging
+              {t("studentMentorMessaging")}
             </h1>
             <span className="text-[10px] text-gray-400 block uppercase font-bold tracking-widest">
-              Live Chat Portal
+              {t("liveChatPortal")}
             </span>
           </div>
         </div>
         
         <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-full py-1 px-3 text-[10px] text-blue-400 font-bold">
           <Shield className="w-3.5 h-3.5" />
-          <span>Secured Chat Gateway</span>
+          <span>{t("chatGateway")}</span>
         </div>
       </header>
 
@@ -341,7 +343,7 @@ export default function ChatPage() {
           <div className="space-y-3 flex-1">
             <h2 className="text-xs font-black tracking-widest text-gray-400 uppercase flex items-center gap-1.5">
               <MessageSquare className="w-3.5 h-3.5" />
-              Active Conversations
+              {t("activeConversations")}
             </h2>
 
             {loadingRooms ? (
@@ -385,7 +387,7 @@ export default function ChatPage() {
           <div className="space-y-3 pt-4 border-t border-gray-900">
             <h2 className="text-xs font-black tracking-widest text-gray-400 uppercase flex items-center gap-1.5">
               <User className="w-3.5 h-3.5" />
-              Contacts Directory
+              {t("contactsDirectory")}
             </h2>
             <div className="space-y-2 max-h-[25vh] overflow-y-auto">
               {contacts.length === 0 ? (
@@ -490,7 +492,7 @@ export default function ChatPage() {
               <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-900 bg-black/40 flex gap-3">
                 <input
                   type="text"
-                  placeholder="Type your message here..."
+                  placeholder={t("typeMessage")}
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   className="flex-1 bg-black border border-gray-800 rounded-2xl px-4 py-3 text-xs text-white focus:outline-none focus:border-blue-500/50"
@@ -517,9 +519,9 @@ export default function ChatPage() {
                 <MessageSquare className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="font-bold text-base text-white">No Conversation Active</h3>
+                <h3 className="font-bold text-base text-white">{t("noConversationActive")}</h3>
                 <p className="text-xs text-gray-500 max-w-sm mt-1 leading-relaxed">
-                  Select an active chat log from the left panel, or pick a fellow or mentor from the directory to start a secure dynamic connection.
+                  {t("noConversationActiveDesc")}
                 </p>
               </div>
             </div>

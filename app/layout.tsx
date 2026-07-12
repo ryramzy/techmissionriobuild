@@ -8,6 +8,9 @@ import { AnalyticsProvider } from "@/components/AnalyticsProvider"
 import { AuthProvider } from "./components/AuthContext"
 import PWARegister from "@/components/PWARegister"
 import PWANotifications from "@/components/PWANotifications"
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages } from "next-intl/server"
+import { getUserLocale } from "@/lib/locale"
 
 export const viewport = {
   themeColor: '#0B1F3A',
@@ -80,13 +83,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const locale = await getUserLocale()
+  const messages = await getMessages()
+
   return (
-    <html lang="pt-BR" className={`h-full ${inter.variable} ${syne.variable}`}>
+    <html lang={locale} className={`h-full ${inter.variable} ${syne.variable}`}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="alternate icon" href="/favicon.png" type="image/png" />
@@ -102,11 +108,13 @@ export default function RootLayout({
         <AuthProvider>
           <PWANotifications />
           <AnalyticsProvider>
-            <SplashScreen />
-            <Navigation />
-            <BottomNav />
-            <main id="main-content" className="flex-1 pb-16">{children}</main>
-            <footer className="sr-only">TechMission Rio Footer</footer>
+            <NextIntlClientProvider messages={messages}>
+              <SplashScreen />
+              <Navigation />
+              <BottomNav />
+              <main id="main-content" className="flex-1 pb-16">{children}</main>
+              <footer className="sr-only">TechMission Rio Footer</footer>
+            </NextIntlClientProvider>
           </AnalyticsProvider>
         </AuthProvider>
       </body>

@@ -21,6 +21,7 @@ import Link from "next/link"
 import { collection, addDoc, getDocs, query, where, onSnapshot, orderBy } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
+import { useTranslations } from "next-intl"
 
 interface Nomination {
   studentName: string
@@ -45,6 +46,7 @@ interface HardwareRequest {
 export default function PartnerPortalPage() {
   const { user, profile, loading: authLoading } = useAuth()
   const router = useRouter()
+  const t = useTranslations("Partner")
 
   const [activeTab, setActiveTab] = useState<"nominate" | "hardware" | "sponsorship" | "cohort">("nominate")
   
@@ -506,11 +508,11 @@ export default function PartnerPortalPage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-500/30 rounded-full py-1.5 px-3 mb-3">
               <Building2 className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">School Partner Portal</span>
+              <span className="text-xs font-semibold text-blue-400 tracking-wider uppercase">{t("portalTag")}</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-black tracking-tight">FAETEC & IFRJ Hub</h1>
+            <h1 className="text-3xl md:text-4xl font-black tracking-tight">{t("portalHub")}</h1>
             <p className="text-gray-400 text-sm mt-1">
-              Welcome back, <strong className="text-white">{profile?.name || user.email}</strong>. Nominate fellows, order supplies, or sponsor cohorts.
+              {t("welcomeBack", { name: profile?.name || user.email })}
             </p>
           </div>
 
@@ -520,25 +522,25 @@ export default function PartnerPortalPage() {
               onClick={() => setActiveTab("nominate")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeTab === "nominate" ? "bg-green-500 text-white" : "text-gray-400 hover:text-white"}`}
             >
-              Nominate Student
+              {t("tabNominate")}
             </button>
             <button 
               onClick={() => setActiveTab("hardware")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeTab === "hardware" ? "bg-green-500 text-white" : "text-gray-400 hover:text-white"}`}
             >
-              Hardware Logs
+              {t("tabHardware")}
             </button>
             <button 
               onClick={() => setActiveTab("sponsorship")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeTab === "sponsorship" ? "bg-green-500 text-white" : "text-gray-400 hover:text-white"}`}
             >
-              Classroom Sponsorship
+              {t("tabSponsorship")}
             </button>
             <button 
               onClick={() => setActiveTab("cohort")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${activeTab === "cohort" ? "bg-green-500 text-white" : "text-gray-400 hover:text-white"}`}
             >
-              Sponsored Cohort
+              {t("tabCohort")}
             </button>
           </div>
         </div>
@@ -550,17 +552,17 @@ export default function PartnerPortalPage() {
               <div className="border-b border-gray-900 pb-4">
                 <h2 className="text-xl font-bold flex items-center gap-2">
                   <Users className="w-5 h-5 text-green-400" />
-                  Nominate a Fellow candidate
+                  {t("nominateTitle")}
                 </h2>
                 <p className="text-xs text-gray-400 mt-1">
-                  Nominate top 10% highest-potential, low-income students for tech laptops and native US mentorship.
+                  {t("nominateSubtitle")}
                 </p>
               </div>
 
               {nominationSuccess && (
                 <div className="bg-green-950/30 border border-green-500/30 rounded-2xl p-4 flex items-center gap-3 text-green-400 text-sm">
                   <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-                  <span>Student nomination logged successfully! Our educational review board will evaluate the details.</span>
+                  <span>{t("successMessage")}</span>
                 </div>
               )}
 
@@ -575,7 +577,7 @@ export default function PartnerPortalPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Name */}
                   <div className="space-y-2">
-                    <label htmlFor="nom-student-name" className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Name</label>
+                    <label htmlFor="nom-student-name" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("studentName")}</label>
                     <input 
                       id="nom-student-name"
                       type="text" 
@@ -589,7 +591,7 @@ export default function PartnerPortalPage() {
 
                   {/* Email */}
                   <div className="space-y-2">
-                    <label htmlFor="nom-student-email" className="text-xs font-bold uppercase tracking-wider text-gray-400">Student Email Address</label>
+                    <label htmlFor="nom-student-email" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("studentEmail")}</label>
                     <input 
                       id="nom-student-email"
                       type="email" 
@@ -605,7 +607,7 @@ export default function PartnerPortalPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* School Dropdown */}
                   <div className="space-y-2">
-                    <label htmlFor="nom-school" className="text-xs font-bold uppercase tracking-wider text-gray-400">Partner School/Campus</label>
+                    <label htmlFor="nom-school" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("partnerSchool")}</label>
                     <select
                       id="nom-school"
                       value={nomination.school}
@@ -621,7 +623,7 @@ export default function PartnerPortalPage() {
 
                   {/* Grade */}
                   <div className="space-y-2">
-                    <label htmlFor="nom-grade" className="text-xs font-bold uppercase tracking-wider text-gray-400">Current Grade Level</label>
+                    <label htmlFor="nom-grade" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("gradeLevel")}</label>
                     <input 
                       id="nom-grade"
                       type="text" 
@@ -636,7 +638,7 @@ export default function PartnerPortalPage() {
 
                 {/* Tech tracks selection */}
                 <div className="space-y-3">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-400 block">IT Track Focus Recommendation</label>
+                  <label className="text-xs font-bold uppercase tracking-wider text-gray-400 block">{t("trackRecommendation")}</label>
                   <div className="flex flex-wrap gap-4 pt-1">
                     {["Web Development", "Mobile App Dev", "Data Science", "UI/UX Design"].map((track) => (
                       <label key={track} className="flex items-center gap-2.5 cursor-pointer bg-black/80 border border-gray-900 px-4 py-2.5 rounded-xl hover:border-gray-700 transition">
@@ -654,7 +656,7 @@ export default function PartnerPortalPage() {
 
                 {/* Financial Justification */}
                 <div className="space-y-2">
-                  <label htmlFor="nom-justification" className="text-xs font-bold uppercase tracking-wider text-gray-400">Financial / Social Justification</label>
+                  <label htmlFor="nom-justification" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("justificationLabel")}</label>
                   <textarea 
                     id="nom-justification"
                     value={nomination.justification}
@@ -667,7 +669,7 @@ export default function PartnerPortalPage() {
 
                 {/* Teacher Comments */}
                 <div className="space-y-2">
-                  <label htmlFor="nom-comments" className="text-xs font-bold uppercase tracking-wider text-gray-400">Teacher Recommendations & Comments (Optional)</label>
+                  <label htmlFor="nom-comments" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("commentsLabel")}</label>
                   <textarea 
                     id="nom-comments"
                     value={nomination.comments}
@@ -690,11 +692,7 @@ export default function PartnerPortalPage() {
                       className="w-4 h-4 rounded text-green-500 bg-black border-gray-800 focus:ring-0 mt-0.5 cursor-pointer"
                     />
                     <span className="text-xs text-gray-400 leading-normal">
-                      I confirm that the student's parent or legal guardian has provided explicit consent for their personal data to be processed by TechMission Rio under{" "}
-                      <Link href="/privacy" target="_blank" className="text-green-400 hover:underline font-semibold">
-                        our Privacy Policy
-                      </Link>
-                      {" "}(LGPD Art. 14 — processing data of minors).
+                      {t("consentText")}
                     </span>
                   </label>
                 </div>
@@ -709,12 +707,12 @@ export default function PartnerPortalPage() {
                     {nominating ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Submitting Nomination...
+                        {t("submitting")}
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        Log Candidate Nomination
+                        {t("btnLogNomination")}
                       </>
                     )}
                   </button>
@@ -782,39 +780,39 @@ export default function PartnerPortalPage() {
                   <div className="border-b border-gray-900 pb-3 mb-4">
                     <h2 className="text-lg font-bold flex items-center gap-2">
                       <Plus className="w-5 h-5 text-green-400" />
-                      Request Supplies
+                      {t("requestTitle")}
                     </h2>
-                    <p className="text-xs text-gray-400 mt-1">Request classroom IT replacement parts.</p>
+                    <p className="text-xs text-gray-400 mt-1">{t("requestSubtitle")}</p>
                   </div>
 
                   {hardwareSuccess && (
                     <div className="bg-green-950/30 border border-green-500/30 rounded-2xl p-4 flex items-center gap-3 text-green-400 text-xs mb-4">
                       <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                      <span>Supply request submitted. Staged logs updated.</span>
+                      <span>{t("hardwareSuccess")}</span>
                     </div>
                   )}
 
                   <form onSubmit={handleHardwareSubmit} className="space-y-4">
                     {/* Item type */}
                     <div className="space-y-2">
-                      <label htmlFor="hard-type" className="text-xs font-bold uppercase tracking-wider text-gray-400">Equipment Type</label>
+                      <label htmlFor="hard-type" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("equipmentType")}</label>
                       <select
                         id="hard-type"
                         value={hardwareRequest.itemType}
                         onChange={(e) => setHardwareRequest(prev => ({ ...prev, itemType: e.target.value }))}
                         className="w-full bg-black border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 text-xs cursor-pointer"
                       >
-                        <option>Laptop</option>
-                        <option>Keyboards</option>
-                        <option>Mice</option>
-                        <option>HDMI Cables</option>
-                        <option>Power Strips</option>
+                        <option value="Laptop">Laptop / Notebook</option>
+                        <option value="Keyboards">Keyboards / Teclados</option>
+                        <option value="Mice">Mice / Mouses</option>
+                        <option value="HDMI Cables">HDMI Cables / Cabos HDMI</option>
+                        <option value="Power Strips">Power Strips / Filtros de Linha</option>
                       </select>
                     </div>
 
                     {/* Quantity */}
                     <div className="space-y-2">
-                      <label htmlFor="hard-qty" className="text-xs font-bold uppercase tracking-wider text-gray-400">Quantity Needed</label>
+                      <label htmlFor="hard-qty" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("quantityNeeded")}</label>
                       <input 
                         id="hard-qty"
                         type="number" 
@@ -836,13 +834,13 @@ export default function PartnerPortalPage() {
                       />
                       <span className="text-xs font-bold text-gray-300 flex items-center gap-1.5">
                         <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" />
-                        Urgent Replacements Required
+                        {t("urgentLabel")}
                       </span>
                     </label>
 
                     {/* Notes */}
                     <div className="space-y-2">
-                      <label htmlFor="hard-notes" className="text-xs font-bold uppercase tracking-wider text-gray-400">Classroom Lab Notes</label>
+                      <label htmlFor="hard-notes" className="text-xs font-bold uppercase tracking-wider text-gray-400">{t("notesLabel")}</label>
                       <textarea 
                         id="hard-notes"
                         value={hardwareRequest.notes}
@@ -860,10 +858,10 @@ export default function PartnerPortalPage() {
                       {requestingHardware ? (
                         <>
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          Submitting...
+                          {t("submitting")}
                         </>
                       ) : (
-                        "File Supply Request"
+                        t("btnSubmitRequest")
                       )}
                     </button>
                   </form>

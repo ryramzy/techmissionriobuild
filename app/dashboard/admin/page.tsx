@@ -23,6 +23,7 @@ import { doc, getDoc, setDoc, collection, query, where, orderBy, onSnapshot } fr
 import { db, auth } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
 import { sendSignInLinkToEmail } from "firebase/auth"
+import { useTranslations } from "next-intl"
 
 interface DashboardMetrics {
   laptopsDistributed: number
@@ -50,6 +51,7 @@ interface PendingNomination {
 export default function AdminDashboardPage() {
   const { user, profile, loading: authLoading } = useAuth()
   const router = useRouter()
+  const t = useTranslations("Dashboard")
 
   const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite">("metrics")
 
@@ -367,7 +369,7 @@ export default function AdminDashboardPage() {
         {/* Navigation back */}
         <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-400 hover:text-white text-sm transition">
           <ArrowLeft className="w-4 h-4" />
-          Back to Public Dashboard
+          {t("backToDashboard", { defaultValue: "Back to Dashboard" })}
         </Link>
 
         {/* Header */}
@@ -377,8 +379,8 @@ export default function AdminDashboardPage() {
               <ShieldCheck className="w-8 h-8 text-yellow-400" />
             </div>
             <div>
-              <h1 className="text-3xl font-black tracking-tight">Admin Control Center</h1>
-              <p className="text-gray-400 text-sm mt-1">Manage global metrics, allocate budgets, and audit student admissions.</p>
+              <h1 className="text-3xl font-black tracking-tight">{t("adminControlCenter")}</h1>
+              <p className="text-gray-400 text-sm mt-1">{t("adminControlCenterDesc")}</p>
             </div>
           </div>
 
@@ -388,14 +390,14 @@ export default function AdminDashboardPage() {
               onClick={() => setActiveSubTab("metrics")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeSubTab === "metrics" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
-              Global Metrics
+              {t("globalMetrics")}
             </button>
             <button
               onClick={() => setActiveSubTab("nominations")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${activeSubTab === "nominations" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
               <Users className="w-3.5 h-3.5" />
-              Nomination Reviews
+              {t("nominationReviews")}
               {nominations.length > 0 && (
                 <span className="bg-red-500 text-white text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center font-bold">
                   {nominations.length}
@@ -406,7 +408,7 @@ export default function AdminDashboardPage() {
               onClick={() => setActiveSubTab("invite")}
               className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeSubTab === "invite" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
-              Invite Fellow
+              {t("inviteFellow")}
             </button>
           </div>
         </div>

@@ -21,6 +21,7 @@ import { useAuth } from "@/app/components/AuthContext"
 import { signOut } from "firebase/auth"
 import { auth, db } from "@/lib/firebase"
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from "firebase/firestore"
+import { useTranslations } from "next-intl"
 
 // YouTube sanitization utility
 export function toYouTubeEmbedUrl(url: string): string | null {
@@ -51,6 +52,7 @@ export function toYouTubeEmbedUrl(url: string): string | null {
 export default function FellowDashboardPage() {
   const { user, profile, loading: authLoading } = useAuth()
   const router = useRouter()
+  const t = useTranslations("Dashboard")
 
   // States
   const [loadingProfile, setLoadingProfile] = useState(true)
@@ -224,17 +226,17 @@ export default function FellowDashboardPage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-500/30 rounded-full py-1.5 px-3 mb-2">
               <Award className="w-4 h-4 text-green-400" />
-              <span className="text-xs font-semibold text-green-400 tracking-wider uppercase">Fellow Portal</span>
+              <span className="text-xs font-semibold text-green-400 tracking-wider uppercase">{t("fellowControlCenter", { defaultValue: "Fellow Portal" })}</span>
             </div>
-            <h1 className="text-3xl font-black tracking-tight">Manage Your Profile</h1>
-            <p className="text-gray-400 text-sm mt-1">Keep your story, skills, social links, and pitch video updated for sponsors.</p>
+            <h1 className="text-3xl font-black tracking-tight">{t("myProfile")}</h1>
+            <p className="text-gray-400 text-sm mt-1">{t("fellowControlCenterDesc")}</p>
           </div>
           <button 
             onClick={handleLogout}
             className="border border-gray-800 hover:bg-white/5 text-gray-400 hover:text-white font-bold py-2.5 px-4 rounded-xl transition text-xs flex items-center gap-1.5 cursor-pointer"
           >
             <LogOut className="w-3.5 h-3.5" />
-            Sign Out
+            {t("signOut")}
           </button>
         </div>
 
@@ -245,13 +247,13 @@ export default function FellowDashboardPage() {
           <form onSubmit={handleSaveProfile} className="lg:col-span-7 bg-gradient-to-br from-blue-950/10 to-black border border-gray-900 rounded-3xl p-8 space-y-6">
             <h2 className="text-xl font-bold flex items-center gap-2 border-b border-gray-900 pb-3">
               <BookOpen className="w-5 h-5 text-green-400" />
-              Edit Profile details
+              {t("myProfile")}
             </h2>
 
             {success && (
               <div className="bg-green-950/40 border border-green-500/30 rounded-xl p-4 flex items-center gap-3 text-green-400 text-sm">
                 <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-                <span>Profile details successfully updated and synchronized!</span>
+                <span>{t("profileSuccess")}</span>
               </div>
             )}
 
