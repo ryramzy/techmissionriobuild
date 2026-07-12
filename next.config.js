@@ -1,3 +1,4 @@
+const path = require('path');
 const createNextIntlPlugin = require('next-intl/plugin');
 const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
@@ -27,6 +28,13 @@ const nextConfig = {
   skipMiddlewareUrlNormalize: true,
   turbopack: {
     root: __dirname,
+    resolveAlias: {
+      "next-intl/config": "./i18n.ts"
+    }
+  },
+  webpack: (config) => {
+    config.resolve.alias["next-intl/config"] = path.resolve(__dirname, "./i18n.ts");
+    return config;
   },
   allowedDevOrigins: ['127.0.0.1'],
   async redirects() {
