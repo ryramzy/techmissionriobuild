@@ -698,7 +698,6 @@ export default function PartnerPortalPage() {
                     </span>
                   </label>
                 </div>
-                </div>
 
                 {/* Action button */}
                 <div className="flex justify-end pt-2">
