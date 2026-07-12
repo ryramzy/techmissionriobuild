@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/Button/Button";
 import { type ContactFormData, contactFormSchema } from "@/lib/schemas/contact";
+import { useTranslations } from "next-intl";
 
 const INITIAL_FORM_DATA: ContactFormData = {
   name: "",
@@ -14,6 +15,7 @@ const INITIAL_FORM_DATA: ContactFormData = {
 export default function ContactForm() {
   const [formData, setFormData] = useState<Partial<ContactFormData>>(INITIAL_FORM_DATA)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const t = useTranslations("Contact")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,7 +51,7 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Name
+          {t("nameLabel")}
         </label>
         <input
           type="text"
@@ -66,7 +68,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Email
+          {t("emailLabel")}
         </label>
         <input
           type="email"
@@ -83,7 +85,7 @@ export default function ContactForm() {
 
       <div>
         <label htmlFor="subject" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Subject
+          {t("subjectLabel")}
         </label>
         <select
           id="subject"
@@ -93,18 +95,18 @@ export default function ContactForm() {
           className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500"
           required
         >
-          <option value="">Select a subject</option>
-          <option value="volunteer">Volunteering</option>
-          <option value="partnership">Partnership</option>
-          <option value="donation">Donation</option>
-          <option value="programs">Programs</option>
-          <option value="other">Other</option>
+          <option value="">{t("subjectSelect")}</option>
+          <option value="volunteer">{t("subjectVolunteer")}</option>
+          <option value="partnership">{t("subjectPartnership")}</option>
+          <option value="donation">{t("subjectDonation")}</option>
+          <option value="programs">{t("subjectPrograms")}</option>
+          <option value="other">{t("subjectOther")}</option>
         </select>
       </div>
 
       <div>
         <label htmlFor="message" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Message
+          {t("messageLabel")}
         </label>
         <textarea
           id="message"
@@ -120,7 +122,7 @@ export default function ContactForm() {
       </div>
 
       <Button type="submit" className="w-full">
-        Send Message
+        {t("sendButton")}
       </Button>
     </form>
   );
