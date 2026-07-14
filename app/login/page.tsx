@@ -156,6 +156,19 @@ export default function LoginPage() {
             createdAt: new Date().toISOString()
           })
         }
+
+        // Trigger welcome email via Firebase Trigger Email extension
+        await setDoc(doc(collection(db, "mail")), {
+          to: email,
+          template: {
+            name: "welcome",
+            data: {
+              userName: profileType === "organization" ? orgName : name,
+              profileType,
+              date: new Date().toLocaleDateString("en-US")
+            }
+          }
+        })
       }
     } catch (error: any) {
       console.error("Auth error:", error)

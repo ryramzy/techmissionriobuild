@@ -1,25 +1,30 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/Button/Button";
-import { type ContactFormData, contactFormSchema } from "@/lib/schemas/contact";
-import { useTranslations } from "next-intl";
+import { useState } from "react"
+import { Button } from "@/components/Button/Button"
+import { type ContactFormData, contactFormSchema } from "@/lib/schemas/contact"
+import { useTranslations } from "next-intl"
 
 const INITIAL_FORM_DATA: ContactFormData = {
   name: "",
   email: "",
-  subject: undefined,
+  subject: "other",
   message: "",
 }
 
 export default function ContactForm() {
   const [formData, setFormData] = useState<Partial<ContactFormData>>(INITIAL_FORM_DATA)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const t = useTranslations("Contact")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrors({})
+    setSubmitSuccess(false)
+    setSubmitError(null)
 
     const result = contactFormSchema.safeParse(formData)
     if (!result.success) {
@@ -31,9 +36,28 @@ export default function ContactForm() {
       return
     }
 
-    // TODO: Wire to API route when ready. API must validate with Zod and apply rate limiting.
-    console.log("Form submitted:", result.data)
-  };
+    setIsSubmitting(true)
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(result.data),
+      })
+
+      if (!res.ok) {
+        const errorData = await res.json()
+        throw new Error(errorData.error || "Failed to submit contact message. Please try again.")
+      }
+
+      setSubmitSuccess(true)
+      setFormData(INITIAL_FORM_DATA)
+    } catch (err: any) {
+      console.error("Submission error:", err)
+      setSubmitError(err.message || "Failed to submit message. Please check your connection and try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -49,6 +73,18 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {submitSuccess && (
+        <div className="bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl p-4 text-sm font-semibold">
+          🎉 Message successfully sent! We have queued a confirmation email to your inbox.
+        </div>
+      )}
+
+      {submitError && (
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl p-4 text-sm font-semibold">
+          ❌ {submitError}
+        </div>
+      )}
+
       <div>
         <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200">
           {t("nameLabel")}
@@ -90,7 +126,7 @@ export default function ContactForm() {
         <select
           id="subject"
           name="subject"
-          value={formData.subject ?? ""}
+          value={formData.subject ?? "other"}
           onChange={handleChange}
           className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-500"
           required
@@ -121,9 +157,9 @@ export default function ContactForm() {
         {errors.message && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.message}</p>}
       </div>
 
-      <Button type="submit" className="w-full">
-        {t("sendButton")}
+      <Button type="submit" disabled={isSubmitting} className="w-full">
+        {isSubmitting ? "Submitting..." : t("sendButton")}
       </Button>
     </form>
-  );
+  )
 }
