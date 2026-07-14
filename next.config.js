@@ -47,4 +47,16 @@ const nextConfig = {
   },
 }
 
-module.exports = withNextIntl(nextConfig);
+const { withSentryConfig } = require("@sentry/nextjs");
+
+module.exports = withSentryConfig(
+  withNextIntl(nextConfig),
+  {
+    org: "your-org",
+    project: "techmission-rio",
+    silent: true,
+    widenClientFileUpload: true,
+    hideSourceMaps: true,
+    disableLogger: true,
+  }
+);

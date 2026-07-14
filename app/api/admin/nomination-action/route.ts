@@ -25,14 +25,14 @@ try {
 
 export async function POST(req: NextRequest) {
   try {
-    const { nominationId, action, idToken } = await req.json()
+    const { nominationId, fellowId, action, idToken } = await req.json()
 
-    if (!nominationId || !action || !idToken) {
-      return NextResponse.json({ error: "Missing required parameters (nominationId, action, idToken)" }, { status: 400 })
+    if (!action || !idToken) {
+      return NextResponse.json({ error: "Missing required parameters (action, idToken)" }, { status: 400 })
     }
 
-    if (action !== "approve" && action !== "archive") {
-      return NextResponse.json({ error: "Invalid action. Supported actions: 'approve' or 'archive'" }, { status: 400 })
+    if (action !== "approve" && action !== "archive" && action !== "toggle-visibility") {
+      return NextResponse.json({ error: "Invalid action. Supported actions: 'approve', 'archive', or 'toggle-visibility'" }, { status: 400 })
     }
 
     let decodedToken: any = null
@@ -55,8 +55,33 @@ export async function POST(req: NextRequest) {
     }
 
     if (!adminDb) {
-      console.warn(`Simulating action: '${action}' for nomination ID: ${nominationId}`)
-      return NextResponse.json({ success: true, simulated: true })
+      console.warn(`Simulating action: '${action}' for ID: ${nominationId || fellowId}`)
+      return NextResponse.json({ success: true, simulated: true, isVisible: false })
+    }
+
+    const operatorUid = decodedToken ? decodedToken.uid : "mock-admin-uid-123"
+
+    if (action === "toggle-visibility") {
+      if (!fellowId) {
+        return NextResponse.json({ error: "Missing required parameter 'fellowId'" }, { status: 400 })
+      }
+      const fellowRef = adminDb.collection("fellows").doc(fellowId)
+      const snap = await fellowRef.get()
+      if (!snap.exists) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 })
+      }
+      const current = snap.data()!.isVisible ?? true
+      await fellowRef.update({
+        isVisible: !current,
+        visibilityUpdatedAt: FieldValue.serverTimestamp(),
+        visibilityUpdatedBy: operatorUid,
+      })
+      return NextResponse.json({ success: true, isVisible: !current })
+    }
+
+    // Otherwise, we require nominationId for approve or archive
+    if (!nominationId) {
+      return NextResponse.json({ error: "Missing required parameter 'nominationId'" }, { status: 400 })
     }
 
     // Fetch original nomination
@@ -68,7 +93,6 @@ export async function POST(req: NextRequest) {
     const nom = nomSnap.data()!
 
     const batch = adminDb.batch()
-    const operatorUid = decodedToken ? decodedToken.uid : "mock-admin-uid-123"
 
     if (action === "approve") {
       // Build fellows document schema matching Month 3 specs
@@ -87,6 +111,7 @@ export async function POST(req: NextRequest) {
         githubUrl:     null,
         linkedinUrl:   null,
         portfolioUrl:  null,
+        isVisible:     true, // Default visibility is true
       }
 
       const fellowRef = adminDb.collection("fellows").doc()

@@ -53,7 +53,7 @@ export default function AdminDashboardPage() {
   const router = useRouter()
   const t = useTranslations("Dashboard")
 
-  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite">("metrics")
+  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite" | "donors" | "fellows" | "logs">("metrics")
 
   // Invite Fellow State
   const [inviteName, setInviteName] = useState("")
@@ -85,6 +85,20 @@ export default function AdminDashboardPage() {
   const [nominationsLoading, setNominationsLoading] = useState(true)
   const [processingAction, setProcessingAction] = useState<string | null>(null) // nominationId
   const [apiError, setApiError] = useState<string | null>(null)
+
+  // Donors State
+  const [donors, setDonors] = useState<any[]>([])
+  const [donorsLoading, setDonorsLoading] = useState(false)
+  const [donorSearch, setDonorSearch] = useState("")
+
+  // Fellows Management State
+  const [fellows, setFellows] = useState<any[]>([])
+  const [fellowsLoading, setFellowsLoading] = useState(false)
+  const [togglingFellow, setTogglingFellow] = useState<string | null>(null)
+
+  // Volunteers/Orgs Logs State
+  const [orgs, setOrgs] = useState<any[]>([])
+  const [orgsLoading, setOrgsLoading] = useState(false)
 
   // Soft Guard redirecting non-admin users
   useEffect(() => {
@@ -179,6 +193,136 @@ export default function AdminDashboardPage() {
 
     return () => unsubscribe()
   }, [user, profile])
+
+  // Fetch Donors, Fellows, and Orgs for Admin Management
+  useEffect(() => {
+    const hasAdminRole = 
+      profile?.isAdmin === true || 
+      user?.email === "admin@techmissionrio.org" || 
+      user?.email === "techmissionrio@gmail.com"
+    if (!user || !hasAdminRole) return
+
+    // 1. Fetch Donors
+    setDonorsLoading(true)
+    const donorsQuery = query(
+      collection(db, "users"),
+      where("profileType", "in", ["individual", "organization"]),
+      orderBy("createdAt", "desc")
+    )
+    const unsubDonors = onSnapshot(donorsQuery, (snap) => {
+      const list: any[] = []
+      snap.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() })
+      })
+      setDonors(list)
+      setDonorsLoading(false)
+    }, (err) => {
+      console.warn("Donors snapshot error (using mock fallback):", err)
+      setDonors([
+        { id: "donor-mock-1", name: "David Miller", email: "david.miller@example.com", profileType: "individual", createdAt: { toDate: () => new Date("2026-05-15") } },
+        { id: "donor-mock-2", name: "Grace Fellowship Atlanta", email: "missions@gracefellowship.org", profileType: "organization", createdAt: { toDate: () => new Date("2026-06-01") } }
+      ])
+      setDonorsLoading(false)
+    })
+
+    // 2. Fetch Fellows
+    setFellowsLoading(true)
+    const fellowsQuery = query(
+      collection(db, "fellows"),
+      orderBy("approvedAt", "desc")
+    )
+    const unsubFellows = onSnapshot(fellowsQuery, (snap) => {
+      const list: any[] = []
+      snap.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() })
+      })
+      setFellows(list)
+      setFellowsLoading(false)
+    }, (err) => {
+      console.warn("Fellows snapshot error (using mock fallback):", err)
+      setFellows([
+        { id: "fellow-mock-1", name: "Thiago Silva Santos", schoolCampus: "FAETEC Santa Cruz", isEndorsed: true, isVisible: true, approvedAt: { toDate: () => new Date() } },
+        { id: "fellow-mock-2", name: "Beatriz Oliveira", schoolCampus: "IFRJ Realengo", isEndorsed: true, isVisible: false, approvedAt: { toDate: () => new Date() } }
+      ])
+      setFellowsLoading(false)
+    })
+
+    // 3. Fetch Orgs
+    setOrgsLoading(true)
+    const orgsQuery = query(
+      collection(db, "organizations"),
+      orderBy("createdAt", "desc")
+    )
+    const unsubOrgs = onSnapshot(orgsQuery, (snap) => {
+      const list: any[] = []
+      snap.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() })
+      })
+      setOrgs(list)
+      setOrgsLoading(false)
+    }, (err) => {
+      console.warn("Orgs snapshot error (using mock fallback):", err)
+      setOrgs([
+        { id: "org-mock-1", orgName: "Calvary Chapel Rio", denomination: "Calvary Chapel", adminUid: "calvary-chapel-admin", joined: "2026-04-10" },
+        { id: "org-mock-2", orgName: "Redeemer Presbyterian NYC", denomination: "Presbyterian", adminUid: "presbyterian-admin", joined: "2026-05-22" }
+      ])
+      setOrgsLoading(false)
+    })
+
+    return () => {
+      unsubDonors()
+      unsubFellows()
+      unsubOrgs()
+    }
+  }, [user, profile])
+
+  const handleToggleFellowVisibility = async (fellowId: string, currentVisibility: boolean) => {
+    if (!user) return
+    setTogglingFellow(fellowId)
+    try {
+      const idToken = await user.getIdToken()
+      const res = await fetch("/api/admin/nomination-action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "toggle-visibility",
+          fellowId,
+          idToken
+        })
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to toggle fellow visibility status")
+      }
+
+      const data = await res.json()
+      
+      // Optimistic client-side update
+      setFellows(prev => prev.map(f => f.id === fellowId ? { ...f, isVisible: data.isVisible } : f))
+      
+      // Gate PostHog event under cookie consent
+      const consent = localStorage.getItem("tmr_cookie_consent")
+      if (consent === "accepted" && typeof window !== "undefined") {
+        import("posthog-js").then(({ default: posthog }) => {
+          posthog.capture("fellow_visibility_toggled", { fellowId, isVisible: data.isVisible })
+        })
+      }
+    } catch (err) {
+      console.error("Error toggling visibility:", err)
+      alert("Failed to toggle fellow visibility. Please try again.")
+    } finally {
+      setTogglingFellow(null)
+    }
+  }
+
+  const triggerDonorSearchAnalytics = (count: number) => {
+    const consent = localStorage.getItem("tmr_cookie_consent")
+    if (consent === "accepted" && typeof window !== "undefined") {
+      import("posthog-js").then(({ default: posthog }) => {
+        posthog.capture("admin_donor_searched", { resultCount: count })
+      })
+    }
+  }
 
   const handleInputChange = (field: keyof DashboardMetrics, value: number) => {
     setMetrics(prev => ({
@@ -385,16 +529,16 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Sub-tab selectors */}
-          <div className="flex bg-gray-950/60 p-1 border border-gray-900 rounded-xl">
+          <div className="flex bg-gray-950/60 p-1 border border-gray-900 rounded-xl flex-wrap gap-1 md:flex-nowrap">
             <button
               onClick={() => setActiveSubTab("metrics")}
-              className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeSubTab === "metrics" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "metrics" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
               {t("globalMetrics")}
             </button>
             <button
               onClick={() => setActiveSubTab("nominations")}
-              className={`py-2 px-4 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${activeSubTab === "nominations" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 ${activeSubTab === "nominations" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
               <Users className="w-3.5 h-3.5" />
               {t("nominationReviews")}
@@ -406,9 +550,27 @@ export default function AdminDashboardPage() {
             </button>
             <button
               onClick={() => setActiveSubTab("invite")}
-              className={`py-2 px-4 rounded-lg text-xs font-bold transition ${activeSubTab === "invite" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "invite" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
               {t("inviteFellow")}
+            </button>
+            <button
+              onClick={() => setActiveSubTab("donors")}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "donors" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+            >
+              Donors
+            </button>
+            <button
+              onClick={() => setActiveSubTab("fellows")}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "fellows" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+            >
+              Fellows List
+            </button>
+            <button
+              onClick={() => setActiveSubTab("logs")}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "logs" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+            >
+              Org Logs
             </button>
           </div>
         </div>
@@ -782,6 +944,203 @@ export default function AdminDashboardPage() {
                 )}
               </button>
             </form>
+          </div>
+        )}
+
+        {/* TAB 4: Donors Search */}
+        {activeSubTab === "donors" && (
+          <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Users className="w-6 h-6 text-yellow-400" />
+                Donor Search Directory
+              </h2>
+              <p className="text-sm text-gray-400">
+                Lookup registered individual donors and sponsoring organizations.
+              </p>
+            </div>
+
+            <div className="max-w-md">
+              <input
+                type="text"
+                placeholder="Search donors by name or email..."
+                value={donorSearch}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setDonorSearch(val)
+                  const filteredCount = donors.filter(d => 
+                    d.name?.toLowerCase().includes(val.toLowerCase()) || 
+                    d.email?.toLowerCase().includes(val.toLowerCase())
+                  ).length
+                  triggerDonorSearchAnalytics(filteredCount)
+                }}
+                className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition"
+              />
+            </div>
+
+            {donorsLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto border border-gray-900 rounded-2xl bg-black/40">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-900 text-gray-400 text-xs font-semibold">
+                      <th className="py-3.5 px-4">Name</th>
+                      <th className="py-3.5 px-4">Email</th>
+                      <th className="py-3.5 px-4">Profile Type</th>
+                      <th className="py-3.5 px-4">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-900 text-xs">
+                    {donors
+                      .filter(d => 
+                        !donorSearch || 
+                        d.name?.toLowerCase().includes(donorSearch.toLowerCase()) || 
+                        d.email?.toLowerCase().includes(donorSearch.toLowerCase())
+                      )
+                      .map((donor) => {
+                        const joinedDate = donor.createdAt && typeof donor.createdAt.toDate === "function"
+                          ? donor.createdAt.toDate().toLocaleDateString("en-US")
+                          : donor.joinedDate || "N/A"
+                        return (
+                          <tr key={donor.id} className="hover:bg-gray-900/30 transition">
+                            <td className="py-3.5 px-4 font-semibold text-white">{donor.name || "Anonymous"}</td>
+                            <td className="py-3.5 px-4 text-gray-300">{donor.email}</td>
+                            <td className="py-3.5 px-4">
+                              <span className={`px-2.5 py-0.5 rounded-full font-bold uppercase text-[9px] ${
+                                donor.profileType === "organization" 
+                                  ? "bg-purple-500/20 border border-purple-500/30 text-purple-400" 
+                                  : "bg-blue-500/20 border border-blue-500/30 text-blue-400"
+                              }`}>
+                                {donor.profileType}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 text-gray-400">{joinedDate}</td>
+                          </tr>
+                        )
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 5: Fellows Management */}
+        {activeSubTab === "fellows" && (
+          <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Users className="w-6 h-6 text-yellow-400" />
+                Fellows Visibility Controls
+              </h2>
+              <p className="text-sm text-gray-400">
+                Manage who appears on the public fellows directory and monitor endorsements.
+              </p>
+            </div>
+
+            {fellowsLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto border border-gray-900 rounded-2xl bg-black/40">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-900 text-gray-400 text-xs font-semibold">
+                      <th className="py-3.5 px-4">Name</th>
+                      <th className="py-3.5 px-4">Campus</th>
+                      <th className="py-3.5 px-4">Endorsement</th>
+                      <th className="py-3.5 px-4 text-center">Visibility</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-900 text-xs">
+                    {fellows.map((fellow) => (
+                      <tr key={fellow.id} className="hover:bg-gray-900/30 transition">
+                        <td className="py-3.5 px-4 font-semibold text-white">{fellow.name}</td>
+                        <td className="py-3.5 px-4 text-gray-300">{fellow.schoolCampus}</td>
+                        <td className="py-3.5 px-4">
+                          {fellow.isEndorsed ? (
+                            <span className="bg-green-500/20 border border-green-500/30 text-green-400 font-bold px-2 py-0.5 rounded-full text-[9px] uppercase">
+                              Endorsed
+                            </span>
+                          ) : (
+                            <span className="bg-gray-800 text-gray-500 px-2 py-0.5 rounded-full text-[9px] uppercase">
+                              None
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4 text-center">
+                          <button
+                            onClick={() => handleToggleFellowVisibility(fellow.id, fellow.isVisible ?? true)}
+                            disabled={togglingFellow === fellow.id}
+                            className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all ${
+                              fellow.isVisible ?? true
+                                ? "bg-green-600 hover:bg-green-500 text-black"
+                                : "bg-red-950 hover:bg-red-900 border border-red-500/30 text-red-400"
+                            }`}
+                          >
+                            {togglingFellow === fellow.id ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto text-white" />
+                            ) : fellow.isVisible ?? true ? (
+                              "Visible"
+                            ) : (
+                              "Hidden"
+                            )}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 6: Volunteer / Org Log */}
+        {activeSubTab === "logs" && (
+          <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Building2 className="w-6 h-6 text-yellow-400" />
+                Church Organizations Directory
+              </h2>
+              <p className="text-sm text-gray-400">
+                Read-only logs of participating local church partners.
+              </p>
+            </div>
+
+            {orgsLoading ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto border border-gray-900 rounded-2xl bg-black/40">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-900 text-gray-400 text-xs font-semibold">
+                      <th className="py-3.5 px-4">Organization Name</th>
+                      <th className="py-3.5 px-4">Denomination</th>
+                      <th className="py-3.5 px-4">Admin UID</th>
+                      <th className="py-3.5 px-4">Joined Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-900 text-xs">
+                    {orgs.map((org) => (
+                      <tr key={org.id} className="hover:bg-gray-900/30 transition">
+                        <td className="py-3.5 px-4 font-semibold text-white">{org.orgName}</td>
+                        <td className="py-3.5 px-4 text-gray-300">{org.denomination}</td>
+                        <td className="py-3.5 px-4 text-gray-500 font-mono text-[10px]">{org.adminUid}</td>
+                        <td className="py-3.5 px-4 text-gray-400">{org.joined || "N/A"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
 

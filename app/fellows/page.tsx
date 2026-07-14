@@ -15,7 +15,7 @@ import {
   ArrowUpRight 
 } from "lucide-react"
 import Link from "next/link"
-import { collection, getDocs } from "firebase/firestore"
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAnalytics } from "@/hooks/useAnalytics"
 import { useLocale, useTranslations } from "next-intl"
@@ -170,7 +170,13 @@ export default function FellowsPage() {
     
     async function fetchFellows() {
       try {
-        const querySnapshot = await getDocs(collection(db, "fellows"))
+        const q = query(
+          collection(db, "fellows"),
+          where("status", "in", ["registered", "active"]),
+          where("isVisible", "==", true),
+          orderBy("approvedAt", "desc")
+        )
+        const querySnapshot = await getDocs(q)
         if (!querySnapshot.empty) {
           const list: Fellow[] = []
           querySnapshot.forEach((doc) => {
