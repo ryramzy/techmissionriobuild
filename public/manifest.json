@@ -4,9 +4,9 @@
   "description": "Empowering Brazilian youth through technology, education, and faith",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1F3A",
-  "theme_color": "#0B1F3A",
-  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#0e5c38",
+  "orientation": "portrait",
   "scope": "/",
   "lang": "pt-BR",
   "categories": ["education", "technology", "nonprofit", "community"],
@@ -60,15 +60,6 @@
           "sizes": "192x192"
         }
       ]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/hero landing.jpg",
-      "sizes": "1280x720",
-      "type": "image/jpeg",
-      "form_factor": "wide",
-      "label": "TechMission Rio Hero"
     }
   ]
 }

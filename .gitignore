@@ -37,3 +37,8 @@ storybook-static/
 
 # typescript
 *.tsbuildinfo
+
+# Android build artifacts — never commit
+android-build/
+*.keystore
+*.jks

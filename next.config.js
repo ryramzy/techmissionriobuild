@@ -45,6 +45,17 @@ const nextConfig = {
       { source: "/events",   destination: "/about",   permanent: true },
     ];
   },
+  async headers() {
+    return [
+      {
+        source: "/.well-known/assetlinks.json",
+        headers: [
+          { key: "Content-Type",                value: "application/json" },
+          { key: "Access-Control-Allow-Origin", value: "*"               },
+        ],
+      },
+    ];
+  },
 }
 
 const { withSentryConfig } = require("@sentry/nextjs");

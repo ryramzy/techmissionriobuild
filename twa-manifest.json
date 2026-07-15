@@ -1,0 +1,34 @@
+{
+  "packageId": "org.techmissionrio.app",
+  "host": "techmissionrio.org",
+  "name": "TechMission Rio",
+  "launcherName": "TMR",
+  "display": "standalone",
+  "themeColor": "#0e5c38",
+  "backgroundColor": "#000000",
+  "startUrl": "/",
+  "iconUrl": "https://techmissionrio.org/icons/icon-512.png",
+  "maskableIconUrl": "https://techmissionrio.org/icons/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signing": {
+    "outputDirectory": "./android-build",
+    "keystorePath": "./android-build/techmissionrio.keystore",
+    "keystoreAlias": "techmissionrio"
+  },
+  "appVersion": "1",
+  "appVersionName": "1.0.0",
+  "shortcuts": [
+    {
+      "name": "Donate",
+      "shortName": "Donate",
+      "url": "/donate",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Fellows",
+      "shortName": "Fellows",
+      "url": "/fellows",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
