@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -27,7 +27,19 @@ const activeConfig = isConfigured
 // Initialize Firebase for SSR compatibility
 const app = getApps().length === 0 ? initializeApp(activeConfig) : getApp();
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+
+let dbInstance;
+if (typeof window !== "undefined") {
+  dbInstance = initializeFirestore(app, {
+    localCache: persistentLocalCache({
+      tabManager: persistentMultipleTabManager(),
+    }),
+  });
+} else {
+  dbInstance = getFirestore(app);
+}
+
+export const db = dbInstance;
 
 // Dynamic import for Firebase Cloud Messaging (Client-only & Service Worker check)
 export const getFCM = async () => {
