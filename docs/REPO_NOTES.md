@@ -85,6 +85,11 @@
 16. **Production Launch Checklist (v2.0)**
     - Comprehensive `docs/RELEASE_CHECKLIST.md` mapping DNS domains setup, Stripe live credentials switches, Firestore security rule audits, and telemetry tracking metrics checks.
 
+17. **Live Impact Maps & Donor Feed (v3.0)**
+    - Dynamic `public_feed` collection populated by Stripe Webhooks.
+    - Pulsing SVG World Map geolocation overlays and Recent Activity Ticker panel displays on the `/impact` page.
+    - Real-time average donation size, YTD nominations, and matches counts displayed inside the Admin dashboard using `collectionGroup` queries.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation
