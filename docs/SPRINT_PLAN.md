@@ -169,6 +169,39 @@ Achievable with standalone output + `min-instances: 1` in Cloud Run config. `min
 
 ---
 
+## 🚀 Sprint 12: Public Launch (Weeks 15-16)
+* **Public Release**: Execution of release check sheets, public newsletters, and official v1.0 release tracking.
+
+---
+
+## ⚡ Sprint 13: Live Impact Maps & Donor Feed (Weeks 17–18)
+* **Tasks**:
+  - Build interactive geolocated map on `/impact` showing anonymous donor locations.
+  - Implement a live contribution ticker displaying recent items.
+
+---
+
+## ⚡ Sprint 14: Social Media Integrations (Weeks 19–20)
+* **Tasks**:
+  - Embed dynamic sharing parameters for Instagram and TikTok sharing.
+  - Integrate a direct feed card on the home page displaying active Instagram/Facebook media updates.
+
+---
+
+## ⚡ Sprint 15: Automated Video Room & Zoom Scheduler (Weeks 21–22)
+* **Tasks**:
+  - Integrate Google Calendar / Zoom API endpoints to automatically schedule virtual pairings on matches.
+  - Display scheduled calls on student and mentor portal dashboards.
+
+---
+
+## ⚡ Sprint 16: AI Resume Screeners & Practice Board (Weeks 23–24)
+* **Tasks**:
+  - Implement PDF resume checker providing suggestions.
+  - Deploy a simulated mock technical interviewer chatbot.
+
+---
+
 ## 🛠️ Technical Debt Backlog (prioritized)
 1. Refactor duplicate Firestore hooks into reusable `lib/firestore.ts` actions.
 2. Consolidate layout components — remove deprecated classes.
