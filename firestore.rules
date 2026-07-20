@@ -73,5 +73,11 @@ service cloud.firestore {
     match /mail/{docId} {
       allow read, write: if false; // Admin SDK only
     }
+
+    // Public Feed Collection for Donor Feed
+    match /public_feed/{feedId} {
+      allow read: if true;
+      allow write: if false; // Admin SDK only
+    }
   }
 }

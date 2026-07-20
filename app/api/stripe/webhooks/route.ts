@@ -101,6 +101,19 @@ export async function POST(req: NextRequest) {
           })
 
           await donationRef.update({ receiptSent: true })
+
+          // Write to public_feed collection for live impact map & donor feed ticker
+          const city = session.customer_details?.address?.city || "Secret Location"
+          const country = session.customer_details?.address?.country || "US"
+          const amountTier = amount >= 1000 ? 3 : amount >= 100 ? 2 : 1
+          await adminDb.collection("public_feed").add({
+            city,
+            country,
+            amountTier,
+            displayText: `A donor from ${city}, ${country} sponsored a laptop!`,
+            createdAt: FieldValue.serverTimestamp(),
+          })
+
           console.log(`Successfully processed checkout session ${session.id} for user ${userId}`)
         }
         break
@@ -148,6 +161,19 @@ export async function POST(req: NextRequest) {
           })
 
           await donationRef.update({ receiptSent: true })
+
+          // Write to public_feed collection
+          const city = invoice.customer_details?.address?.city || "Secret Location"
+          const country = invoice.customer_details?.address?.country || "US"
+          const amountTier = amount >= 1000 ? 3 : amount >= 100 ? 2 : 1
+          await adminDb.collection("public_feed").add({
+            city,
+            country,
+            amountTier,
+            displayText: `A partner from ${city}, ${country} renewed monthly support!`,
+            createdAt: FieldValue.serverTimestamp(),
+          })
+
           console.log(`Successfully processed recurring invoice payment ${invoice.id} for user ${userId}`)
         }
         break

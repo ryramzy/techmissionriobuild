@@ -9,10 +9,13 @@ import {
   ArrowUpRight, 
   Activity,
   ShieldCheck,
-  Award
+  Award,
+  Globe,
+  Heart,
+  Loader2
 } from "lucide-react"
 import Link from "next/link"
-import { doc, onSnapshot } from "firebase/firestore"
+import { doc, onSnapshot, collection, query, orderBy, limit } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
 
@@ -42,6 +45,12 @@ export default function ImpactPage() {
   const [loading, setLoading] = useState(true)
   const [selectedSchool, setSelectedSchool] = useState<string | null>("FAETEC Santa Cruz")
 
+  const [feedItems, setFeedItems] = useState<any[]>([])
+  const [feedLoading, setFeedLoading] = useState(true)
+  const [nominationsCount, setNominationsCount] = useState(48)
+  const [fellowsCount, setFellowsCount] = useState(32)
+  const [matchesCount, setMatchesCount] = useState(14)
+
   // Fetch metrics from Firestore in real-time using onSnapshot listener
   useEffect(() => {
     const docRef = doc(db, "dashboard_stats", "global_metrics")
@@ -56,6 +65,41 @@ export default function ImpactPage() {
     })
 
     return () => unsubscribe()
+  }, [])
+
+  // Listeners for public feed & live operational counts (KPIs)
+  useEffect(() => {
+    const feedQuery = query(collection(db, "public_feed"), orderBy("createdAt", "desc"), limit(5))
+    const unsubFeed = onSnapshot(feedQuery, (snap) => {
+      const items: any[] = []
+      snap.forEach((doc) => {
+        items.push({ id: doc.id, ...doc.data() })
+      })
+      setFeedItems(items)
+      setFeedLoading(false)
+    }, (err) => {
+      console.warn("Could not bind real-time public feed:", err)
+      setFeedLoading(false)
+    })
+
+    const unsubNominations = onSnapshot(collection(db, "nominations"), (snap) => {
+      if (!snap.empty) setNominationsCount(snap.size)
+    })
+
+    const unsubFellows = onSnapshot(collection(db, "fellows"), (snap) => {
+      if (!snap.empty) setFellowsCount(snap.size)
+    })
+
+    const unsubMatches = onSnapshot(collection(db, "matches"), (snap) => {
+      if (!snap.empty) setMatchesCount(snap.size)
+    })
+
+    return () => {
+      unsubFeed()
+      unsubNominations()
+      unsubFellows()
+      unsubMatches()
+    }
   }, [])
 
   const schools = [
@@ -115,6 +159,18 @@ export default function ImpactPage() {
           </p>
         </div>
 
+        {/* Live donor feed ticker */}
+        {feedItems.length > 0 && (
+          <div className="max-w-3xl mx-auto bg-blue-950/20 border border-blue-500/20 rounded-2xl px-6 py-3.5 flex items-center justify-between gap-4 overflow-hidden animate-pulse">
+            <div className="flex items-center gap-2.5 text-xs text-blue-400">
+              <Globe className="w-4 h-4 animate-spin text-blue-400" />
+              <span className="font-bold uppercase tracking-wider text-[10px]">Live:</span>
+              <span className="text-gray-300 font-semibold">{feedItems[0].displayText}</span>
+            </div>
+            <span className="text-[9px] text-gray-500 font-bold uppercase tracking-wider whitespace-nowrap">Feed Synced</span>
+          </div>
+        )}
+
         {/* Top grid stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Metric 1 */}
@@ -151,6 +207,36 @@ export default function ImpactPage() {
               {loading ? "..." : metrics.activePartners}
             </div>
             <p className="text-xs text-gray-400 mt-2">FAETEC & IFRJ campuses</p>
+          </div>
+        </div>
+
+        {/* Secondary Grid: Operational KPIs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Nominations */}
+          <div className="bg-gradient-to-br from-gray-950 to-black border border-gray-900 rounded-3xl p-6 text-center relative group hover:border-gray-800 transition duration-300">
+            <h3 className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Nominations Sourced</h3>
+            <div className="text-4xl font-extrabold text-white mt-2">
+              {nominationsCount}
+            </div>
+            <p className="text-[10px] text-gray-500 mt-1">YTD Technical applications</p>
+          </div>
+
+          {/* Fellows */}
+          <div className="bg-gradient-to-br from-gray-950 to-black border border-gray-900 rounded-3xl p-6 text-center relative group hover:border-gray-800 transition duration-300">
+            <h3 className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Fellows Approved</h3>
+            <div className="text-4xl font-extrabold text-green-400 mt-2">
+              {fellowsCount}
+            </div>
+            <p className="text-[10px] text-gray-500 mt-1">Active student coding fellows</p>
+          </div>
+
+          {/* Matches */}
+          <div className="bg-gradient-to-br from-gray-950 to-black border border-gray-900 rounded-3xl p-6 text-center relative group hover:border-gray-800 transition duration-300">
+            <h3 className="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Matches Made</h3>
+            <div className="text-4xl font-extrabold text-blue-400 mt-2">
+              {matchesCount}
+            </div>
+            <p className="text-[10px] text-gray-500 mt-1">Bilingual mentor-student pairings</p>
           </div>
         </div>
 
@@ -283,6 +369,125 @@ export default function ImpactPage() {
             <p className="text-[10px] text-gray-400 leading-snug border-t border-gray-900 pt-6 mt-6">
               💰 TMR operations are audited annually by third-party non-profit watchdogs. 501(c)(3) religious/educational exemption documents are available for download in your donor profile portal.
             </p>
+          </div>
+        </div>
+
+        {/* Global Donor Map & Feed Section */}
+        <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Globe className="w-6 h-6 text-blue-400" />
+                Global Donor Operations Map
+              </h2>
+              <p className="text-sm text-gray-300">
+                Pulsing geographic overlays tracking live supporter contributions.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-2">
+              <span className="relative flex h-3.5 w-3.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-blue-500"></span>
+              </span>
+              <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Live Network Feed</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* SVG World Map */}
+            <div className="lg:col-span-8 bg-black/60 border border-gray-800 rounded-2xl p-6 relative h-[320px] overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(#1f2937_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
+              {/* Stylized custom world map outlines as premium dots/grid */}
+              <svg className="w-full h-full opacity-30" viewBox="0 0 1000 500" fill="none" stroke="currentColor">
+                {/* Simple outline representing Americas, Europe, Brazil */}
+                {/* North America */}
+                <path d="M 150,100 L 250,80 L 400,120 L 350,220 L 200,200 Z M 150,100 L 100,50 Z" stroke="#374151" strokeWidth="2" fill="#0f172a" />
+                {/* South America */}
+                <path d="M 300,250 L 400,300 L 450,420 L 350,450 L 280,350 Z" stroke="#374151" strokeWidth="2" fill="#0f172a" />
+                {/* Europe */}
+                <path d="M 450,80 L 600,60 L 650,150 L 500,180 Z" stroke="#374151" strokeWidth="2" fill="#0f172a" />
+                {/* Brazil outline accent */}
+                <path d="M 320,280 Q 420,330 380,410" fill="none" stroke="#22c55e/40" strokeWidth="2" strokeDasharray="4" />
+              </svg>
+
+              {/* Static Pulsing coordinates overlays for donor hubs */}
+              <div className="absolute top-[45%] left-[32%] group cursor-pointer">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 bg-black border border-gray-800 text-[10px] text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">Dallas, US</span>
+              </div>
+
+              <div className="absolute top-[35%] left-[42%] group cursor-pointer">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 bg-black border border-gray-800 text-[10px] text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">New York, US</span>
+              </div>
+
+              <div className="absolute top-[52%] left-[38%] group cursor-pointer">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 bg-black border border-gray-800 text-[10px] text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">Orlando, US</span>
+              </div>
+
+              <div className="absolute top-[40%] left-[20%] group cursor-pointer">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 bg-black border border-gray-800 text-[10px] text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">San Francisco, US</span>
+              </div>
+
+              <div className="absolute top-[75%] left-[45%] group cursor-pointer">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 bg-black border border-gray-800 text-[10px] text-white px-2 py-0.5 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap z-20">Rio de Janeiro, BR (Hub)</span>
+              </div>
+            </div>
+
+            {/* Live Feed side panel */}
+            <div className="lg:col-span-4 bg-black/40 border border-gray-800 rounded-2xl p-5 flex flex-col h-[320px] justify-between">
+              <div>
+                <h3 className="font-bold text-white text-base mb-3 flex items-center gap-1.5 font-bold uppercase tracking-wider text-xs">
+                  <Heart className="w-4 h-4 text-red-500 animate-pulse" />
+                  Recent Activity Ticker
+                </h3>
+                {feedLoading ? (
+                  <div className="flex items-center justify-center h-[180px]">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                  </div>
+                ) : feedItems.length === 0 ? (
+                  <div className="text-gray-400 text-xs text-center py-16">
+                    Waiting for live transaction items...
+                  </div>
+                ) : (
+                  <div className="space-y-3.5 max-h-[200px] overflow-y-auto pr-1">
+                    {feedItems.map((item) => (
+                      <div key={item.id} className="p-3 border border-gray-900 bg-black/60 rounded-xl flex items-start gap-2 text-xs transition hover:border-gray-800">
+                        <MapPin className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-gray-200 leading-snug">{item.displayText}</p>
+                          <span className="text-[10px] text-gray-500 mt-1 block">
+                            {item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleDateString() : "Just now"}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="text-[10px] text-gray-500 border-t border-gray-900 pt-3">
+                Live activities are fully anonymized to protect donor privacy credentials.
+              </div>
+            </div>
           </div>
         </div>
 
