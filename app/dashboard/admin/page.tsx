@@ -53,7 +53,7 @@ export default function AdminDashboardPage() {
   const router = useRouter()
   const t = useTranslations("Dashboard")
 
-  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite" | "donors" | "fellows" | "logs">("metrics")
+  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite" | "donors" | "fellows" | "logs" | "matcher">("metrics")
 
   // Invite Fellow State
   const [inviteName, setInviteName] = useState("")
@@ -99,6 +99,19 @@ export default function AdminDashboardPage() {
   // Volunteers/Orgs Logs State
   const [orgs, setOrgs] = useState<any[]>([])
   const [orgsLoading, setOrgsLoading] = useState(false)
+
+  // AI Matcher State
+  const [matcherFellowId, setMatcherFellowId] = useState("")
+  const [matcherMentorIndex, setMatcherMentorIndex] = useState(0)
+  const [matcherLoading, setMatcherLoading] = useState(false)
+  const [matcherResult, setMatcherResult] = useState<any>(null)
+  
+  const defaultMentors = [
+    { name: "Sarah Jenkins", specialization: "Senior React Engineer at Microsoft", background: "10+ years building scalable frontends, TypeScript expert, accessibility enthusiast." },
+    { name: "Marcus Chen", specialization: "Staff Mobile Architect at Airbnb", background: "React Native developer, focused on iOS/Android native bridges and performance optimization." },
+    { name: "Diana Prince", specialization: "Principal Data Scientist at Amazon", background: "Python core contributor, ML ops workflow specialist, dashboard visualization expert." },
+    { name: "John Carter", specialization: "Lead Product Designer at Figma", background: "Design systems manager, wireframing, high-fidelity prototypes, user research facilitator." }
+  ]
 
   // Soft Guard redirecting non-admin users
   useEffect(() => {
@@ -321,6 +334,39 @@ export default function AdminDashboardPage() {
       import("posthog-js").then(({ default: posthog }) => {
         posthog.capture("admin_donor_searched", { resultCount: count })
       })
+    }
+  }
+
+  const handleTriggerAIMatch = async () => {
+    if (!matcherFellowId) {
+      alert("Please select a student fellow first.")
+      return
+    }
+
+    setMatcherLoading(true)
+    setMatcherResult(null)
+    try {
+      const selectedMentor = defaultMentors[matcherMentorIndex]
+      const res = await fetch("/api/ai/match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fellowId: matcherFellowId,
+          mentorProfile: selectedMentor
+        })
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to execute AI matching analysis")
+      }
+
+      const data = await res.json()
+      setMatcherResult(data.match)
+    } catch (err: any) {
+      console.error("AI matching failed:", err)
+      alert(err.message || "Failed to analyze compatibility. Please try again.")
+    } finally {
+      setMatcherLoading(false)
     }
   }
 
@@ -571,6 +617,12 @@ export default function AdminDashboardPage() {
               className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "logs" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
               Org Logs
+            </button>
+            <button
+              onClick={() => setActiveSubTab("matcher")}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "matcher" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+            >
+              AI Matcher
             </button>
           </div>
         </div>
@@ -1141,6 +1193,131 @@ export default function AdminDashboardPage() {
                 </table>
               </div>
             )}
+          </div>
+        )}
+
+        {/* TAB 7: AI Matcher */}
+        {activeSubTab === "matcher" && (
+          <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Laptop className="w-6 h-6 text-yellow-400" />
+                AI Student-Mentor Matcher
+              </h2>
+              <p className="text-sm text-gray-400">
+                Leverage OpenAI integrations to evaluate compatibility and alignment recommendations.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                {/* Fellow selector */}
+                <div className="space-y-2">
+                  <label htmlFor="matcher-fellow" className="block text-sm font-medium text-gray-300">Select Student Fellow</label>
+                  <select
+                    id="matcher-fellow"
+                    value={matcherFellowId}
+                    onChange={(e) => setMatcherFellowId(e.target.value)}
+                    className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
+                  >
+                    <option value="">-- Choose a Fellow --</option>
+                    {fellows.map((f) => (
+                      <option key={f.id} value={f.id}>{f.name} ({f.schoolCampus})</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Mentor profile selector */}
+                <div className="space-y-2">
+                  <label htmlFor="matcher-mentor" className="block text-sm font-medium text-gray-300">Select Mentor Profile</label>
+                  <select
+                    id="matcher-mentor"
+                    value={matcherMentorIndex}
+                    onChange={(e) => setMatcherMentorIndex(Number(e.target.value))}
+                    className="w-full bg-black border border-gray-800 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:border-yellow-500 transition"
+                  >
+                    {defaultMentors.map((m, index) => (
+                      <option key={index} value={index}>{m.name} - {m.specialization}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Show details of selected mentor */}
+                <div className="p-4 rounded-xl border border-gray-800 bg-gray-950/40 text-xs space-y-2">
+                  <p className="text-gray-400 font-semibold">Mentor Background:</p>
+                  <p className="text-white">{defaultMentors[matcherMentorIndex].background}</p>
+                </div>
+
+                <button
+                  onClick={handleTriggerAIMatch}
+                  disabled={matcherLoading || !matcherFellowId}
+                  className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-500/50 text-black font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition cursor-pointer text-sm"
+                >
+                  {matcherLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Analyzing Compatibility...
+                    </>
+                  ) : (
+                    "Execute AI Matching Analysis"
+                  )}
+                </button>
+              </div>
+
+              {/* Match Result Display */}
+              <div className="border border-gray-900 rounded-3xl p-6 bg-black/40 flex flex-col justify-center min-h-[300px]">
+                {matcherResult ? (
+                  <div className="space-y-6">
+                    {/* Compatibility score gauge */}
+                    <div className="flex items-center justify-between border-b border-gray-900 pb-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">Analysis Results</h3>
+                        <p className="text-xs text-gray-500">Structured evaluation response</p>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="text-3xl font-black text-yellow-400">{matcherResult.score}%</div>
+                        <div className="text-[10px] text-gray-400 font-bold uppercase">Compatibility</div>
+                      </div>
+                    </div>
+
+                    {/* Reasoning */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Evaluation Reasoning</p>
+                      <p className="text-sm text-gray-200 leading-relaxed">{matcherResult.reasoning}</p>
+                    </div>
+
+                    {/* Alignment Factors */}
+                    {matcherResult.alignmentFactors && matcherResult.alignmentFactors.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Key Alignment Factors</p>
+                        <ul className="list-disc list-inside text-xs text-gray-300 space-y-1">
+                          {matcherResult.alignmentFactors.map((factor: string, idx: number) => (
+                            <li key={idx}>{factor}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Recommendations */}
+                    {matcherResult.recommendations && matcherResult.recommendations.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Next Step Recommendations</p>
+                        <ol className="list-decimal list-inside text-xs text-yellow-400/90 space-y-1">
+                          {matcherResult.recommendations.map((rec: string, idx: number) => (
+                            <li key={idx} className="leading-relaxed">{rec}</li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center space-y-3">
+                    <Laptop className="w-12 h-12 text-gray-600 mx-auto" />
+                    <p className="text-gray-400 text-sm">Select a fellow and click matching to run the evaluation.</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
