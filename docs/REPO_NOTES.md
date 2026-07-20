@@ -2,7 +2,7 @@
 
 ## 📋 Repository Overview
 
-### Project Status: ✅ RELEASE CANDIDATE (v0.9 -> v1.0 Ready)
+### Project Status: ✅ PRODUCTION READY (v2.0 Active)
 **Primary Mission**: Established over three years ago, a lightweight donation platform connecting Brazilian youth tech talent with US stakeholders, churches, and angel investors.
 
 ### 🏗️ Architecture
@@ -11,7 +11,7 @@
 - **Styling**: Tailwind CSS with custom TMR theme
 - **UI Components**: Radix UI (minimal set)
 - **Database / Auth**: GCP Firebase Authentication & Cloud Firestore
-- **Deployment**: Vercel CI/CD
+- **Deployment**: Vercel CI/CD & GCP Cloud Run (Dockerized)
 
 ---
 
@@ -59,6 +59,29 @@
 9. **Bilingual Terms of Service**
    - Bilingual `/terms` page containing acceptance clauses, donation disclaimers, and LGPD minor nominations rules.
 
+10. **Edge-aligned API Throttling & Sentry (v1.1)**
+    - Multi-stage Next.js middleware rate limiting sensitive endpoints (excluding payment webhooks and notification retry loops).
+    - Sentry configurations for Client, Server, and Edge runtime monitoring.
+
+11. **Launch Marketing & Communications (v1.1)**
+    - Dynamic sitemaps, robots.txt, structured JSON-LD schemas, and dynamic OG images generated at the Edge.
+    - Automated loops triggering welcome and volunteer onboarding confirmation emails.
+
+12. **Mobile & TWA Store Package configuration (v1.1)**
+    - Complete pre-seeded Bubblewrap `twa-manifest.json` and digital asset link `assetlinks.json` configurations.
+
+13. **Cloud Containerization & CD Pipeline (v1.2)**
+    - Standalone Dockerfile setup, GCP Artifact Registry deployment, and automatic GitHub Actions pipelines.
+    - Lightweight `/api/health` probes target endpoint.
+
+14. **Local Caching & Database Index Scaling (v1.2)**
+    - Local multi-tab client persistence caching enabled in Firebase.
+    - CDN cache-control header mappings, and `firestore.indexes.json` definitions.
+
+15. **AI Student-Mentor Matching Engine (v2.0)**
+    - Secure `/api/ai/match` route linking student and mentor parameters using OpenAI models or local heuristic tracking backups.
+    - Admin interface panel matching student listings and displaying compatibility gauges.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation
@@ -76,6 +99,10 @@ Our architecture is designed to fail gracefully without disrupting the user expe
 ### 3. PostHog Tracking Fallback
 * **Problem**: Uninitialized PostHog instances cause click events to throw exceptions.
 * **Solution**: `hooks/useAnalytics.ts` maps Mock no-op functions when PostHog variables are absent.
+
+### 4. AI Matching Backup Heuristics
+* **Problem**: Missing `OPENAI_API_KEY` credentials crash AI matching requests.
+* **Solution**: `/api/ai/match` triggers local heuristic matching comparing student IT tracks and skill overlaps.
 
 ---
 
@@ -100,16 +127,17 @@ Our architecture is designed to fail gracefully without disrupting the user expe
 - [x] Production payments webhook idempotency & signatures
 - [x] Server-side PDF tax receipt generation
 
-### Phase 4 (Future Launch Operations)
-- [ ] Bubblewrap / TWA store package compilation for Google Play Store.
-- [ ] Observability setup (Sentry, PostHog logs, Uptime monitoring).
-- [ ] Containerization (Docker, Artifact Registry, GCP Cloud Run, Secret Manager).
+### Phase 4 (Completed)
+- [x] Bubblewrap / TWA store package compilation for Google Play Store.
+- [x] Observability setup (Sentry, PostHog logs, Uptime monitoring).
+- [x] Containerization (Docker, Artifact Registry, GCP Cloud Run, Secret Manager).
+- [x] AI Student-Mentor Matching engine (v2.0)
 
 ---
 
 ## 📞 Support & Maintenance
-- **Documentation**: `docs/DEBUGGING.md`, `docs/MCP_RULES.md`, `docs/MASTER_PLAN.md`
+- **Documentation**: `docs/DEBUGGING.md`, `docs/MCP_RULES.md`, `docs/MASTER_PLAN.md`, `docs/TWA_BUILD_GUIDE.md`, `docs/GCP_DEPLOY_GUIDE.md`
 - **Updates**: Regular dependency updates + security patches
-- **Last Updated**: 2026-07-12
+- **Last Updated**: 2026-07-20
 - **Maintainer**: Antigravity Developer Agent
-- **Deployment**: Vercel CI/CD Active
+- **Deployment**: Vercel CI/CD & GCP Cloud Run Active
