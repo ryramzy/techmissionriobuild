@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+android-build
+docs
+*.keystore
+*.jks
+.git
+.github
+npm-debug.log*
+.env*.local
+Dockerfile
+.dockerignore
