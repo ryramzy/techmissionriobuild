@@ -74,17 +74,21 @@ To validate if new features create value, the platform evaluates operations agai
 
 ```mermaid
 graph TD
-    A[Client App: Next.js 16] -->|Session Authentication| B[GCP Firebase Auth]
+    A[Client App: Next.js 14] -->|Session Authentication| B[GCP Firebase Auth]
     A -->|Live Metrics listeners| C[Cloud Firestore]
     A -->|Anonymized Event Tracking| D[PostHog Analytics]
     A -->|Initialize Checkout| E[Stripe Gateway API]
     E -->|Secure Redirect| F[Stripe Checkout Pages]
     F -->|Payment Events| G[Next.js Stripe Webhook API]
     G -->|Write Donations / Seeding| C
-    C -->|Trigger Notification / Receipt| H[Email Provider: SendGrid]
+    C -->|Trigger Notification / Receipt| H[Firebase Trigger Email (Trigger Email Extension)]
     I[Admin Dashboard Control] -->|Auditing / Nominations| C
-    J[Student Video Uploads] -->|Direct Binary Streams| K[GCP Cloud Storage]
+    J[Student Video Uploads] -->|YouTube embed| K[YouTube Embed Links]
 ```
+
+*Note on storage architecture:*
+- **Videos**: YouTube embeds are used directly in candidate cards (no Google Cloud Storage is used for video).
+- **Receipts**: PDFs are generated dynamically on-demand from transaction records, not stored persistently in Google Cloud Storage.
 
 ---
 
@@ -105,6 +109,13 @@ Developer ➔ Local Git Commit ➔ GitHub Pull Request ➔ Vercel Preview Deploy
 * **`organizations/`**: B2B church/corporate entities, cohort sponsorship flags, and prayer encouragement walls.
 * **`nominations/`**: Educator nomination documents (student details, technical justifications, approval status).
 * **`notifications/`**: Event alert items, system logs, and delivery states.
+* **`public_feed/`**: Opt-in anonymous donor city feed items (city, country, amountTier, displayText, createdAt) - populated by Stripe webhook. Public read-only.
+* **`sessions/`**: Scheduled mentor-student video sessions (studentUid, mentorUid, scheduledAt, zoomLink or meetLink, status: "scheduled"|"completed"|"cancelled", matchId).
+* **`matches/`**: Confirmed AI mentor-student pairings (studentId: fellows/{id}, mentorUid, matchedAt, matchScore, status: "pending"|"confirmed"|"completed").
+* **`stripe_events/`**: Idempotency guard for webhook deduplication (processedAt: Timestamp).
+* **`mail/`**: Firebase Trigger Email queue (to, template: {name, data}).
+* **`device_tokens/{uid}/tokens/`**: FCM push tokens (token, platform, createdAt).
+* **`chats/{chatId}/messages/`**: Student-mentor chat messages (senderUid, text, createdAt, readBy[]).
 
 ---
 
@@ -140,7 +151,7 @@ Cloud Storage maintains all core binary datasets:
 ## 🗺️ Product Roadmap & Milestones
 
 ### 1. COMPLETED (Months 1 – 4)
-* **Donations Engine**: USD and local BRL checkout processing via Stripe/PIX.
+* **Donations Engine**: USD processing via Stripe. (Local BRL PIX integration deferred to v3.1; current Brazilian donor volume does not justify integration complexity. Revisit when monthly BRL donation attempts exceed 20/month.)
 * **Authentication**: Credentials database & single-tap **Google Sign-In**.
 * **Dynamic Gateway Routing**: Dynamic gate at `/dashboard` routing admins, donors, and fellows.
 * **LGPD Minor Protections**: Mandatory parent permission verification under Brazilian LGPD Art. 14.
@@ -185,6 +196,8 @@ Cloud Storage maintains all core binary datasets:
 * **LGPD Regulatory Updates**: Checked by mandatory parent verification inputs and explicit consent gates.
 * **Volunteer / Mentor Retention**: Mitigated by partnering with BRASA chapters and automating syncs.
 * **API Pricing Overages**: Mitigated by client-only rule engines and lazy analytics triggers.
+* **Zoom/Meta API approval delays**: Mitigated by starting marketplace submissions 4+ weeks before Sprint 15 and 14. Fallback: Jitsi for video rooms, static social links for feeds.
+* **OpenAI cost overruns**: Mitigated by $50/month hard cap in OpenAI dashboard. Monitor via usage dashboard weekly.
 
 ---
 
@@ -262,3 +275,29 @@ TMR prioritizes accessibility as a first-class product objective:
 AI acts as a supporting capability rather than the product itself:
 * **OpenAI Cohort Matcher**: Simple rules engine for default tiers, invoking LLMs to match donors with student bios on specific tags.
 * **Interview Practice Simulator**: Chatbots giving fellows automated feedback on software engineer resumes.
+
+---
+
+## 📅 Part 3: Phase 5 Sprints Roadmaps (Next Master Plan)
+
+### 🚀 Release v3.0 — Advanced Engagement & Integrations
+
+#### ⚡ Sprint 13: Live Impact Maps & Donor Feed (Weeks 17–18)
+* Geolocated anonymous map on `/impact` showing donor cities and church hubs.
+* Live feed ticket displaying recent donor locations and laptop counts.
+
+#### ⚡ Sprint 14: Social Media Integrations & Annual Impact Report (Weeks 19–20)
+* Direct integrations with Instagram & Facebook media updates feeds.
+* Share overlay integrations for student profile stories on TikTok/Instagram.
+* **Annual Impact Report**:
+  - Generate annual impact PDF dynamically from Firestore data (total donations, laptops distributed, fellows approved, nomination count, school partners).
+  - Add manually triggerable button inside the Admin Dashboard.
+  - Automate email delivery of this PDF to all active donors via the Firebase Trigger Email queue.
+
+#### ⚡ Sprint 15: Automated Video Room & Zoom Scheduler (Weeks 21–22)
+* Google Calendar & Zoom API scheduling for matched students/mentors.
+* Interactive calendar dashboard widget in student/mentor portals.
+
+#### ⚡ Sprint 16: AI Resume Screeners & Practice Board (Weeks 23–24)
+* Automated PDF resume analyzers and rating gauges.
+* Interactive mock technical interview chatbots.

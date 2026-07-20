@@ -169,8 +169,43 @@ Achievable with standalone output + `min-instances: 1` in Cloud Run config. `min
 
 ---
 
-## 🚀 Sprint 12: Public Launch (Weeks 15-16)
-* **Public Release**: Execution of release check sheets, public newsletters, and official v1.0 release tracking.
+## 🐳 Sprint 9: Cloud Engineering (Weeks 9–10) ✅ COMPLETE
+* **Release v1.2 Ready**:
+  - Docker standalone containerization configurations.
+  - Google Cloud Artifact Registry & Cloud Run setups.
+  - Secret Manager bindings (Firebase Admin JSON, Stripe credentials, Sentry variables).
+  - GitHub Actions CI/CD pipeline automation for builds and tags deployments.
+
+---
+
+## ⚡ Sprint 10: Scale & Reliability (Weeks 11–12) ✅ COMPLETE
+* **Deployments**:
+  - Cloud CDN setup and custom max-age/stale-while-revalidate Cache-Control header mappings in Next config.
+  - Firestore composite query index optimization profiles (`firestore.indexes.json`).
+
+---
+
+## 🤖 Sprint 11: AI Ecosystem (Weeks 13–14) ✅ COMPLETE
+* **Matchings**:
+  - OpenAI-powered student-mentor matches API endpoint with structured JSON formats.
+  - Local heuristic matching system backup fallback if api credentials are missing.
+  - Admin match dashboard pairing interface screens with score gauges, alignment grids, and action links.
+
+---
+
+## 🚀 Sprint 12: Public Launch (Weeks 15–16) ✅ COMPLETE
+* **Launches**:
+  - Full product launch checksheet (`docs/RELEASE_CHECKLIST.md`) documenting domains, SSL, rules audits, sitemap audits, and post-consent tracking telemetry.
+  - Production verification runs and Git tag updates.
+
+---
+
+## 🚦 Pre-Sprint 13 Action Items
+- [ ] Submit Zoom Marketplace app (Sprint 15 dependency — 2-4 week wait)
+- [ ] Submit Meta Developer app for Instagram Basic Display API (Sprint 14 dependency — 1-4 week wait)
+- [ ] Enable Firestore daily backups via Cloud Scheduler
+- [ ] Set OpenAI spend hard cap: $50/month in OpenAI dashboard
+- [ ] Define matches collection schema in Firestore
 
 ---
 
@@ -178,13 +213,22 @@ Achievable with standalone output + `min-instances: 1` in Cloud Run config. `min
 * **Tasks**:
   - Build interactive geolocated map on `/impact` showing anonymous donor locations.
   - Implement a live contribution ticker displaying recent items.
+  - **KPI Measurements**:
+    - Admin dashboard: show average donation size (compute from donations).
+    - Admin dashboard: show YTD nomination count.
+    - Admin dashboard: show confirmed match count (from matches collection).
+    - `/impact` page: show nominations sourced, fellows approved, matches made.
 
 ---
 
-## ⚡ Sprint 14: Social Media Integrations (Weeks 19–20)
+## ⚡ Sprint 14: Social Media Integrations & Annual Impact Report (Weeks 19–20)
 * **Tasks**:
   - Embed dynamic sharing parameters for Instagram and TikTok sharing.
   - Integrate a direct feed card on the home page displaying active Instagram/Facebook media updates.
+  - **Annual Impact Report**:
+    - Generate annual impact PDF from Firestore data (total donations, laptops distributed, fellows approved, nomination count, school partners).
+    - Trigger manually from admin dashboard.
+    - Email to all active donors via Firebase Trigger Email queue.
 
 ---
 
@@ -208,3 +252,7 @@ Achievable with standalone output + `min-instances: 1` in Cloud Run config. `min
 3. Optimize `/fellows` bundle — lazy load video iframes below fold.
 4. Add unit tests for: `toYouTubeEmbedUrl()`, `getPayPalAccessToken()`, nomination rate-limit check (target: 80% coverage on utils).
 5. Run next/bundle-analyzer — `/partner` must stay under 50kb gzipped.
+6. Enable Firestore daily exports to GCP Bucket (Cloud Scheduler).
+7. Add matches collection + update AI endpoint to write confirmed pairs.
+8. Update email open rate tracking — UTM links in all Firebase emails.
+9. Update admin dashboard with average donation size + recurring % metrics.
