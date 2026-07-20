@@ -82,6 +82,9 @@
     - Secure `/api/ai/match` route linking student and mentor parameters using OpenAI models or local heuristic tracking backups.
     - Admin interface panel matching student listings and displaying compatibility gauges.
 
+16. **Production Launch Checklist (v2.0)**
+    - Comprehensive `docs/RELEASE_CHECKLIST.md` mapping DNS domains setup, Stripe live credentials switches, Firestore security rule audits, and telemetry tracking metrics checks.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation
@@ -132,11 +135,12 @@ Our architecture is designed to fail gracefully without disrupting the user expe
 - [x] Observability setup (Sentry, PostHog logs, Uptime monitoring).
 - [x] Containerization (Docker, Artifact Registry, GCP Cloud Run, Secret Manager).
 - [x] AI Student-Mentor Matching engine (v2.0)
+- [x] Public Launch checklist release sheet (v2.0)
 
 ---
 
 ## 📞 Support & Maintenance
-- **Documentation**: `docs/DEBUGGING.md`, `docs/MCP_RULES.md`, `docs/MASTER_PLAN.md`, `docs/TWA_BUILD_GUIDE.md`, `docs/GCP_DEPLOY_GUIDE.md`
+- **Documentation**: `docs/DEBUGGING.md`, `docs/MCP_RULES.md`, `docs/MASTER_PLAN.md`, `docs/TWA_BUILD_GUIDE.md`, `docs/GCP_DEPLOY_GUIDE.md`, `docs/RELEASE_CHECKLIST.md`
 - **Updates**: Regular dependency updates + security patches
 - **Last Updated**: 2026-07-20
 - **Maintainer**: Antigravity Developer Agent
