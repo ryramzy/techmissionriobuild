@@ -162,6 +162,25 @@ Our architecture is designed to fail gracefully without disrupting the user expe
 ## 📞 Support & Maintenance
 - **Documentation**: `docs/DEBUGGING.md`, `docs/MCP_RULES.md`, `docs/MASTER_PLAN.md`, `docs/TWA_BUILD_GUIDE.md`, `docs/GCP_DEPLOY_GUIDE.md`, `docs/RELEASE_CHECKLIST.md`
 - **Updates**: Regular dependency updates + security patches
-- **Last Updated**: 2026-07-20
+- **Last Updated**: 2026-07-21
 - **Maintainer**: Antigravity Developer Agent
 - **Deployment**: Vercel CI/CD & GCP Cloud Run Active
+
+---
+
+## 🕊️ Post-Launch Operational Insights & Developer Hand-off
+
+As we complete the engineering phase (v3.0) and hand the platform over to real-world operations, these structural notes guide next-sprint developers:
+
+### 1. PIX Integration via Mercado Pago (Extensibility Guide)
+* **Webhook Blueprint**: Mercado Pago webhooks follow an identical pattern to Stripe webhooks. Set up signature verification, raw body validation, database idempotency guards (checking transaction ID write-locks), and write actions.
+* **Instant Processing**: PIX payments are instant and irrevocable. No payment-failure retries or chargeback reconciliation states are required on webhook routes.
+
+### 2. Operational Trust vs. Technical Credibility
+* **Nomination Pipes**: The `/partner` nominating pipeline and AI match recommendation logs are fully integrated and tested. The primary bottleneck is non-technical: physical outreach to teachers at FAETEC / IFRJ campuses in Rio to submit nominations.
+* **Donor Conversion**: The `/donate` and "Adopt-a-Classroom" portals are functional and transparent. However, enterprise donations will convert through local personal conversations and community presentations rather than organic search, using the website as verification.
+
+### 3. Production Hardening Features
+* **Stateless Scaling**: To transition from in-memory rate limiters to stateless horizontal instances on GCP Cloud Run, configure Upstash Redis rate-limit adapters (see Sprint 10 targets).
+* **Metric KPIs tracking**: Integrate UTM parameters on email report links sent via Firebase Trigger Email to log open rates directly inside PostHog dashboards.
+
