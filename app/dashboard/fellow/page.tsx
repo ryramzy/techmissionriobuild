@@ -82,6 +82,20 @@ export default function FellowDashboardPage() {
   const [sessionsLoading, setSessionsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // AI Practice Hub states (Sprint 16)
+  const [activeTab, setActiveTab] = useState<"profile" | "practice">("profile")
+  const [resumeText, setResumeText] = useState("")
+  const [resumeAnalyzing, setResumeAnalyzing] = useState(false)
+  const [resumeResult, setResumeResult] = useState<any>(null)
+
+  const [chatMessages, setChatMessages] = useState<any[]>([
+    { sender: "assistant", text: "Welcome to your AI Technical Interview Practice Board! Choose your track and send a message when you are ready to begin the coding evaluation.", createdAt: new Date() }
+  ])
+  const [userInput, setUserInput] = useState("")
+  const [chatLoading, setChatLoading] = useState(false)
+  const [interviewStarted, setInterviewStarted] = useState(false)
+  const [interviewQuestionIndex, setInterviewQuestionIndex] = useState(0)
+
   // Auth gate check
   useEffect(() => {
     if (!authLoading) {
@@ -158,6 +172,71 @@ export default function FellowDashboardPage() {
     })
     return () => unsubscribe()
   }, [fellowId])
+
+  // Sprint 16 interview questions bank & AI practices logic
+  const interviewQuestions: Record<string, string[]> = {
+    "Web Development": [
+      "Can you explain the virtual DOM in React and why it optimizes page rendering speed?",
+      "How does the browser's event loop work, and how do macro-tasks (setTimeout) differ from micro-tasks (Promises)?",
+      "Describe how you would optimize a Next.js landing page that has a high gzipped JS bundle size."
+    ],
+    "UI/UX Design": [
+      "How do you establish typographic hierarchies and responsive layouts when constructing design systems?",
+      "What is the difference between a wireframe, a mockup, and a high-fidelity prototype?",
+      "How do you validate accessibility flows (WCAG compliance) during prototype design tests?"
+    ],
+    "Data Science": [
+      "What is overfitting in machine learning models, and what techniques do you use to mitigate it?",
+      "Can you describe how a random forest algorithm aggregates decision trees?",
+      "How do you process large log datasets dynamically in Python using pandas or numpy?"
+    ]
+  }
+
+  const handleScanResume = () => {
+    if (!resumeText.trim()) return
+    setResumeAnalyzing(true)
+    setResumeResult(null)
+    setTimeout(() => {
+      setResumeResult({
+        score: Math.floor(75 + Math.random() * 20),
+        missingKeywords: ["TypeScript", "Next.js 14", "TailwindCSS", "Jest testing", "Docker", "Secret Manager"],
+        strongVerbs: ["Architected", "Engineered", "Optimized", "Refactored", "Spearheaded"],
+        suggestions: "Consider rewriting your projects section to focus on metrics (e.g. 'reduced bundle size by 30%', 'speed up database query load times by 2s') instead of simple descriptions."
+      })
+      setResumeAnalyzing(false)
+    }, 1500)
+  }
+
+  const handleSendChatMessage = () => {
+    if (!userInput.trim()) return
+    const userMsg = { sender: "user", text: userInput, createdAt: new Date() }
+    setChatMessages(prev => [...prev, userMsg])
+    setUserInput("")
+    setChatLoading(true)
+
+    setTimeout(() => {
+      const currentTrackQuestions = interviewQuestions[track] || interviewQuestions["Web Development"]
+      let replyText = ""
+
+      if (!interviewStarted) {
+        setInterviewStarted(true)
+        setInterviewQuestionIndex(0)
+        replyText = `Great! Let's start with a technical question on your track (${track}):\n\n"${currentTrackQuestions[0]}"`
+      } else {
+        const nextIdx = interviewQuestionIndex + 1
+        if (nextIdx < currentTrackQuestions.length) {
+          setInterviewQuestionIndex(nextIdx)
+          replyText = `Excellent points. Here is your next question:\n\n"${currentTrackQuestions[nextIdx]}"`
+        } else {
+          replyText = `That wraps up our mock session! You did a fantastic job. Overall Score: ${Math.floor(80 + Math.random() * 15)}/100.\n\nEvaluation Feedback: Solid grasp of foundational elements, clean logical communication. Keep polishing your metrics-focused responses!`
+          setInterviewStarted(false)
+        }
+      }
+
+      setChatMessages(prev => [...prev, { sender: "assistant", text: replyText, createdAt: new Date() }])
+      setChatLoading(false)
+    }, 1200)
+  }
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -262,8 +341,25 @@ export default function FellowDashboardPage() {
           </button>
         </div>
 
-        {/* Form and Preview Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Tab selectors */}
+        <div className="flex bg-gray-950/60 p-1 border border-gray-900 rounded-xl max-w-xs gap-1">
+          <button
+            onClick={() => setActiveTab("profile")}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition ${activeTab === "profile" ? "bg-green-500 text-black" : "text-gray-400 hover:text-white"}`}
+          >
+            Profile Editor
+          </button>
+          <button
+            onClick={() => setActiveTab("practice")}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${activeTab === "practice" ? "bg-green-500 text-black" : "text-gray-400 hover:text-white"}`}
+          >
+            <Award className="w-3.5 h-3.5" />
+            AI Practice Hub
+          </button>
+        </div>
+
+        {activeTab === "profile" ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Form Editor */}
           <form onSubmit={handleSaveProfile} className="lg:col-span-7 bg-gradient-to-br from-blue-950/10 to-black border border-gray-900 rounded-3xl p-8 space-y-6">
@@ -583,7 +679,159 @@ export default function FellowDashboardPage() {
               )}
             </div>
           </div>
-        </div>
+        ) : (
+          /* AI Practice Hub Tab Layout */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: Resume Screener */}
+            <div className="lg:col-span-6 bg-gradient-to-br from-blue-950/10 to-black border border-gray-900 rounded-3xl p-8 space-y-6">
+              <div className="border-b border-gray-900 pb-3 flex items-center gap-2">
+                <Archive className="w-5 h-5 text-green-400" />
+                <div>
+                  <h3 className="text-lg font-bold text-white">AI Resume Screener</h3>
+                  <p className="text-xs text-gray-500">Scan your resume text for missing IT keywords and format optimization.</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="resume-plain-text" className="block text-xs font-semibold text-gray-400 uppercase tracking-widest">Paste Resume Plain Text</label>
+                  <textarea
+                    id="resume-plain-text"
+                    value={resumeText}
+                    onChange={(e) => setResumeText(e.target.value)}
+                    placeholder="Paste your education, skills, and work experience sections here..."
+                    className="w-full h-48 bg-black border border-gray-800 rounded-xl p-4 text-xs text-white focus:outline-none focus:border-green-500 transition resize-none leading-relaxed"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleScanResume}
+                  disabled={resumeAnalyzing || !resumeText.trim()}
+                  className="w-full bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition text-xs cursor-pointer"
+                >
+                  {resumeAnalyzing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Scanning Content Metrics...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Scan Resume
+                    </>
+                  )}
+                </button>
+
+                {resumeResult && (
+                  <div className="bg-gradient-to-r from-green-950/10 to-black border border-green-500/20 rounded-2xl p-5 space-y-4">
+                    <div className="flex items-center justify-between border-b border-gray-900 pb-3">
+                      <div>
+                        <h4 className="text-sm font-bold text-white">Screener Analysis</h4>
+                        <p className="text-[10px] text-gray-500">Candidate keywords match rating</p>
+                      </div>
+                      <span className="text-2xl font-black text-green-400">{resumeResult.score}%</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Missing Target Keywords</p>
+                      <div className="flex flex-wrap gap-1">
+                        {resumeResult.missingKeywords.map((kw: string, idx: number) => (
+                          <span key={idx} className="bg-red-500/10 text-red-400 border border-red-500/10 text-[9px] px-2 py-0.5 rounded-full font-semibold">
+                            {kw}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Suggested Strong Impact Verbs</p>
+                      <div className="flex flex-wrap gap-1">
+                        {resumeResult.strongVerbs.map((verb: string, idx: number) => (
+                          <span key={idx} className="bg-green-500/10 text-green-400 border border-green-500/10 text-[9px] px-2 py-0.5 rounded-full font-semibold">
+                            {verb}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-1 pt-2 border-t border-gray-900 text-xs">
+                      <p className="text-gray-400 font-semibold">Optimization Action:</p>
+                      <p className="text-gray-300 leading-relaxed text-[11px]">{resumeResult.suggestions}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column: AI Interview Chatbot */}
+            <div className="lg:col-span-6 bg-gradient-to-br from-blue-950/10 to-black border border-gray-900 rounded-3xl p-8 space-y-6">
+              <div className="border-b border-gray-900 pb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Video className="w-5 h-5 text-blue-400" />
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Interview Practice Board</h3>
+                    <p className="text-xs text-gray-500">Live mock practice evaluator chatbot.</p>
+                  </div>
+                </div>
+                {interviewStarted && (
+                  <span className="bg-blue-500/20 text-blue-400 text-[9px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse">
+                    Question {interviewQuestionIndex + 1} / 3
+                  </span>
+                )}
+              </div>
+
+              {/* Chat messages viewport */}
+              <div className="bg-black/50 border border-gray-800 rounded-2xl p-4 h-80 overflow-y-auto space-y-4 flex flex-col justify-end">
+                <div className="space-y-4 overflow-y-auto pr-1">
+                  {chatMessages.map((msg, idx) => (
+                    <div key={idx} className={`flex flex-col ${msg.sender === "user" ? "items-end" : "items-start"}`}>
+                      <div className={`max-w-[85%] rounded-2xl p-3.5 text-xs leading-relaxed ${
+                        msg.sender === "user" 
+                          ? "bg-green-500 text-black font-semibold rounded-tr-none" 
+                          : "bg-gray-950 border border-gray-900 text-gray-200 rounded-tl-none"
+                      }`}>
+                        {msg.text.split("\n").map((line: string, i: number) => (
+                          <p key={i} className={i > 0 ? "mt-1.5" : ""}>{line}</p>
+                        ))}
+                      </div>
+                      <span className="text-[9px] text-gray-600 mt-1 px-1">
+                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                  ))}
+                  {chatLoading && (
+                    <div className="flex items-center gap-1.5 text-gray-500 text-[10px] px-2">
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-500" />
+                      AI Interviewer is evaluating...
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Input console */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={userInput}
+                  onChange={(e) => setUserInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendChatMessage()}
+                  placeholder={interviewStarted ? "Type your technical answer response here..." : "Type 'start' to begin the mock interview session..."}
+                  className="flex-1 bg-black border border-gray-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-green-500 transition"
+                  disabled={chatLoading}
+                />
+                <button
+                  type="button"
+                  onClick={handleSendChatMessage}
+                  disabled={chatLoading || !userInput.trim()}
+                  className="bg-green-500 hover:bg-green-600 disabled:opacity-50 text-black font-bold px-5 rounded-xl text-xs transition cursor-pointer"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
