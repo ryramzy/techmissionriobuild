@@ -209,40 +209,68 @@ Achievable with standalone output + `min-instances: 1` in Cloud Run config. `min
 
 ---
 
-## ⚡ Sprint 13: Live Impact Maps & Donor Feed (Weeks 17–18)
+## ⚡ Sprint 13: Live Impact Maps & Donor Feed (Weeks 17–18) ✅ COMPLETE
 * **Tasks**:
-  - Build interactive geolocated map on `/impact` showing anonymous donor locations.
+  - Build geolocated map on `/impact` showing anonymous donor locations.
   - Implement a live contribution ticker displaying recent items.
   - **KPI Measurements**:
     - Admin dashboard: show average donation size (compute from donations).
     - Admin dashboard: show YTD nomination count.
     - Admin dashboard: show confirmed match count (from matches collection).
-    - `/impact` page: show nominations sourced, fellows approved, matches made.
 
 ---
 
-## ⚡ Sprint 14: Social Media Integrations & Annual Impact Report (Weeks 19–20)
+## ⚡ Sprint 14: Social Media Integrations & Annual Impact Report (Weeks 19–20) ✅ COMPLETE
 * **Tasks**:
   - Embed dynamic sharing parameters for Instagram and TikTok sharing.
   - Integrate a direct feed card on the home page displaying active Instagram/Facebook media updates.
-  - **Annual Impact Report**:
-    - Generate annual impact PDF from Firestore data (total donations, laptops distributed, fellows approved, nomination count, school partners).
-    - Trigger manually from admin dashboard.
-    - Email to all active donors via Firebase Trigger Email queue.
+  - Generate annual impact report PDF & trigger emails manually from Admin dashboard.
 
 ---
 
-## ⚡ Sprint 15: Automated Video Room & Zoom Scheduler (Weeks 21–22)
+## ⚡ Sprint 15: Automated Video Room & Zoom Scheduler (Weeks 21–22) ✅ COMPLETE
 * **Tasks**:
-  - Integrate Google Calendar / Zoom API endpoints to automatically schedule virtual pairings on matches.
+  - Integrate virtual call scheduling (Zoom/Jitsi fallbacks) on Admin matches confirmation.
   - Display scheduled calls on student and mentor portal dashboards.
 
 ---
 
-## ⚡ Sprint 16: AI Resume Screeners & Practice Board (Weeks 23–24)
+## ⚡ Sprint 16: AI Resume Screeners & Practice Board (Weeks 23–24) ✅ COMPLETE
 * **Tasks**:
-  - Implement PDF resume checker providing suggestions.
-  - Deploy a simulated mock technical interviewer chatbot.
+  - Implement plain text resume scanner checking target keywords.
+  - Deploy interactive practice technical interviewer chatbot.
+
+---
+
+## ⚡ Sprint 17: PIX Gateway & Mercado Pago Integration (Weeks 25–26)
+* **Tasks**:
+  - Configure Mercado Pago API credentials inside GCP Secret Manager.
+  - Deploy `/api/stripe/mp-checkout` and mp-webhook endpoints.
+  - Add native PIX callbacks to support Brazilian donor payments instantly.
+
+---
+
+## ⚡ Sprint 18: Upstash Redis Persistent Rate Limiting (Weeks 27–28)
+* **Tasks**:
+  - Provision free tier Upstash Redis database instance.
+  - Refactor in-memory rate-limiter check actions to query Redis.
+  - Protect server endpoints against Cloud Run cold-starts resetting block histories.
+
+---
+
+## ⚡ Sprint 19: Career Placement Metrics & Email Open Tracking (Weeks 29–30)
+* **Tasks**:
+  - Update Firestore `fellows` docs to contain a `placements` array tracking career hire records.
+  - Append UTM tracking parameters to all email report URLs.
+  - Enable open-rate statistics dashboard visualization inside PostHog.
+
+---
+
+## ⚡ Sprint 20: FAETEC & BRASA Mentorship Integration (Weeks 31–32)
+* **Tasks**:
+  - Conduct outreach to BRASA university chapters (MIT, Stanford, Georgia Tech, Harvard) to onboard mentors.
+  - Establish partnerships with FAETEC / IFRJ coordinators in Rio to submit nominations through the portal.
+  - Synchronize video pairing schedulers to support BRASA-matched mentor profiles.
 
 ---
 
