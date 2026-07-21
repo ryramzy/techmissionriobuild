@@ -17,7 +17,7 @@ import {
   Loader2 
 } from "lucide-react"
 import Link from "next/link"
-import { collection, getDocs } from "firebase/firestore"
+import { collection, getDocs, query, where, onSnapshot } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { useAuth } from "@/app/components/AuthContext"
 import { signOut } from "firebase/auth"
@@ -31,6 +31,10 @@ export default function DonorDashboardPage() {
   // Donation history from Firestore
   const [donations, setDonations] = useState<any[]>([])
   const [loadingDonations, setLoadingDonations] = useState(false)
+
+  // Mentorship sessions states
+  const [sessions, setSessions] = useState<any[]>([])
+  const [sessionsLoading, setSessionsLoading] = useState(true)
 
   // Auth gate checks
   useEffect(() => {
@@ -64,6 +68,24 @@ export default function DonorDashboardPage() {
       }
       fetchDonations()
     }
+  }, [user])
+
+  // Fetch scheduled sessions for mentor/donor
+  useEffect(() => {
+    if (!user) return
+    const q = query(collection(db, "sessions"), where("mentorUid", "==", user.email || ""))
+    const unsubscribe = onSnapshot(q, (snap) => {
+      const list: any[] = []
+      snap.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() })
+      })
+      setSessions(list)
+      setSessionsLoading(false)
+    }, (err) => {
+      console.warn("Could not bind real-time sessions for mentor:", err)
+      setSessionsLoading(false)
+    })
+    return () => unsubscribe()
   }, [user])
 
   // Get a readable list of donations (with fallback if empty)
@@ -293,6 +315,52 @@ export default function DonorDashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Scheduled Mentorship Calls Widget */}
+        <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8 mb-8 space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-green-400" />
+              Your Mentorship Pairing Calls
+            </h2>
+            <p className="text-gray-400 text-sm mt-1">
+              Live scheduled sessions with your matched student fellow in Rio.
+            </p>
+          </div>
+          {sessionsLoading ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="w-6 h-6 animate-spin text-green-400" />
+            </div>
+          ) : sessions.length === 0 ? (
+            <div className="text-xs text-gray-500 py-2">
+              No sessions scheduled at this time. When you are matched with a student fellow, the pairing details and automated video rooms will be shown here.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {sessions.map((sess) => (
+                <div key={sess.id} className="bg-black/40 border border-gray-800 rounded-2xl p-5 flex flex-col justify-between gap-4 transition hover:border-green-500/35">
+                  <div className="space-y-1.5">
+                    <span className="bg-green-500/15 border border-green-500/20 text-green-400 text-[10px] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                      {sess.status || "Scheduled"}
+                    </span>
+                    <h4 className="text-sm font-bold text-white">Mentorship call with student fellow</h4>
+                    <p className="text-xs text-gray-400">Scheduled Date: <strong>{new Date(sess.scheduledAt).toLocaleString()}</strong></p>
+                    <p className="text-xs text-gray-500">Video Platform: {sess.provider || "Zoom Link"}</p>
+                  </div>
+                  <a 
+                    href={sess.zoomLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer self-start w-full sm:w-auto"
+                  >
+                    <Video className="w-4 h-4" />
+                    Enter Meeting Room
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Donation History Table */}
         <div className="bg-gradient-to-br from-blue-900/10 via-black to-blue-900/10 border border-blue-500/20 rounded-3xl p-8">

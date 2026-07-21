@@ -79,5 +79,17 @@ service cloud.firestore {
       allow read: if true;
       allow write: if false; // Admin SDK only
     }
+
+    // Matches collection
+    match /matches/{matchId} {
+      allow read: if true;
+      allow write: if false; // Admin SDK only
+    }
+
+    // Sessions collection
+    match /sessions/{sessionId} {
+      allow read: if true;
+      allow write: if false; // Admin SDK only
+    }
   }
 }

@@ -116,6 +116,10 @@ export default function AdminDashboardPage() {
   // Sprint 14 Annual Impact Report states
   const [reportTriggering, setReportTriggering] = useState(false)
   const [reportResult, setReportResult] = useState<any>(null)
+
+  // Sprint 15 pairing confirm states
+  const [confirmingMatch, setConfirmingMatch] = useState(false)
+  const [confirmResult, setConfirmResult] = useState<any>(null)
   
   const defaultMentors = [
     { name: "Sarah Jenkins", specialization: "Senior React Engineer at Microsoft", background: "10+ years building scalable frontends, TypeScript expert, accessibility enthusiast." },
@@ -367,6 +371,36 @@ export default function AdminDashboardPage() {
       setApiError(err.message || "Failed to trigger report compilation")
     } finally {
       setReportTriggering(false)
+    }
+  }
+
+  const handleConfirmMatch = async () => {
+    if (!matcherFellowId || !matcherResult) return
+    setConfirmingMatch(true)
+    setConfirmResult(null)
+    setApiError("")
+    try {
+      const selectedMentor = defaultMentors[matcherMentorIndex]
+      const res = await fetch("/api/admin/matches/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentId: matcherFellowId,
+          mentorUid: selectedMentor.name,
+          mentorName: selectedMentor.name,
+          matchScore: matcherResult.score
+        })
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to confirm match")
+      }
+      setConfirmResult(data)
+    } catch (err: any) {
+      console.error(err)
+      setApiError(err.message || "Failed to confirm match")
+    } finally {
+      setConfirmingMatch(false)
     }
   }
 
@@ -1468,6 +1502,44 @@ export default function AdminDashboardPage() {
                         </ol>
                       </div>
                     )}
+
+                    {/* Confirm Match / Schedule Pairing */}
+                    <div className="border-t border-gray-900 pt-4 space-y-4">
+                      {confirmResult ? (
+                        <div className="bg-green-950/20 border border-green-500/30 rounded-xl p-4 text-xs space-y-2 text-green-400">
+                          <p className="font-bold flex items-center gap-1">
+                            <Check className="w-4 h-4 text-green-400" />
+                            Pairing Confirmed & Auto-Scheduled!
+                          </p>
+                          <p className="text-gray-300">
+                            The calendar invitation and video link were generated automatically:
+                          </p>
+                          <ul className="list-disc pl-5 space-y-0.5 text-gray-300">
+                            <li>Video Room ({confirmResult.provider}): <a href={confirmResult.zoomLink} target="_blank" rel="noopener noreferrer" className="underline text-blue-400 font-mono">{confirmResult.zoomLink}</a></li>
+                            <li>Scheduled Time: <strong>{new Date(confirmResult.scheduledAt).toLocaleString()}</strong></li>
+                          </ul>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleConfirmMatch}
+                          disabled={confirmingMatch}
+                          className="w-full bg-green-500 hover:bg-green-600 disabled:opacity-50 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition text-xs cursor-pointer"
+                        >
+                          {confirmingMatch ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Scheduling Video Room & Calendar...
+                            </>
+                          ) : (
+                            <>
+                              <Calendar className="w-4 h-4" />
+                              Confirm Match & Auto-Schedule Video Call
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="text-center space-y-3">
