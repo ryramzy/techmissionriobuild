@@ -370,6 +370,118 @@ export default function HomeClient() {
         </div>
       </section>
 
+      {/* Social Media Integration Feed */}
+      <section className="py-20 px-6 bg-black border-t border-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-pink-500/20 border border-pink-500/30 rounded-full py-1 px-3 mb-4">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-pink-400">Live Social Updates</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-white">Instagram & Facebook Feed</h2>
+              <p className="text-gray-400 text-sm mt-2">
+                Follow our daily journey empowering high school trainees in Rio de Janeiro.
+              </p>
+            </div>
+            <a 
+              href="https://www.instagram.com/techmissionrio" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-4 md:mt-0 text-xs font-bold text-pink-400 hover:text-pink-300 flex items-center gap-1.5 transition"
+            >
+              @techmissionrio on Instagram
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+
+          {/* Social grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="bg-gradient-to-b from-gray-950 to-black border border-gray-900 rounded-3xl overflow-hidden group hover:border-pink-500/30 transition duration-300">
+              <div className="relative h-64 overflow-hidden">
+                <img 
+                  src="/images/rio_students_tech.jpg" 
+                  alt="Students using laptops at FAETEC Santa Cruz" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
+                <div className="absolute top-4 left-4 bg-black/60 border border-gray-800 text-[10px] text-pink-400 font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <span>Instagram</span>
+                </div>
+              </div>
+              <div className="p-6 space-y-3">
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">June 24, 2026</p>
+                <h3 className="text-white font-bold text-base">Unboxing Laptop Donations in Santa Cruz!</h3>
+                <p className="text-gray-400 text-xs leading-relaxed">
+                  Today we unboxed the first batch of sponsored developer laptops for our FAETEC Santa Cruz cohort! A huge thank you to our US donor chapel hubs! 💻🇧🇷🇺🇸 #TechMissionRio
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-gradient-to-b from-gray-950 to-black border border-gray-900 rounded-3xl overflow-hidden group hover:border-pink-500/30 transition duration-300">
+              <div className="relative h-64 overflow-hidden">
+                <img 
+                  src="/images/rio_cristo_mesh.jpg" 
+                  alt="Empowering Rio youth" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
+                <div className="absolute top-4 left-4 bg-black/60 border border-gray-800 text-[10px] text-blue-400 font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <span>Facebook</span>
+                </div>
+              </div>
+              <div className="p-6 space-y-3">
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">July 12, 2026</p>
+                <h3 className="text-white font-bold text-base">Annual Cohort Nominations Open</h3>
+                <p className="text-gray-400 text-xs leading-relaxed">
+                  Educators across Rio can now nominate high-potential students for the next mentorship round. Join us in bridging coding opportunities and career paths. #NextGenTech
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-gradient-to-b from-gray-950 to-black border border-gray-900 rounded-3xl overflow-hidden group hover:border-pink-500/30 transition duration-300">
+              <div className="relative h-64 overflow-hidden">
+                <img 
+                  src="/images/rio_sugarloaf_digital.jpg" 
+                  alt="Student coding digital sugarloaf" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
+                <div className="absolute top-4 left-4 bg-black/60 border border-gray-800 text-[10px] text-pink-400 font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <span>Instagram</span>
+                </div>
+              </div>
+              <div className="p-6 space-y-3">
+                <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">July 18, 2026</p>
+                <h3 className="text-white font-bold text-base">Mentorship Match Highlights</h3>
+                <p className="text-gray-400 text-xs leading-relaxed">
+                  Congratulations to our latest matches! Trainees are pairing up with US senior developers from Seattle, Boston, and San Francisco. Let the hacking begin! 🚀🇧🇷 #CodingCommunity
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Sharing Overlay Trigger / Showcase Widget */}
+          <div className="mt-12 bg-gradient-to-r from-pink-900/10 via-black to-blue-900/10 border border-gray-900 rounded-3xl p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-white">Help Spread the Word</h3>
+              <p className="text-xs text-gray-400 max-w-xl">
+                Generate instant social media share cards to share student profiles or classroom accomplishments on TikTok and Instagram.
+              </p>
+            </div>
+            <button 
+              onClick={() => alert("📤 Mock Social Overlay: Generating custom Instagram / TikTok share package with pre-built student quote overlay and graphics. Download package ready in donor assets portal.")}
+              className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-6 rounded-xl flex items-center gap-2 transition cursor-pointer text-xs self-start md:self-auto"
+            >
+              Generate Share Overlay Package
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="py-20 px-6 bg-gradient-to-br from-green-900/20 to-blue-900/20">
         <div className="max-w-4xl mx-auto text-center">

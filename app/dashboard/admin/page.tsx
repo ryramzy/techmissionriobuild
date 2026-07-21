@@ -16,7 +16,8 @@ import {
   Users,
   Archive,
   Check,
-  Calendar
+  Calendar,
+  Mail
 } from "lucide-react"
 import Link from "next/link"
 import { doc, getDoc, setDoc, collection, query, where, orderBy, onSnapshot, collectionGroup } from "firebase/firestore"
@@ -111,6 +112,10 @@ export default function AdminDashboardPage() {
   const [allNominationsCount, setAllNominationsCount] = useState(48)
   const [avgDonationSize, setAvgDonationSize] = useState(75)
   const [recurringPercentage, setRecurringPercentage] = useState(30)
+
+  // Sprint 14 Annual Impact Report states
+  const [reportTriggering, setReportTriggering] = useState(false)
+  const [reportResult, setReportResult] = useState<any>(null)
   
   const defaultMentors = [
     { name: "Sarah Jenkins", specialization: "Senior React Engineer at Microsoft", background: "10+ years building scalable frontends, TypeScript expert, accessibility enthusiast." },
@@ -343,6 +348,27 @@ export default function AdminDashboardPage() {
       unsubDonations()
     }
   }, [user, profile])
+
+  const handleTriggerAnnualReport = async () => {
+    setReportTriggering(true)
+    setReportResult(null)
+    setApiError("")
+    try {
+      const res = await fetch("/api/admin/reports/annual-impact", {
+        method: "POST",
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to trigger report compilation")
+      }
+      setReportResult(data)
+    } catch (err: any) {
+      console.error(err)
+      setApiError(err.message || "Failed to trigger report compilation")
+    } finally {
+      setReportTriggering(false)
+    }
+  }
 
   const handleToggleFellowVisibility = async (fellowId: string, currentVisibility: boolean) => {
     if (!user) return
@@ -871,6 +897,54 @@ export default function AdminDashboardPage() {
                 </div>
               </form>
             )}
+
+            {/* Annual Impact Report Card */}
+            <div className="bg-gradient-to-br from-pink-950/10 via-black to-blue-900/10 border border-gray-900 rounded-3xl p-8 space-y-6 mt-8">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <Archive className="w-5 h-5 text-pink-400" />
+                    Annual Impact Report Generator
+                  </h2>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Compile YTD performance records, auto-generate report PDFs, and trigger email campaigns to active donors via Firebase Trigger Email.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={reportTriggering}
+                  onClick={handleTriggerAnnualReport}
+                  className="bg-pink-500 hover:bg-pink-600 disabled:opacity-50 text-white font-extrabold py-3 px-6 rounded-xl flex items-center gap-2 transition text-xs cursor-pointer"
+                >
+                  {reportTriggering ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Mailing Report...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4" />
+                      Compile & Email Report
+                    </>
+                  )}
+                </button>
+              </div>
+              {reportResult && (
+                <div className="bg-green-950/20 border border-green-500/30 rounded-2xl p-4 text-xs space-y-2 text-green-400">
+                  <p className="font-bold flex items-center gap-1.5">
+                    <Check className="w-4 h-4 text-green-400" />
+                    Report successfully generated and dispatched!
+                  </p>
+                  <ul className="list-disc pl-5 space-y-1 text-gray-300">
+                    <li>Total Donations Summed: <strong>${reportResult.stats.totalDonations} USD</strong></li>
+                    <li>Laptops Distributed: <strong>{reportResult.stats.laptopsDistributed} units</strong></li>
+                    <li>Fellows Approved: <strong>{reportResult.stats.fellowsApproved} trainees</strong></li>
+                    <li>Total Nominations Sourced: <strong>{reportResult.stats.nominationsSourced} logs</strong></li>
+                    <li>Emails Dispatched to Queue: <strong>{reportResult.emailsQueued} active supporters</strong></li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
