@@ -100,6 +100,11 @@
     - Confirm button inside Admin AI Matcher tab enabling manual pairing confirmation.
     - Live calendar and video room widgets on both the Fellow (student) dashboard and Mentor (donor) dashboard portals.
 
+20. **AI Resume Screeners & Practice Board (v3.0)**
+    - Profile Editor vs AI Practice Hub tab switches in the Fellow (student) dashboard.
+    - Resume plain text scanner checking target keywords (TypeScript, Next.js, Jest, Docker) and outputting impact verbs, score ratings, and formatting suggestions.
+    - Practice Board mock interviewer chatbot conducting track-specific coding/systems evaluations and generating feedback scores.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation
