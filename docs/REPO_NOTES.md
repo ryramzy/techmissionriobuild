@@ -90,6 +90,11 @@
     - Pulsing SVG World Map geolocation overlays and Recent Activity Ticker panel displays on the `/impact` page.
     - Real-time average donation size, YTD nominations, and matches counts displayed inside the Admin dashboard using `collectionGroup` queries.
 
+18. **Social Media Integrations & Annual Impact Report (v3.0)**
+    - Home page card grid displaying Instagram/Facebook updates and classroom accomplishments.
+    - Interactive share overlay assets compiler for TikTok/Instagram.
+    - POST API under `/api/admin/reports/annual-impact` compiling YTD metrics, generating simulated PDF Base64 documents, and sending emails to all active donors via the Firebase Trigger Email queue, manually triggerable from the Admin panel.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation
