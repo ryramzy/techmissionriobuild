@@ -679,6 +679,7 @@ export default function FellowDashboardPage() {
               )}
             </div>
           </div>
+        </div>
         ) : (
           /* AI Practice Hub Tab Layout */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
