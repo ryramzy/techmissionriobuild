@@ -95,6 +95,11 @@
     - Interactive share overlay assets compiler for TikTok/Instagram.
     - POST API under `/api/admin/reports/annual-impact` compiling YTD metrics, generating simulated PDF Base64 documents, and sending emails to all active donors via the Firebase Trigger Email queue, manually triggerable from the Admin panel.
 
+19. **Automated Video Room & Zoom Scheduler (v3.0)**
+    - POST API under `/api/admin/matches/confirm` creating confirmed matches, auto-generating video links (Zoom API or falling back to Jitsi rooms), and setting sessions.
+    - Confirm button inside Admin AI Matcher tab enabling manual pairing confirmation.
+    - Live calendar and video room widgets on both the Fellow (student) dashboard and Mentor (donor) dashboard portals.
+
 ---
 
 ## 🐛 Error Handling & Graceful Degradation
