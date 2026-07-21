@@ -278,26 +278,43 @@ AI acts as a supporting capability rather than the product itself:
 
 ---
 
-## 📅 Part 3: Phase 5 Sprints Roadmaps (Next Master Plan)
+## 📅 Part 3: Sprints & Version Roadmaps (Product Operations Focus)
 
-### 🚀 Release v3.0 — Advanced Engagement & Integrations
+To ensure the platform prioritizes reliability and user outcomes, the launch roadmap is organized into version milestones rather than feature-only sprints:
 
-#### ⚡ Sprint 13: Live Impact Maps & Donor Feed (Weeks 17–18)
-* Geolocated anonymous map on `/impact` showing donor cities and church hubs.
-* Live feed ticket displaying recent donor locations and laptop counts.
+### 🚀 Version v0.9 — Release Candidate (Feature Complete & QA)
+* **Objective**: Establish feature parity, complete local validation, and perform security hardening.
+* **Status**: Complete. Mock systems and basic portals deployed.
 
-#### ⚡ Sprint 14: Social Media Integrations & Annual Impact Report (Weeks 19–20)
-* Direct integrations with Instagram & Facebook media updates feeds.
-* Share overlay integrations for student profile stories on TikTok/Instagram.
-* **Annual Impact Report**:
-  - Generate annual impact PDF dynamically from Firestore data (total donations, laptops distributed, fellows approved, nomination count, school partners).
-  - Add manually triggerable button inside the Admin Dashboard.
-  - Automate email delivery of this PDF to all active donors via the Firebase Trigger Email queue.
+### 🚀 Version v1.0 — Public Launch (Production Release)
+* **Objective**: Secure real donations, deploy mobile/desktop packages, and clear pre-flight checksheets.
+* **Sprint A — Production Readiness**:
+  - Deploy Stripe live credentials and configure webhooks.
+  - Setup PDF tax receipt generators and Trigger Email templates.
+  - Confirm Sentry/PostHog tracking configurations.
+  - Audit WCAG 2.2 AA accessibility contrast labels.
+* **Sprint B — Distribution (PWA & Google Play Store)**:
+  - Verify PWA desktop install prompt and offline startups on Chrome, Edge, and Brave.
+  - Package PWA into Trusted Web Activity (TWA) Android App Bundles (.aab) via Bubblewrap.
+  - Publish TWA application on Google Play Store (Internal and Production tracks).
 
-#### ⚡ Sprint 15: Automated Video Room & Zoom Scheduler (Weeks 21–22)
-* Google Calendar & Zoom API scheduling for matched students/mentors.
-* Interactive calendar dashboard widget in student/mentor portals.
+### 🚀 Version v1.1 — Operational Improvements (Admin Tools & Partnerships)
+* **Objective**: Support local school pipelines and recruit international university mentors.
+* **Sprint C — Admin & Reporting**:
+  - Deploy fundraising KPI cards, donation exports, and student career placement grids.
+* **Sprint D — Partnerships (Operational Sourcing)**:
+  - Onboard educators at FAETEC / IFRJ campuses to submit nominations.
+  - Recruit bilingual mentors from BRASA chapters (MIT, Stanford, Georgia Tech, Harvard).
 
-#### ⚡ Sprint 16: AI Resume Screeners & Practice Board (Weeks 23–24)
-* Automated PDF resume analyzers and rating gauges.
-* Interactive mock technical interview chatbots.
+### 🚀 Version v1.2 — Cloud-Native Migration (Scalability & DevOps)
+* **Objective**: Containerize backend services for high availability and zero-downtime rollbacks.
+* **Sprint E — Cloud Run Migration**:
+  - Containerize application via multi-stage Docker builds.
+  - Deploy service instances to Google Cloud Run utilizing GCP Secret Manager.
+
+### 🚀 Version v2.0 — Talent Platform & AI Workflows
+* **Objective**: Supercharge mentor matchings and student feedback using AI capabilities.
+* **Sprint F — Performance & Optimization**:
+  - Bundle analytics checkups, lazy load media frame elements, and Firestore composite indexes verification.
+* **AI Workflows**:
+  - Embed match recommendation engines, automated resume scanners, and mock coder chatbots.
