@@ -68,6 +68,22 @@ To validate if new features create value, the platform evaluates operations agai
 | **Email Open Rate** | 45% on automated newsletters |
 | **PWA App Installs** | 500 standalone installations |
 
+### 🛠️ Operational & Support SLA Metrics
+To maintain high user trust and programmatic quality, the operations are audited against:
+
+| Metric | Target Goal |
+| :--- | :--- |
+| **Platform Uptime** | 99.9% |
+| **Mean Bug Resolution** | < 48 hours |
+| **Failed Donation Rate** | < 1% |
+| **Email Delivery Rate** | > 98% |
+| **Mentor Response Time** | < 72 hours |
+| **Student Application Completion** | > 80% |
+| **Teacher Retention** | > 85% |
+| **Monthly Active Mentors** | Track growth |
+| **Cost per Student Served** | Track over time |
+| **Average Onboarding Time** | < 7 days |
+
 ---
 
 ## 🏗️ Data Architecture Flow
@@ -318,3 +334,21 @@ To ensure the platform prioritizes reliability and user outcomes, the launch roa
   - Bundle analytics checkups, lazy load media frame elements, and Firestore composite indexes verification.
 * **AI Workflows**:
   - Embed match recommendation engines, automated resume scanners, and mock coder chatbots.
+
+### 🚀 Version v3.0 — Sustainability & Funding (Long-Term Operations)
+* **Objective**: Establish fundraising consistency, organizational governance, and long-term program growth.
+* **Deliverables**:
+  - Grant pipeline structure & corporate sponsor packages.
+  - Active church partnership campaigns & foundation applications.
+  - Multi-year recurring donor programs.
+  - Automated Annual Impact Reports & Board of Directors reporting templates.
+
+---
+
+## 🕊️ Five Parallel Workstreams for Growth
+To transition E2E from engineering to organizational execution, TechMission Rio's future relies on:
+1. **Technology**: Reliability, security audits, uptime observability, and containerized scale.
+2. **Operations**: Advisor onboarding tutorials, client support channels, and admin runbooks.
+3. **Programs**: Local school agreements (FAETEC/IFRJ), BRASA mentor recruitments, and student placement reports.
+4. **Growth**: Church campaigns, A/B landing page testing, and recurring sponsor outreach.
+5. **Impact**: Dynamic success analytics gauges, donor feedback loops, and local community testimonials.
