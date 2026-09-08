@@ -25,7 +25,7 @@ const nextConfig = {
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   // Skip error pages during static generation
   skipTrailingSlashRedirect: true,
-  skipMiddlewareUrlNormalize: true,
+  skipProxyUrlNormalize: true,
   turbopack: {
     root: __dirname,
     resolveAlias: {
@@ -86,6 +86,9 @@ module.exports = withSentryConfig(
     silent: true,
     widenClientFileUpload: true,
     hideSourceMaps: true,
-    disableLogger: true,
+    sourcemaps: {
+      disable: true,
+    },
+    telemetry: false,
   }
 );

@@ -5,6 +5,7 @@ import { ArrowRight, Heart, Users, Target, TrendingUp, Award, Mail, DollarSign }
 import { useAnalytics } from "@/hooks/useAnalytics"
 import { useEffect } from "react"
 import { useTranslations } from "next-intl"
+import NewsletterSignup from "@/components/NewsletterSignup"
 
 export default function HomeClient() {
   const analytics = useAnalytics()
@@ -479,6 +480,13 @@ export default function HomeClient() {
               Generate Share Overlay Package
             </button>
           </div>
+        </div>
+      </section>
+
+      {/* Bi-Weekly Field Updates Newsletter Signup */}
+      <section className="py-12 px-6 bg-black">
+        <div className="max-w-4xl mx-auto">
+          <NewsletterSignup />
         </div>
       </section>
 

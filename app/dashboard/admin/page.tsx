@@ -17,7 +17,12 @@ import {
   Archive,
   Check,
   Calendar,
-  Mail
+  Mail,
+  Send,
+  Sparkles,
+  Eye,
+  FileText,
+  RefreshCw
 } from "lucide-react"
 import Link from "next/link"
 import { doc, getDoc, setDoc, collection, query, where, orderBy, onSnapshot, collectionGroup } from "firebase/firestore"
@@ -54,7 +59,45 @@ export default function AdminDashboardPage() {
   const router = useRouter()
   const t = useTranslations("Dashboard")
 
-  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite" | "donors" | "fellows" | "logs" | "matcher">("metrics")
+  const [activeSubTab, setActiveSubTab] = useState<"metrics" | "nominations" | "invite" | "donors" | "fellows" | "logs" | "matcher" | "emailMarketing">("metrics")
+
+  // Email & Newsletter Campaign States (Resend Integration)
+  const [emailCampaignView, setEmailCampaignView] = useState<"donorMarketing" | "newsletter">("donorMarketing")
+  
+  // Donor Marketing Form State
+  const [donorOutreachEmail, setDonorOutreachEmail] = useState("")
+  const [donorOutreachName, setDonorOutreachName] = useState("")
+  const [donorOutreachOrg, setDonorOutreachOrg] = useState("")
+  const [donorOutreachNote, setDonorOutreachNote] = useState("")
+  const [donorOutreachSending, setDonorOutreachSending] = useState(false)
+  const [donorOutreachSuccess, setDonorOutreachSuccess] = useState<string | null>(null)
+  const [donorOutreachError, setDonorOutreachError] = useState<string | null>(null)
+  const [donorOutreachPreview, setDonorOutreachPreview] = useState(false)
+
+  // Bi-Weekly Newsletter Composer State
+  const [nlIssueNum, setNlIssueNum] = useState("1")
+  const [nlIssueDate, setNlIssueDate] = useState("September 2026")
+  const [nlTitle, setNlTitle] = useState("From Santa Cruz to Silicon Valley: Meet Our New Coding Cohort")
+  const [nlFoundersNote, setNlFoundersNote] = useState(
+    "Dear friends,\n\nTwo weeks ago, we stepped into the computer lab at FAETEC Santa Cruz to meet our newest fellows. The energy in that room was electric. These students aren't just learning JavaScript; they are breaking cycles of poverty and showing their families what is possible when opportunity meets hard work.\n\nThank you for standing with us as mentors, prayer partners, and sponsors. Here is what happened over the last 14 days."
+  )
+  const [nlHighlights, setNlHighlights] = useState(
+    "Cohorts 3 and 4 completed their React fundamentals module.\n8 new laptops delivered to FAETEC Santa Cruz fellows.\nConducted 24 live 1-on-1 virtual pairing calls between US software mentors and Rio fellows."
+  )
+  const [nlSpotlightName, setNlSpotlightName] = useState("Gabriel Barbosa")
+  const [nlSpotlightTrack, setNlSpotlightTrack] = useState("Full-Stack Web Development")
+  const [nlSpotlightQuote, setNlSpotlightQuote] = useState(
+    "Before TechMission Rio, coding felt like something that only happened in other countries. Now I'm building live apps with a mentor from Chicago every Thursday."
+  )
+  const [nlPrayerRequests, setNlPrayerRequests] = useState(
+    "Pray for reliable electricity and safety in the Western Zone neighborhoods during heavy winter rains.\nWisdom for our 12 students preparing for their first technical interview evaluations this month.\nOngoing partnership conversations with churches in Chicago and Atlanta considering classroom sponsorships."
+  )
+  const [nlTestEmail, setNlTestEmail] = useState("")
+  const [nlSendingTest, setNlSendingTest] = useState(false)
+  const [nlBroadcasting, setNlBroadcasting] = useState(false)
+  const [nlStatusMsg, setNlStatusMsg] = useState<string | null>(null)
+  const [nlError, setNlError] = useState<string | null>(null)
+  const [nlPreview, setNlPreview] = useState(false)
 
   // Invite Fellow State
   const [inviteName, setInviteName] = useState("")
@@ -404,6 +447,140 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const handleSendDonorMarketing = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!donorOutreachEmail || !donorOutreachEmail.includes("@")) {
+      setDonorOutreachError("Please specify a valid recipient email.")
+      return
+    }
+
+    setDonorOutreachSending(true)
+    setDonorOutreachError(null)
+    setDonorOutreachSuccess(null)
+
+    try {
+      const res = await fetch("/api/marketing/send-donor-outreach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          recipientEmail: donorOutreachEmail.trim(),
+          donorName: donorOutreachName.trim() || undefined,
+          organizationName: donorOutreachOrg.trim() || undefined,
+          customNote: donorOutreachNote.trim() || undefined,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to dispatch marketing email.")
+      }
+
+      setDonorOutreachSuccess(
+        `Donor outreach email successfully dispatched${data.simulated ? " (Simulation mode: RESEND_API_KEY pending)" : " via Resend"} to ${donorOutreachEmail.trim()}!`
+      )
+      setDonorOutreachEmail("")
+      setDonorOutreachNote("")
+    } catch (err: any) {
+      console.error(err)
+      setDonorOutreachError(err.message || "Failed to send email.")
+    } finally {
+      setDonorOutreachSending(false)
+    }
+  }
+
+  const handleSendNewsletterTest = async () => {
+    const targetEmail = nlTestEmail.trim() || user?.email || ""
+    if (!targetEmail || !targetEmail.includes("@")) {
+      setNlError("Please enter a valid test email address.")
+      return
+    }
+
+    setNlSendingTest(true)
+    setNlError(null)
+    setNlStatusMsg(null)
+
+    try {
+      const res = await fetch("/api/marketing/send-newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "test",
+          testEmail: targetEmail,
+          issueNumber: nlIssueNum,
+          issueDate: nlIssueDate,
+          issueTitle: nlTitle,
+          foundersNote: nlFoundersNote,
+          classroomHighlights: nlHighlights.split("\n").filter(Boolean),
+          studentSpotlight: nlSpotlightName ? {
+            name: nlSpotlightName,
+            track: nlSpotlightTrack,
+            highlight: nlSpotlightQuote,
+          } : undefined,
+          prayerAndSupportRequests: nlPrayerRequests.split("\n").filter(Boolean),
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to send test newsletter.")
+      }
+
+      setNlStatusMsg(
+        `Test newsletter successfully delivered${data.simulated ? " (Simulated)" : ""} to ${targetEmail}!`
+      )
+    } catch (err: any) {
+      console.error(err)
+      setNlError(err.message || "Failed to send test newsletter.")
+    } finally {
+      setNlSendingTest(false)
+    }
+  }
+
+  const handleBroadcastNewsletter = async () => {
+    if (!window.confirm(`Are you sure you want to broadcast Issue #${nlIssueNum} to all subscribers and donors?`)) {
+      return
+    }
+
+    setNlBroadcasting(true)
+    setNlError(null)
+    setNlStatusMsg(null)
+
+    try {
+      const res = await fetch("/api/marketing/send-newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mode: "broadcast",
+          issueNumber: nlIssueNum,
+          issueDate: nlIssueDate,
+          issueTitle: nlTitle,
+          foundersNote: nlFoundersNote,
+          classroomHighlights: nlHighlights.split("\n").filter(Boolean),
+          studentSpotlight: nlSpotlightName ? {
+            name: nlSpotlightName,
+            track: nlSpotlightTrack,
+            highlight: nlSpotlightQuote,
+          } : undefined,
+          prayerAndSupportRequests: nlPrayerRequests.split("\n").filter(Boolean),
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to broadcast newsletter.")
+      }
+
+      setNlStatusMsg(
+        `Bi-weekly newsletter broadcast completed! Successfully delivered to ${data.successfulCount} recipient(s).`
+      )
+    } catch (err: any) {
+      console.error(err)
+      setNlError(err.message || "Failed to broadcast newsletter.")
+    } finally {
+      setNlBroadcasting(false)
+    }
+  }
+
   const handleToggleFellowVisibility = async (fellowId: string, currentVisibility: boolean) => {
     if (!user) return
     setTogglingFellow(fellowId)
@@ -738,6 +915,13 @@ export default function AdminDashboardPage() {
               className={`py-2 px-3 rounded-lg text-[11px] font-bold transition ${activeSubTab === "matcher" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
             >
               AI Matcher
+            </button>
+            <button
+              onClick={() => setActiveSubTab("emailMarketing")}
+              className={`py-2 px-3 rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 ${activeSubTab === "emailMarketing" ? "bg-yellow-500 text-black" : "text-gray-400 hover:text-white"}`}
+            >
+              <Mail className="w-3.5 h-3.5" />
+              Email & Newsletters
             </button>
           </div>
         </div>
@@ -1549,6 +1733,414 @@ export default function AdminDashboardPage() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* TAB 8: Email Campaigns & Newsletter (Resend Powered) */}
+        {activeSubTab === "emailMarketing" && (
+          <div className="space-y-6">
+            {/* Top Domain & Provider Status Banner */}
+            <div className="bg-gradient-to-r from-emerald-950/40 via-black to-blue-950/30 border border-emerald-500/30 rounded-3xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Resend Email Infrastructure
+                </div>
+                <h2 className="text-xl font-black text-white">Email Delivery & Field Newsletter Center</h2>
+                <p className="text-xs text-gray-400">
+                  Sending Domain: <strong className="text-emerald-300 font-mono">techmissionrio.org</strong> &bull; From: <span className="text-gray-300 font-mono">updates@techmissionrio.org</span>
+                </p>
+              </div>
+
+              {/* View toggle */}
+              <div className="flex bg-gray-950 p-1 border border-gray-800 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setEmailCampaignView("donorMarketing")}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                    emailCampaignView === "donorMarketing" ? "bg-emerald-500 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  Donor Marketing Pitch
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEmailCampaignView("newsletter")}
+                  className={`py-2 px-3 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                    emailCampaignView === "newsletter" ? "bg-emerald-500 text-white" : "text-gray-400 hover:text-white"
+                  }`}
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  Bi-Weekly Newsletter
+                </button>
+              </div>
+            </div>
+
+            {/* SUBVIEW 1: Potential Donor Marketing Email */}
+            {emailCampaignView === "donorMarketing" && (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Form Column */}
+                <div className="lg:col-span-7 bg-black border border-gray-900 rounded-3xl p-6 md:p-8 space-y-6">
+                  <div>
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                      <Mail className="w-5 h-5 text-emerald-400" />
+                      Potential Donor & Sponsor Outreach
+                    </h3>
+                    <p className="text-xs text-gray-400 mt-1">
+                      Dispatch an Adopt-a-Classroom cohort pitch to US churches, foundations, or private donors.
+                    </p>
+                  </div>
+
+                  {donorOutreachSuccess && (
+                    <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-4 flex items-center gap-3 text-emerald-300 text-xs">
+                      <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-400" />
+                      <span>{donorOutreachSuccess}</span>
+                    </div>
+                  )}
+
+                  {donorOutreachError && (
+                    <div className="bg-red-950/40 border border-red-500/40 rounded-2xl p-4 flex items-center gap-3 text-red-300 text-xs">
+                      <AlertTriangle className="w-5 h-5 flex-shrink-0 text-red-400" />
+                      <span>{donorOutreachError}</span>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSendDonorMarketing} className="space-y-4">
+                    <div>
+                      <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                        Recipient Email <span className="text-emerald-400">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="pastor.john@gracechurch.org or trustee@foundation.org"
+                        value={donorOutreachEmail}
+                        onChange={(e) => setDonorOutreachEmail(e.target.value)}
+                        className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                          Prospect Name
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Pastor John or Sarah Jenkins"
+                          value={donorOutreachName}
+                          onChange={(e) => setDonorOutreachName(e.target.value)}
+                          className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                          Organization / Church
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Grace Fellowship Chicago"
+                          value={donorOutreachOrg}
+                          onChange={(e) => setDonorOutreachOrg(e.target.value)}
+                          className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                        Personal Note / Context (Appears highlighted in the pitch)
+                      </label>
+                      <textarea
+                        rows={3}
+                        placeholder="e.g. It was wonderful meeting you at the mission conference. As discussed, here is the overview of our Rio computer lab sponsorship program."
+                        value={donorOutreachNote}
+                        onChange={(e) => setDonorOutreachNote(e.target.value)}
+                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      <button
+                        type="submit"
+                        disabled={donorOutreachSending}
+                        className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2 transition text-xs cursor-pointer shadow-lg shadow-emerald-500/20"
+                      >
+                        {donorOutreachSending ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Dispatching via Resend...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4" />
+                            Send Outreach Pitch
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setDonorOutreachPreview(!donorOutreachPreview)}
+                        className="bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold py-3 px-5 rounded-xl flex items-center gap-2 transition text-xs cursor-pointer border border-gray-800"
+                      >
+                        <Eye className="w-4 h-4" />
+                        {donorOutreachPreview ? "Hide Preview" : "View Rendered Preview"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                {/* Preview / Key Highlights Column */}
+                <div className="lg:col-span-5 bg-black border border-gray-900 rounded-3xl p-6 md:p-8 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                      Included in this Template
+                    </h4>
+                    <ul className="space-y-2.5 text-xs text-gray-300">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span><strong>Verified Domain Header:</strong> TechMission Rio branding & mission statement.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span><strong>Live Metrics:</strong> 40+ laptops deployed, 100% tuition-free, 350+ mentoring hours.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span><strong>Student Case Study:</strong> Gabriel (Santa Cruz) learning full-stack development.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span><strong>Adopt-a-Classroom Tier:</strong> $12,000 full cohort package with direct Stripe link.</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {donorOutreachPreview && (
+                    <div className="bg-gray-950 border border-gray-800 rounded-2xl p-4 text-[11px] text-gray-300 space-y-2">
+                      <div className="font-bold text-white border-b border-gray-800 pb-2">
+                        Subject: Partnering with TechMission Rio — Transforming Lives Through Technology
+                      </div>
+                      <p>
+                        Dear {donorOutreachName || "Friend"}{donorOutreachOrg ? ` and the team at ${donorOutreachOrg}` : ""},
+                      </p>
+                      {donorOutreachNote && (
+                        <p className="italic text-emerald-400 bg-emerald-950/20 p-2 rounded border border-emerald-500/20">
+                          "{donorOutreachNote}"
+                        </p>
+                      )}
+                      <p className="text-gray-400">
+                        ... [Full responsive HTML template will be sent with student story, metrics, and tax-deductible donation buttons] ...
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/20 text-xs text-emerald-300">
+                    💡 <strong>Pro-Tip:</strong> Enter the pastor or foundation head's name to generate personalized greeting variables automatically.
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUBVIEW 2: Bi-Weekly Newsletter Composer */}
+            {emailCampaignView === "newsletter" && (
+              <div className="bg-black border border-gray-900 rounded-3xl p-6 md:p-8 space-y-6">
+                <div>
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-emerald-400" />
+                    Bi-Weekly Field Dispatches Composer
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    Write your personal fortnightly field dispatch directly. Send a test email to yourself first, then broadcast to all subscribers.
+                  </p>
+                </div>
+
+                {nlStatusMsg && (
+                  <div className="bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-4 flex items-center gap-3 text-emerald-300 text-xs">
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-400" />
+                    <span>{nlStatusMsg}</span>
+                  </div>
+                )}
+
+                {nlError && (
+                  <div className="bg-red-950/40 border border-red-500/40 rounded-2xl p-4 flex items-center gap-3 text-red-300 text-xs">
+                    <AlertTriangle className="w-5 h-5 flex-shrink-0 text-red-400" />
+                    <span>{nlError}</span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-xs text-gray-300 font-bold block mb-1.5">Issue Number</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 1"
+                      value={nlIssueNum}
+                      onChange={(e) => setNlIssueNum(e.target.value)}
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-300 font-bold block mb-1.5">Issue Date</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. September 2026"
+                      value={nlIssueDate}
+                      onChange={(e) => setNlIssueDate(e.target.value)}
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-300 font-bold block mb-1.5">Dispatch Title</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. From Santa Cruz to Silicon Valley"
+                      value={nlTitle}
+                      onChange={(e) => setNlTitle(e.target.value)}
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                    Founder's Field Note (Personal reflection from Rio)
+                  </label>
+                  <textarea
+                    rows={6}
+                    placeholder="Write your note to supporters here..."
+                    value={nlFoundersNote}
+                    onChange={(e) => setNlFoundersNote(e.target.value)}
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition font-sans leading-relaxed"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                      Classroom Highlights (1 bullet per line)
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={nlHighlights}
+                      onChange={(e) => setNlHighlights(e.target.value)}
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-300 font-bold block mb-1.5">
+                      Prayer & Partnership Requests (1 bullet per line)
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={nlPrayerRequests}
+                      onChange={(e) => setNlPrayerRequests(e.target.value)}
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-gray-950 border border-gray-800 rounded-2xl p-5 space-y-3">
+                  <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider">
+                    Student of the Fortnight Spotlight
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input
+                      type="text"
+                      placeholder="Student Name"
+                      value={nlSpotlightName}
+                      onChange={(e) => setNlSpotlightName(e.target.value)}
+                      className="bg-black border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Learning Track (e.g. Web Development)"
+                      value={nlSpotlightTrack}
+                      onChange={(e) => setNlSpotlightTrack(e.target.value)}
+                      className="bg-black border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                    />
+                  </div>
+                  <textarea
+                    rows={2}
+                    placeholder="Short student quote or project highlight..."
+                    value={nlSpotlightQuote}
+                    onChange={(e) => setNlSpotlightQuote(e.target.value)}
+                    className="w-full bg-black border border-gray-800 rounded-xl p-3 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition"
+                  />
+                </div>
+
+                {/* Action Controls */}
+                <div className="border-t border-gray-900 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                  <div className="flex items-center gap-2 w-full md:w-auto">
+                    <input
+                      type="email"
+                      placeholder="Test email: your@email.com"
+                      value={nlTestEmail}
+                      onChange={(e) => setNlTestEmail(e.target.value)}
+                      className="bg-gray-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition w-full md:w-64"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSendNewsletterTest}
+                      disabled={nlSendingTest}
+                      className="bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer whitespace-nowrap"
+                    >
+                      {nlSendingTest ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Send className="w-3.5 h-3.5" />
+                      )}
+                      Send Test
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => setNlPreview(!nlPreview)}
+                      className="bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition cursor-pointer border border-gray-800"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      {nlPreview ? "Hide Preview" : "Preview Newsletter"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleBroadcastNewsletter}
+                      disabled={nlBroadcasting}
+                      className="bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 transition cursor-pointer shadow-lg shadow-emerald-500/20"
+                    >
+                      {nlBroadcasting ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          Broadcasting via Resend...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="w-3.5 h-3.5" />
+                          Broadcast to All Subscribers
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {nlPreview && (
+                  <div className="bg-gray-950 border border-gray-800 rounded-3xl p-6 space-y-4">
+                    <div className="border-b border-gray-800 pb-3">
+                      <div className="text-xs text-emerald-400 font-bold">Issue #{nlIssueNum} &bull; {nlIssueDate}</div>
+                      <h4 className="text-lg font-bold text-white mt-1">{nlTitle}</h4>
+                    </div>
+                    <div className="text-xs text-gray-300 whitespace-pre-line leading-relaxed">
+                      {nlFoundersNote}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
