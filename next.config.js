@@ -4,7 +4,7 @@ const withNextIntl = createNextIntlPlugin('./i18n.ts');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
+  ...(process.env.VERCEL ? {} : { output: 'standalone' }),
   images: {
     remotePatterns: [
       {
